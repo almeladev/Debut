@@ -1,0 +1,5 @@
+# Este archivo no es necesario si se ha instalado Debut correctamente
+# Pero si no es así y los virtualhost no apuntan a public, con esto es suficiente
+
+RewriteEngine on
+RewriteRule ^(.*) public/$1 [L]
