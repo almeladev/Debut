@@ -18,5 +18,5 @@ set_error_handler('core\ErrorHandler::errorHandler');
 set_exception_handler('core\ErrorHandler::exceptionHandler');
 
 // Inicio de la app
-$router = new core\Router\Router();
+$router = new core\Routing\Router();
 $router->run();

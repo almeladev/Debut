@@ -4,7 +4,7 @@ namespace app\Controllers;
 
 use core\Auth;
 use core\Controller;
-use core\Router\Router;
+use core\Routing\Router;
 use core\View;
 
 class AuthController extends Controller

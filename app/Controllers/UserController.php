@@ -5,7 +5,7 @@ namespace app\Controllers;
 use app\Models\User;
 use core\Auth;
 use core\Controller;
-use core\Router\Router;
+use core\Routing\Router;
 use core\View;
 
 class UserController extends Controller

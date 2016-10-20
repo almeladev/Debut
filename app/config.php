@@ -9,9 +9,9 @@
 $database_cfg = [
     "driver"   => "mysql",
     "host"     => "localhost",
-    "user"     => "root",
+    "user"     => "debut-user",
     "pass"     => "123",
-    "database" => "ejemplo",
+    "database" => "debut",
     "charset"  => "utf8",
 ];
 

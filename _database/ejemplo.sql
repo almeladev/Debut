@@ -2,10 +2,10 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 -- Base de datos (ejemplo): 
-DROP DATABASE IF EXISTS ejemplo;
-CREATE DATABASE ejemplo character set utf8 collate utf8_general_ci;
+DROP DATABASE IF EXISTS debut;
+CREATE DATABASE debut character set utf8 collate utf8_general_ci;
 
-USE ejemplo;
+USE debut;
 
 -- users
 CREATE TABLE IF NOT EXISTS users (
