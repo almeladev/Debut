@@ -40,13 +40,13 @@ class View
      */
     public static function template($template, $args = [])
     {
-        static $twig = null;
-
-        if ($twig === null) {
-            $loader = new \Twig_Loader_Filesystem('../app/Views');
-            $twig   = new \Twig_Environment($loader);
-        }
-
+        $loader = new \Twig_Loader_Filesystem(APP . 'Views');
+        
+        // Añadir cache para optimizar el renderizado de las vistas ya procesadas (necesita permisos)
+        $twig = new \Twig_Environment($loader, array(
+            'cache' => ROOT . 'storage/cache',
+        ));
+        
         echo $twig->render($template, $args);
     }
 }

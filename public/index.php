@@ -9,10 +9,15 @@
  * @license  http://opensource.org/licenses/MIT MIT License
  */
 
-// Autocarga de clases con Composer
-require_once '../vendor/autoload.php';
+// Rutas de la aplicación
+define('ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR);
+define('APP', ROOT . 'app' . DIRECTORY_SEPARATOR);
+define('CORE', ROOT . 'core' . DIRECTORY_SEPARATOR);
 
-// Controlador de errores
+// Autoload
+require_once ROOT . 'vendor/autoload.php';
+
+// Reporte de errores
 error_reporting(E_ALL);
 set_error_handler('core\ErrorHandler::errorHandler');
 set_exception_handler('core\ErrorHandler::exceptionHandler');

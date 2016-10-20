@@ -2,7 +2,7 @@
 
 namespace core\Routing;
 
-require_once '../app/routes.php';
+require_once APP . 'routes.php';
 
 class Router
 {

@@ -39,7 +39,7 @@ class ErrorHandler
         http_response_code($code);
 
         // Archivo de configuración
-        require_once '../app/config.php';
+        require_once APP . 'config.php';
 
         if ($debug_mode) {
             echo "<h1>¡Error!</h1>";
@@ -50,12 +50,12 @@ class ErrorHandler
         } else {
 
             // Si no existe el directorio lo crea
-            $dir = dirname(__DIR__) . '/logs';
-            if (!file_exists($dir)) {
-                mkdir($dir, 0777, true);
-            }
+//            $dir = dirname(__DIR__) . '/storage/logs';
+//            if (!file_exists($dir)) {
+//                mkdir($dir, 0777, true);
+//            }
 
-            $log = dirname(__DIR__) . '/logs/' . date('Y-m-d') . '.txt';
+            $log = ROOT . 'storage/logs/' . date('Y-m-d') . '.txt';
             ini_set('error_log', $log);
 
             $message = "Clase de excepción: '" . get_class($exception) . "'";
