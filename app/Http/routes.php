@@ -12,7 +12,7 @@ use core\Routing\Router;
 | acceder a un controlador y sus diferentes acciones. También es posible
 | asociar una ruta con una función anónima
 |
- */
+*/
 
 Router::get('/welcome', function () {
     echo "<h1>Welcome :)</h1>";

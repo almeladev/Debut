@@ -13,16 +13,19 @@ abstract class Database
      */
     public static function connection()
     {
-        // Archivo de configuración
-        require_once '../app/config.php';
+        // Archivo de configuración de la aplicación
+        $db_config = (require_once ROOT . 'config/database.php');
 
+        $driver_default = $db_config['default'];
+        $db_config = $db_config['connections'][$driver_default];
+        
         static $db = null;
 
         if ($db === null) {
-            $dsn = $database_cfg["driver"] . ':host=' . $database_cfg["host"] . ';dbname=' .
-                $database_cfg["database"] . ';charset=' . $database_cfg["charset"];
+            $dsn = $db_config['driver'] . ':host=' . $db_config['host'] . ';dbname=' .
+                $db_config['database'] . ';charset=' . $db_config['charset'];
 
-            $db = new PDO($dsn, $database_cfg["user"], $database_cfg["pass"]);
+            $db = new PDO($dsn, $db_config['username'], $db_config['password']);
 
             // Arroja los errores si los hubiese
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

@@ -38,22 +38,16 @@ class ErrorHandler
         }
         http_response_code($code);
 
-        // Archivo de configuración
-        require_once APP . 'config.php';
-
-        if ($debug_mode) {
+        // Archivo de configuración de la aplicación
+        $app_config = (require_once ROOT . 'config/app.php');
+       
+        if ($app_config['debug']) {
             echo "<h1>¡Error!</h1>";
             echo "<p>Clase de excepción: '" . get_class($exception) . "'</p>";
             echo "<p>Mensaje: '" . $exception->getMessage() . "'</p>";
             echo "<p>Informe de ejecución:<pre>" . $exception->getTraceAsString() . "</pre></p>";
             echo "<p>Excepción arrojada en el archivo '" . $exception->getFile() . "' en la línea " . $exception->getLine() . "</p>";
         } else {
-
-            // Si no existe el directorio lo crea
-//            $dir = dirname(__DIR__) . '/storage/logs';
-//            if (!file_exists($dir)) {
-//                mkdir($dir, 0777, true);
-//            }
 
             $log = ROOT . 'storage/logs/' . date('Y-m-d') . '.txt';
             ini_set('error_log', $log);
@@ -64,6 +58,7 @@ class ErrorHandler
             $message .= "\nExcepción arrojada en el archivo '" . $exception->getFile() . "' en la línea " . $exception->getLine();
 
             error_log($message);
+            
             View::template("errors/$code.html"); // Directorio de los archivos de registro
         }
     }

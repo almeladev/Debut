@@ -2,8 +2,6 @@
 
 namespace core\Routing;
 
-require_once APP . 'routes.php';
-
 class Router
 {
     /**
