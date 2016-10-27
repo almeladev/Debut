@@ -35,7 +35,7 @@ abstract class DB
     }
 
     /**
-     * Ejecuta una consulta a la base de datos
+     * Ejecuta una consulta a la base de datos y devuelve un array
      *
      * @param  string  $sql    Consulta SQL
      * @param  array   $params Parámetros de la consulta

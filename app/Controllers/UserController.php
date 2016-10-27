@@ -75,9 +75,9 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
-
+        
         View::template('users/edit.html', [
-            'user' => $user,
+            'user' => $user->data,
         ]);
     }
 
@@ -91,7 +91,7 @@ class UserController extends Controller
      */
     public function update($id)
     {
-        $user = new User();
+        $user = User::find($id);
 
         // Recuerda validar
         $user->email    = $_POST["email"];
@@ -101,7 +101,7 @@ class UserController extends Controller
         $user->password = md5($_POST["pass"]);
         $user->age      = (empty($_POST['age'])) ? null : $_POST['age'];
 
-        $user->modify($id);
+        $user->update();
 
         return redirect('/users');
     }
@@ -116,7 +116,7 @@ class UserController extends Controller
     public function delete($id)
     {
         $user = new User();
-        $user->destroy($id);
+        $user->delete($id);
 
         return redirect('/users');
     }
