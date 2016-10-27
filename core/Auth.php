@@ -36,7 +36,7 @@ class Auth
             'password' => md5($password),
         ];
 
-        $result = Database::query($sql, $params);
+        $result = DB::query($sql, $params);
 
         if ($result) {
             session_start();

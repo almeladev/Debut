@@ -4,7 +4,7 @@ namespace core;
 
 use PDO;
 
-abstract class Database
+abstract class DB
 {
     /**
      * Conexión a la base de datos usando la clase PDO

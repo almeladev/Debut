@@ -27,7 +27,7 @@ abstract class Model
         $model = new static();
 
         $sql    = 'SELECT * FROM ' . $model->table;
-        $result = Database::query($sql);
+        $result = DB::query($sql);
 
         return $result;
     }
@@ -45,7 +45,7 @@ abstract class Model
 
         $sql    = 'SELECT * FROM ' . $model->table . ' WHERE ' . $model->id . ' = :id';
         $params = ['id' => $id];
-        $result = Database::query($sql, $params);
+        $result = DB::query($sql, $params);
 
         return $result;
     }

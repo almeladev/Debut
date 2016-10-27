@@ -2,7 +2,7 @@
 
 namespace app\Models;
 
-use core\Database;
+use core\DB;
 use core\Model;
 
 class User extends Model
@@ -42,7 +42,7 @@ class User extends Model
             'age'      => $this->age,
         ];
 
-        Database::query($sql, $params, false);
+        DB::query($sql, $params, false);
     }
 
     /**
@@ -68,7 +68,7 @@ class User extends Model
             'age'      => $this->age,
         ];
 
-        Database::query($sql, $params, false);
+        DB::query($sql, $params, false);
     }
 
     /**
@@ -83,6 +83,6 @@ class User extends Model
     {
         $sql = "DELETE FROM $this->table WHERE id=" . $id;
 
-        Database::query($sql, null, false);
+        DB::query($sql, null, false);
     }
 }
