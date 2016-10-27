@@ -20,30 +20,32 @@ class User extends Model
      *
      * @var mixed
      */
-    public $email, $name, $lastname, $username, $password, $age;
+    protected $fillable = [
+        'email', 'name', 'lastname', 'username', 'password', 'age',
+    ];
 
-    /**
-     * Guarda los datos del nuevo usuario en la
-     * base de datos
-     *
-     * @return void
-     */
-    public function save()
-    {
-        $sql = "INSERT INTO $this->table (email, name, lastname, username, password, age)
-                VALUES (:email, :name, :lastname, :username, :password, :age)";
-
-        $params = [
-            'email'    => $this->email,
-            'name'     => $this->name,
-            'lastname' => $this->lastname,
-            'username' => $this->username,
-            'password' => $this->password,
-            'age'      => $this->age,
-        ];
-
-        DB::query($sql, $params, false);
-    }
+//    /**
+//     * Guarda los datos del nuevo usuario en la
+//     * base de datos
+//     *
+//     * @return void
+//     */
+//    public function save()
+//    {
+//        $sql = "INSERT INTO $this->table (email, name, lastname, username, password, age)
+//                VALUES (:email, :name, :lastname, :username, :password, :age)";
+//
+//        $params = [
+//            'email'    => $this->email,
+//            'name'     => $this->name,
+//            'lastname' => $this->lastname,
+//            'username' => $this->username,
+//            'password' => $this->password,
+//            'age'      => $this->age,
+//        ];
+//
+//        DB::query($sql, $params, false);
+//    }
 
     /**
      * Modifica los datos del usuario en la
