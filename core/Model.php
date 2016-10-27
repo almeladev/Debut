@@ -90,8 +90,6 @@ abstract class Model
      * Modifica los datos del modelo en la
      * base de datos
      *
-     * @param  int $id El identificador
-     *
      * @return void
      */
     public function update()
@@ -108,5 +106,20 @@ abstract class Model
         }
 
         DB::query($sql, $params, false);
+    }
+    
+    /**
+     * Elimina los datos del modelo en la
+     * base de datos
+     *
+     * @return void
+     */
+    public function delete()
+    {
+        $model = new static();
+        
+        $sql = "DELETE FROM $model->table WHERE id=" . $this->data['id'];
+
+        DB::query($sql, null, false);
     }
 }

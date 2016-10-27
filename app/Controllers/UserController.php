@@ -113,10 +113,11 @@ class UserController extends Controller
      *
      * @return void
      */
-    public function delete($id)
+    public function destroy($id)
     {
-        $user = new User();
-        $user->delete($id);
+        $user = User::find($id);
+        
+        $user->delete();
 
         return redirect('/users');
     }

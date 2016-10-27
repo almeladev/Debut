@@ -24,18 +24,4 @@ class User extends Model
         'email', 'name', 'lastname', 'username', 'password', 'age',
     ];
 
-    /**
-     * Elimina los datos del usuario en la
-     * base de datos
-     *
-     * @param  int $id El identificador
-     *
-     * @return void
-     */
-    public function destroy($id)
-    {
-        $sql = "DELETE FROM $this->table WHERE id=" . $id;
-
-        DB::query($sql, null, false);
-    }
 }

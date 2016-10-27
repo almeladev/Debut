@@ -36,4 +36,4 @@ Router::post('/users/store', 'UserController@store');
 Router::get('/users/edit/{id}', 'UserController@edit'); // UPDATE
 Router::post('/users/update/{id}', 'UserController@update');
 
-Router::post('/users/delete/{id}', 'UserController@delete'); // DELETE
+Router::post('/users/delete/{id}', 'UserController@destroy'); // DELETE
