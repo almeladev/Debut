@@ -5,7 +5,6 @@ namespace app\Controllers;
 use app\Models\User;
 use core\Auth;
 use core\Controller;
-use core\Routing\Router;
 use core\View;
 
 class UserController extends Controller
@@ -26,8 +25,9 @@ class UserController extends Controller
             ]);
 
         } else {
-            Router::redirect('/');
+            return redirect('/');
         }
+        
     }
 
     /**
@@ -61,7 +61,7 @@ class UserController extends Controller
 
         $user->save();
 
-        Router::redirect('/users');
+        return redirect('/users');
     }
 
     /**
@@ -103,7 +103,7 @@ class UserController extends Controller
 
         $user->modify($id);
 
-        Router::redirect('/users');
+        return redirect('/users');
     }
 
     /**
@@ -118,6 +118,6 @@ class UserController extends Controller
         $user = new User();
         $user->destroy($id);
 
-        Router::redirect('/users');
+        return redirect('/users');
     }
 }

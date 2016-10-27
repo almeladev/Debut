@@ -4,7 +4,6 @@ namespace app\Controllers;
 
 use core\Auth;
 use core\Controller;
-use core\Routing\Router;
 use core\View;
 
 class AuthController extends Controller
@@ -19,7 +18,7 @@ class AuthController extends Controller
         if (!Auth::check()) {
             View::template('auth/login.html');
         } else {
-            Router::redirect('/users');
+            return redirect('/users');
         }
     }
 
@@ -32,9 +31,9 @@ class AuthController extends Controller
     public function postLogin()
     {
         if (Auth::login($_POST["email"], $_POST["pass"])) {
-            Router::redirect('/users');
+            return redirect('/users');
         } else {
-            Router::redirect('/login');
+            return redirect('/login');
         }
     }
 
@@ -46,6 +45,6 @@ class AuthController extends Controller
     public function getLogout()
     {
         Auth::logout();
-        Router::redirect('/');
+        return redirect('/');
     }
 }

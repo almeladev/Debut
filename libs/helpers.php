@@ -15,6 +15,7 @@
  * 
  * @param string $var
  * @param mixed $default
+ * 
  * @return $data
  */
 function config($var, $default = null)
@@ -25,6 +26,19 @@ function config($var, $default = null)
     $config = (! empty($data)) ? $data : $default;
     
     return $config;
+}
+
+/**
+ * Redirreciona a la ruta elegida
+ *
+ * @param string $path La ruta
+ *
+ * @return void
+ */
+function redirect($path)
+{
+    header("Location: $path");
+    exit;
 }
 
 
