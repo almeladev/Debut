@@ -59,11 +59,13 @@ class UserController extends Controller
         $user->password = md5($_POST["pass"]);
         $user->age      = $_POST["age"];
         
-        // Objetivo -->
+// Objetivo -->
 //        $user->email    = $request->input('email');
         
         if ($user->save()) {
             return redirect('/users');
+        } else {
+            throw new \Exception('No se ha podido crear el usuario', 500);
         }
     }
 
@@ -103,13 +105,12 @@ class UserController extends Controller
         $user->username = $_POST["username"];
         $user->password = md5($_POST["pass"]);
         $user->age      = (empty($_POST['age'])) ? null : $_POST['age'];
-
-        //$user->update();
         
         if ($user->update()) {
             return redirect('/users');
+        } else {
+            throw new \Exception('No se ha podido actualizar el usuario', 500);
         }
-        
 
     }
 
@@ -126,6 +127,8 @@ class UserController extends Controller
         
         if ($user->delete()) {
             return redirect('/users');
+        } else {
+            throw new \Exception('No se ha podido borrar el usuario', 500);
         }
     }
 }

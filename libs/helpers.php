@@ -35,10 +35,12 @@ function config($var, $default = null)
  *
  * @return void
  */
-function redirect($path)
+function redirect($path = null)
 {
-    header("Location: $path");
-    exit;
+    if ($path) {
+        header('Location: ' . $path);
+        exit;
+    }
 }
 
 
