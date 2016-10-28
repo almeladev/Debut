@@ -41,20 +41,20 @@ abstract class DB
      * @param  array   $params Parámetros de la consulta
      * @param  boolean $fetch  Si la consulta recupera datos
      *
-     * @return array Datos de la consulta
+     * @return mixed Datos de la consulta y boolean
      */
     public static function query($sql, $params = null, $fetch = true)
     {
         $stmt = static::connection()->prepare($sql);
-        $stmt->execute($params);
-
-        if ($fetch) {
-            if ($params) {
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            } else {
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if ($stmt->execute($params)) {
+            
+            if ($fetch) {
+                $result = ($params) ? $stmt->fetch(PDO::FETCH_ASSOC) : $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return $result;
             }
-            return $result;
+            return true;
         }
+        return false;
     }
 }

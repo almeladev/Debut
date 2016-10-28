@@ -61,10 +61,10 @@ class UserController extends Controller
         
         // Objetivo -->
 //        $user->email    = $request->input('email');
-
-        $user->save();
-
-        return redirect('/users');
+        
+        if ($user->save()) {
+            return redirect('/users');
+        }
     }
 
     /**
@@ -104,9 +104,13 @@ class UserController extends Controller
         $user->password = md5($_POST["pass"]);
         $user->age      = (empty($_POST['age'])) ? null : $_POST['age'];
 
-        $user->update();
+        //$user->update();
+        
+        if ($user->update()) {
+            return redirect('/users');
+        }
+        
 
-        return redirect('/users');
     }
 
     /**
@@ -120,8 +124,8 @@ class UserController extends Controller
     {
         $user = User::find($id);
         
-        $user->delete();
-
-        return redirect('/users');
+        if ($user->delete()) {
+            return redirect('/users');
+        }
     }
 }

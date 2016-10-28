@@ -67,7 +67,7 @@ abstract class Model
      * Guarda los datos del modelo en la
      * base de datos
      *
-     * @return void
+     * @return boolean
      */
     public function save()
     {
@@ -83,14 +83,15 @@ abstract class Model
             $params[$field] = $this->$field;
         }
 
-        DB::query($sql, $params, false);
+        $query = DB::query($sql, $params, false);
+        return ($query) ? true : false;
     }
     
     /**
      * Modifica los datos del modelo en la
      * base de datos
      *
-     * @return void
+     * @return boolean
      */
     public function update()
     {
@@ -104,15 +105,16 @@ abstract class Model
         foreach ($this->fillable as $field) {
             $params[$field] = $this->$field;
         }
-
-        DB::query($sql, $params, false);
+        
+        $query = DB::query($sql, $params, false);
+        return ($query) ? true : false;
     }
     
     /**
      * Elimina los datos del modelo en la
      * base de datos
      *
-     * @return void
+     * @return boolean
      */
     public function delete()
     {
@@ -120,6 +122,7 @@ abstract class Model
         
         $sql = "DELETE FROM $model->table WHERE id=" . $this->id;
 
-        DB::query($sql, null, false);
+        $query = DB::query($sql, null, false);
+        return ($query) ? true : false;
     }
 }
