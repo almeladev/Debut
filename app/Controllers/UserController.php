@@ -58,6 +58,9 @@ class UserController extends Controller
         $user->username = $_POST["username"];
         $user->password = md5($_POST["pass"]);
         $user->age      = $_POST["age"];
+        
+        // Objetivo -->
+//        $user->email    = $request->input('email');
 
         $user->save();
 
@@ -77,7 +80,7 @@ class UserController extends Controller
         $user = User::find($id);
         
         View::template('users/edit.html', [
-            'user' => $user->data,
+            'user' => $user,
         ]);
     }
 

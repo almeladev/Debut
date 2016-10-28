@@ -14,7 +14,7 @@ abstract class Model
      * Campo identificador
      * @var string
      */
-    protected $id = 'id';
+    protected $primaryKey = 'id';
 
     /**
      * Campos de la base de datos que
@@ -22,7 +22,7 @@ abstract class Model
      * @var mixed
      */
     protected $fillable;
-    
+        
     /**
      * Todos los registros de la base de
      * datos
@@ -50,14 +50,14 @@ abstract class Model
     {
         $model = new static();
         
-        $sql = 'SELECT * FROM ' . $model->table . ' WHERE ' . $model->id . ' = :id';
+        $sql = 'SELECT * FROM ' . $model->table . ' WHERE ' . $model->primaryKey . ' = :id';
         $params  = ['id' => $id];
         $query = DB::query($sql, $params);
         
         // Obtenemos los datos del objeto en un array para tratarlos en la vista
-        $model->data['id'] = $id;
+        $model->id = $id;
         foreach ($model->fillable as $field) {
-            $model->data[$field] = $query[$field];
+            $model->$field = $query[$field];
         }
         
         return $model;
@@ -99,7 +99,7 @@ abstract class Model
         $fields = implode(', ', $model->fillable);
         $statements = preg_replace('#([\w]+)#', '${1}=:${1}', $fields);
         
-        $sql = "UPDATE $model->table SET $statements WHERE id=" . $this->data['id'];
+        $sql = "UPDATE $model->table SET $statements WHERE id=" . $this->id;
 
         foreach ($this->fillable as $field) {
             $params[$field] = $this->$field;
@@ -118,7 +118,7 @@ abstract class Model
     {
         $model = new static();
         
-        $sql = "DELETE FROM $model->table WHERE id=" . $this->data['id'];
+        $sql = "DELETE FROM $model->table WHERE id=" . $this->id;
 
         DB::query($sql, null, false);
     }
