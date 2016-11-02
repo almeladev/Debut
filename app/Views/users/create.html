@@ -4,51 +4,35 @@
 
 {% block body %}
 
-<br>
-
-<form action="/users/store" method="post" class="form-horizontal">
-    <div class="form-group">
-      <label class="col-lg-2 control-label">Correo</label>
-      <div class="col-lg-10">
-        <input type="text" class="form-control" name="email" placeholder="Correo">
-      </div>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <form action="/users/store" method="post" class="form-horizontal">
+            <div class="form-group">
+              <label class="col-lg-2 control-label">Nombre</label>
+              <div class="col-lg-10">
+                  <input type="text" class="form-control" placeholder="El nombre del usuario..." name="name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-2 control-label">Email</label>
+              <div class="col-lg-10">
+                <input type="text" class="form-control" placeholder="El email del usuario..." name="email">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-2 control-label">Contraseña</label>
+              <div class="col-lg-10">
+                <input type="password" class="form-control" placeholder="La contraseña del usuario..." name="pass">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-lg-10 col-lg-offset-2">
+                <button type="submit" class="btn btn-primary">Crear usuario</button>
+                <button type="reset" class="btn btn-default">Cancelar</button>
+              </div>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-      <label class="col-lg-2 control-label">Nombre</label>
-      <div class="col-lg-10">
-        <input type="text" class="form-control" name="name" placeholder="Nombre">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-lg-2 control-label">Apellido</label>
-      <div class="col-lg-10">
-        <input type="text" class="form-control" name="lastname" placeholder="Apellido">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-lg-2 control-label">Apodo</label>
-      <div class="col-lg-10">
-        <input type="text" class="form-control" name="username" placeholder="Apodo">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-lg-2 control-label">Contraseña</label>
-      <div class="col-lg-10">
-        <input type="password" class="form-control" name="pass" placeholder="Contraseña">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="col-lg-2 control-label">Edad</label>
-      <div class="col-lg-10">
-        <input type="number" class="form-control" name="age" placeholder="Edad">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-lg-10 col-lg-offset-2">
-        <button type="submit" class="btn btn-primary">Crear usuario</button>
-        <button type="reset" class="btn btn-default">Cancelar</button>
-      </div>
-    </div>
-</form>
+</div>
 
 {% endblock %}

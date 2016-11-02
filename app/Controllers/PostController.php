@@ -2,28 +2,30 @@
 
 namespace app\Controllers;
 
+use app\Models\Post;
 use app\Models\User;
 use core\Auth;
 use core\Controller;
 use core\View;
 
 
-class UserController extends Controller
+class PostController extends Controller
 {
 
     /**
-     * Muestra la lista de usuarios
+     * Muestra la lista de posts
      *
      * @return void
      */
     public function index()
     {
         if (Auth::check()) {
+            
+            // Todos los posts de los usuarios
+            $posts = User::posts();
 
-            $users = User::all();
-
-            View::template('users/index.html', [
-                'users' => $users,
+            View::template('posts/index.html', [
+                'posts' => $posts,
             ]);
 
         } else {
@@ -31,37 +33,37 @@ class UserController extends Controller
         }
         
     }
-
+    
     /**
      * Muestra un formulario para crear un nuevo
-     * usuario
+     * post
      *
      * @return void
      */
     public function create()
     {
-        View::template('users/create.html');
+        View::template('posts/create.html');
     }
 
     /**
      * Obtiene los datos de un formulario y crea el
-     * usuario
+     * post
      *
      * @return void
      */
     public function store()
     {
-        $user = new User();     
+        $post = new Post();     
         
         // Recuerda validar
-        $user->name     = $this->request->input('name');
-        $user->email    = $this->request->input('email');
-        $user->password = md5($this->request->input('pass'));
+        $post->title   = $this->request->input('title');
+        $post->content = $this->request->input('content');
+        $post->user_id = Auth::user()->id;
         
-        if ($user->save()) {
-            return redirect('/users');
+        if ($post->save()) {
+            return redirect('/posts');
         } else {
-            throw new \Exception('No se ha podido crear el usuario', 500);
+            throw new \Exception('No se ha podido crear el post', 500);
         }
     }
 
@@ -75,10 +77,10 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::find($id);
+        $post = Post::find($id);
         
-        View::template('users/edit.html', [
-            'user' => $user,
+        View::template('posts/edit.html', [
+            'post' => $post,
         ]);
     }
 
@@ -92,17 +94,16 @@ class UserController extends Controller
      */
     public function update($id)
     {
-        $user = User::find($id);
+        $post = Post::find($id);
         
         // Recuerda validar
-        $user->name     = $this->request->input('name');
-        $user->email    = $this->request->input('email');
-        $user->password = md5($this->request->input('pass'));
+        $post->title   = $this->request->input('title');
+        $post->content = $this->request->input('content');
         
-        if ($user->update()) {
-            return redirect('/users');
+        if ($post->update()) {
+            return redirect('/posts');
         } else {
-            throw new \Exception('No se ha podido actualizar el usuario', 500);
+            throw new \Exception('No se ha podido actualizar el posts', 500);
         }
 
     }
@@ -116,12 +117,13 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::find($id);
+        $post = Post::find($id);
         
-        if ($user->delete()) {
-            return redirect('/users');
+        if ($post->delete()) {
+            return redirect('/posts');
         } else {
-            throw new \Exception('No se ha podido borrar el usuario', 500);
+            throw new \Exception('No se ha podido borrar el post', 500);
         }
     }
 }
+
