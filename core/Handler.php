@@ -2,9 +2,22 @@
 
 namespace core;
 
-class ErrorHandler
+class Handler
 {
-
+    
+    /**
+     * Registra los errores ocurridos en la aplicación
+     * 
+     * @return void
+     */
+    public static function register()
+    {
+        error_reporting(E_ALL);
+        
+        set_error_handler(__CLASS__ . "::errorHandler");
+        set_exception_handler(__CLASS__ . "::exceptionHandler");
+    }
+    
     /**
      * Convierte todos los errores en excepciones.
      *

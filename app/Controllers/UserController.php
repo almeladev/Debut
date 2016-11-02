@@ -7,8 +7,10 @@ use core\Auth;
 use core\Controller;
 use core\View;
 
+
 class UserController extends Controller
 {
+
     /**
      * Muestra la lista de usuarios
      *
@@ -49,18 +51,15 @@ class UserController extends Controller
      */
     public function store()
     {
-        $user = new User();
-
-        // Recuerda validar
-        $user->email    = $_POST["email"];
-        $user->name     = $_POST["name"];
-        $user->lastname = $_POST["lastname"];
-        $user->username = $_POST["username"];
-        $user->password = md5($_POST["pass"]);
-        $user->age      = $_POST["age"];
+        $user = new User();     
         
-// Objetivo -->
-//        $user->email    = $request->input('email');
+        // Recuerda validar
+        $user->email    = $this->request->input('email');
+        $user->name     = $this->request->input('name');
+        $user->lastname = $this->request->input('lastname');
+        $user->username = $this->request->input('username');
+        $user->password = md5($this->request->input('pass'));
+        $user->age      = $this->request->input('age');
         
         if ($user->save()) {
             return redirect('/users');
@@ -98,13 +97,15 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
+        $prueba = $_SERVER['SERVER_NAME'];
+        
         // Recuerda validar
-        $user->email    = $_POST["email"];
-        $user->name     = $_POST["name"];
-        $user->lastname = (empty($_POST['lastname'])) ? null : $_POST['lastname'];
-        $user->username = $_POST["username"];
-        $user->password = md5($_POST["pass"]);
-        $user->age      = (empty($_POST['age'])) ? null : $_POST['age'];
+        $user->email    = $this->request->input('email');
+        $user->name     = $this->request->input('name');
+        $user->lastname = (empty($this->request->input('lastname'))) ? null : $this->request->input('lastname');
+        $user->username = $this->request->input('username');
+        $user->password = md5($this->request->input('pass'));
+        $user->age      = (empty($this->request->input('age'))) ? null : $this->request->input('age');
         
         if ($user->update()) {
             return redirect('/users');

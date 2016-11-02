@@ -22,12 +22,14 @@ class Kernel
      */
     public function run()
     {
-        // Reporte de errores
-        error_reporting(E_ALL);
-        set_error_handler('core\ErrorHandler::errorHandler');
-        set_exception_handler('core\ErrorHandler::exceptionHandler');
+        // --------------------------------------------------------------
+        // Registro de errores
+        // --------------------------------------------------------------
+        Handler::register();
         
-        // Arranca el enrutamiento
+        // --------------------------------------------------------------
+        // Inicio del enrutamiento
+        // --------------------------------------------------------------
         $router = new Router();
         $router->run();
     }
