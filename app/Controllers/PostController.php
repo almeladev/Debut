@@ -20,7 +20,6 @@ class PostController extends Controller
     public function index()
     {
         if (Auth::check()) {
-            
             // Todos los posts de los usuarios
             $posts = User::posts();
 
@@ -31,7 +30,6 @@ class PostController extends Controller
         } else {
             return redirect('/');
         }
-        
     }
     
     /**
@@ -69,7 +67,7 @@ class PostController extends Controller
 
     /**
      * Muestra un formulario con los datos del
-     * usuario indicado
+     * post indicado
      *
      * @param  int $id El identificador
      *
@@ -85,7 +83,7 @@ class PostController extends Controller
     }
 
     /**
-     * Actualiza el usuario con los nuevos datos
+     * Actualiza el post con los nuevos datos
      * pasados
      *
      * @param  int $id El identificador
@@ -109,7 +107,7 @@ class PostController extends Controller
     }
 
     /**
-     * Borra el usuario indicado
+     * Borra el post indicado
      *
      * @param  int $id El identificador
      *

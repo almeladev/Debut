@@ -29,8 +29,8 @@ class AuthController extends Controller
      * @return void
      */
     public function postLogin()
-    {
-        if (Auth::login($_POST["email"], $_POST["pass"])) {
+    { 
+        if (Auth::login($this->request->input('email'), $this->request->input('pass'))) {
             return redirect('/users');
         } else {
             return redirect('/login');
