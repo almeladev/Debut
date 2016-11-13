@@ -1,5 +1,9 @@
+# carpetas
 /nbproject/
 /vendor/
 /public/adminer/
+
+# archivos
+composer.lock
 config.ini
 
