@@ -30,8 +30,6 @@ Debut es un framework PHP super simple para los que quieren MVC fácil. Debut di
 Puedes instalar un servidor con todo lo necesario para que Debut funcione con <a href="https://www.vagrantup.com/downloads.html">Vagrant</a> y los archivos <b>Vagrantfile</b> y <b>config.sh</b> que se encuentran en la carpeta "_install". Añadiendo estos dos archivos a cualquier directorio de tu equipo, sitúandote en él y ejecutando un <b>vagrant up</b>. ¡Así de simple!
 
 Los datos por defecto del servidor son los siguientes:
-* PHP 7
-* MySQL 5.7
 * Box: <code>Ubuntu 14.04</code>
 * Memoria: <code>1024 MB</code>
 * CPUs: <code>1</code>
