@@ -18,7 +18,7 @@ class AuthController extends Controller
         if (!Auth::check()) {
             View::template('auth/login.html');
         } else {
-            return redirect('/users');
+            return redirect('/menu');
         }
     }
 
@@ -31,7 +31,7 @@ class AuthController extends Controller
     public function postLogin()
     { 
         if (Auth::login($this->request->input('email'), $this->request->input('pass'))) {
-            return redirect('/users');
+            return redirect('/menu');
         } else {
             return redirect('/login');
         }

@@ -40,6 +40,6 @@ INSERT INTO users (email, name, password) VALUES
 ('luis@debut.app', 'Luis', MD5('secret'));
 
 INSERT INTO posts (title, content, user_id) VALUES
-('Hello world!', 'Este es el primer post de la página!', 1);
-
+('Hello world!', 'Este es el primer post de la página!', 1),
+('Otro post de ejemplo', 'Este es otro post de ejemplo creado por otro usuario', 4);
 

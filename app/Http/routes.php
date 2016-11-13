@@ -20,6 +20,7 @@ Router::get('/welcome', function () {
 
 // Home
 Router::get('/', 'HomeController@index');
+Router::get('/menu', 'HomeController@menu');
 
 // login
 Router::get('/login', 'AuthController@getLogin');

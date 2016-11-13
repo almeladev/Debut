@@ -4,7 +4,8 @@
 
 {% block body %}
 
-<a href="/" class="btn btn-warning">Home</a>
+<a href="/menu" class="btn btn-warning">Home</a>
+<a href="/users" class="btn btn-default">CRUD usuarios</a>
 <a href="/logout" class="btn btn-danger">Cerrar sesión</a>
 
 <h1>Posts <button type="button" class="btn btn-primary" data-toggle="modal" 
@@ -56,13 +57,13 @@
             <div class="form-group">
             <label class="col-lg-2 control-label">Título</label>
             <div class="col-lg-10">
-              <input type="text" class="form-control" name="title" id="postTitle" value="" />
+                <input type="text" class="form-control" placeholder="Escribe un título..." name="title" id="postTitle" value="" />
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-2 control-label">Contenido</label>
             <div class="col-lg-10">
-                <textarea class="form-control" rows="3" name="content" id="postContent"></textarea>
+                <textarea class="form-control" rows="3" name="content" placeholder="Escribe el contenido del post..." id="postContent"></textarea>
               </div>
           </div>
           </div>

@@ -18,4 +18,16 @@ class HomeController extends Controller
             'title' => 'Debut framework',
         ]);
     }
+    
+    /**
+     * Accede a la vista del menú
+     *
+     * @return void
+     */
+    public function menu()
+    {
+        View::template('menu.html', [
+            'title' => 'Menú',
+        ]);
+    }
 }

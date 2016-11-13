@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Menú{% endblock %}
+
+{% block body %}
+
+<div class="container container-table">
+    <div class="row vertical-center-row text-center">
+    <h1 class="h1" id="title">Debut</h1>
+
+    <!-- Elementos del menú -->
+    <a href="/users" class="btn btn-default">CRUD usuarios</a>
+    <a href="/posts" class="btn btn-default ">CRUD posts</a>
+    <a href="/logout" class="btn btn-danger">Cerrar sesión</a>
+    </div>
+</div>
+
+{% endblock %}
