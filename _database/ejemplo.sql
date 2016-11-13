@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS posts (
   user_id int NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY (title),
-  FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE 
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 

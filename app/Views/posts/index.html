@@ -7,7 +7,10 @@
 <a href="/" class="btn btn-warning">Home</a>
 <a href="/logout" class="btn btn-danger">Cerrar sesión</a>
 
-<h1>Posts <a href="/posts/create" class="btn btn-info">Crear</a></h1>
+<h1>Posts <button type="button" class="btn btn-primary" data-toggle="modal" 
+                  data-target="#Modal" 
+                  data-whatever="Crear post"
+                  data-action="/posts/store">Crear</button></h1>
 
 <table class="table table-striped table-bordered">
   <thead>
@@ -26,7 +29,12 @@
       <td>{{ post.author }}</td>
       <td class="text-center">
         <form action="/posts/delete/{{ post.id }}" method="post">
-          <a href="/posts/edit/{{ post.id }}" class="btn btn-info">Editar</a> 
+          <button type="button" class="btn btn-primary" data-toggle="modal" 
+                  data-target="#Modal" 
+                  data-whatever="Editar post"
+                  data-title="{{ post.title }}"
+                  data-content="{{ post.content }}"
+                  data-action="/posts/update/{{ post.id }}">Editar</button>
           <button type="submit" class="btn btn-danger">Borrar</button>
         </form>
       </td>
@@ -34,6 +42,66 @@
   {% endfor %}
   </tbody>
 </table>
+
+<!-- // Modales -->
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="ModalLabel">Mensaje</h4>
+      </div>
+      <form action="" method="POST" class="form-horizontal">
+          <div class="modal-body">
+            <div class="form-group">
+            <label class="col-lg-2 control-label">Título</label>
+            <div class="col-lg-10">
+              <input type="text" class="form-control" name="title" id="postTitle" value="" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Contenido</label>
+            <div class="col-lg-10">
+                <textarea class="form-control" rows="3" name="content" id="postContent"></textarea>
+              </div>
+          </div>
+          </div>
+          <div class="modal-footer">
+          <div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+              <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
+              <button id="response" type="submit" class="btn btn-primary"></button>
+            </div>
+          </div>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+    
+    // Simple script para crear modales con bootstrap.js
+    $('#Modal').on('show.bs.modal', function (event) {
+        
+        // Button that triggered the modal
+        var button = $(event.relatedTarget);
+        // variables
+        var recipient = button.data('whatever');
+        var action = button.data('action');
+        var title = button.data('title');
+        var content = button.data('content');
+        
+        var modal = $(this)
+        // Mensaje de la modal
+        modal.find('.modal-title').text(recipient)
+        modal.find("form").attr("action", action);
+        // Datos pasados por Twig
+        modal.find("#postTitle").val(title);
+        modal.find("#postContent").val(content);
+        modal.find("#response").html(recipient);
+    }); 
+</script>
 
 
 
