@@ -12,6 +12,8 @@ Debut es un framework PHP super simple para los que quieren MVC fácil. Debut di
 <li>Uso de motor de plantillas <i>Twig</i> para las vistas</li>
 <li>Manejador de dependencias <i>Composer</i> integrado</li>
 <li>Código claro y comentado</li>
+<li>Control de errores para modo desarrollo y modo producción</li>
+<li>Cache propio para las vistas</li>
 <li>Debut no se ha creado a partir de otro framework, pero se inspira en <a href="https://github.com/laravel/laravel">Laravel</a> ;)</li>
 </ul>
 
@@ -32,3 +34,12 @@ Los datos por defecto del servidor son los siguientes:
 * Memoria: <code>1024 MB</code>
 * CPUs: <code>1</code>
 * Ip: <code>192.168.56.101</code>
+
+Si no usas Vagrant, puedes instalar Debut y su base de datos manualmente en tu servidor si cumple con los requerimientos de la aplicación.
+
+## Post-Instalación
+Una vez tengamos Debut corriendo en nuestro servidor, debemos establecer la configuración que tendrá nuestro framework. El archivo de configuración que usa Debut es el <b>config.ini.example</b>, el cual debemos renombrarlo sin el .example y establecer nuestra configuración propia.
+
+Es necesario dar permisos a la carpeta "storage" y a sus subcarpetas: <code>$ chmod 777 -R storage</code>
+
+¡Extra! (opcional): En principio el cache para <i>Twig</i> está desactivado, si queremos usar cache para las vistas debemos descomentar en la clase View en el método template la línea que establece el directorio para la cache. ¡Genial para el modo producción!
