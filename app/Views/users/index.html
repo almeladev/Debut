@@ -7,7 +7,10 @@
 <a href="/" class="btn btn-warning">Home</a>
 <a href="/logout" class="btn btn-danger">Cerrar sesión</a>
 
-<h1>Usuarios <a href="/users/create" class="btn btn-info">Crear</a></h1>
+<h1>Usuarios <button type="button" class="btn btn-primary" data-toggle="modal" 
+                  data-target="#Modal" 
+                  data-whatever="Crear usuario"
+                  data-action="/users/store">Crear</button></h1>
 
 <table class="table table-striped table-bordered">
   <thead>
@@ -24,10 +27,12 @@
       <td>{{ user.email }}</td>
       <td class="text-center">
         <form action="/users/delete/{{ user.id }}" method="post">
-          <a data-id="{{ user.id }}" 
-             data-name="{{ user.name }}"
-             data-email="{{ user.email }}"
-             title="Add this item" class="open-editUserDialog btn btn-primary" href="#editUserDialog">Editar</a>
+          <button type="button" class="btn btn-primary" data-toggle="modal" 
+                  data-target="#Modal" 
+                  data-whatever="Editar usuario"
+                  data-name="{{ user.name }}"
+                  data-email="{{ user.email }}"
+                  data-action="/users/update/{{ user.id }}">Editar</button>
           <button type="submit" class="btn btn-danger">Borrar</button>
         </form>
       </td>
@@ -36,13 +41,13 @@
   </tbody>
 </table>
 
-<!-- Modal HTML -->
-<div class="modal fade" id="editUserDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<!-- // Modales -->
+<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel">
+  <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">Editar usuario</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">New message</h4>
       </div>
       <form action="" method="POST" class="form-horizontal">
           <div class="modal-body">
@@ -68,32 +73,38 @@
           <div class="modal-footer">
           <div class="form-group">
             <div class="col-lg-10 col-lg-offset-2">
-              <button data-dismiss="modal" class="btn btn-default">Cancelar</button>
-              <button type="submit" class="btn btn-primary">Modificar usuario</button>
+              <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
+              <button id="response" type="submit" class="btn btn-primary"></button>
             </div>
           </div>
           </div>
       </form>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+    </div>
+  </div>
+</div>
 
-<!-- // modales -->
 <script>
-    $(document).on("click", ".open-editUserDialog", function (e) {
-	e.preventDefault();
-	var _self = $(this);
-	var id = _self.data('id');
-        var name = _self.data('name');
-        var email = _self.data('email');
+    
+    // Simple script para crear modales con bootstrap.js
+    $('#Modal').on('show.bs.modal', function (event) {
         
-        $("form").attr("action", "/users/update/" + id);
-        $("#userName").val(name);
-        $("#userEmail").val(email);
+        // Button that triggered the modal
+        var button = $(event.relatedTarget);
+        // variables
+        var recipient = button.data('whatever');
+        var action = button.data('action');
+        var name = button.data('name');
+        var email = button.data('email');
         
-	$(_self.attr('href')).modal('show');
-});
+        var modal = $(this)
+        // Mensaje de la modal
+        modal.find('.modal-title').text(recipient)
+        modal.find("form").attr("action", action);
+        // Datos pasados por Twig
+        modal.find("#userName").val(name);
+        modal.find("#userEmail").val(email);
+        modal.find("#response").html(recipient);
+    }); 
 </script>
 
 {% endblock %}
