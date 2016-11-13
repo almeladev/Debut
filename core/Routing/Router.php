@@ -1,8 +1,6 @@
 <?php
 
-namespace core\Router;
-
-require_once '../app/routes.php';
+namespace core\Routing;
 
 class Router
 {
@@ -50,7 +48,7 @@ class Router
      */
     private static function add($path, $callable, $method)
     {
-        $route                     = new Route($path, $callable);
+        $route = new Route($path, $callable);
         static::$routes[$method][] = $route;
 
         return $route;
@@ -70,19 +68,6 @@ class Router
         }
 
         return $url;
-    }
-
-    /**
-     * Redirreciona a la ruta elegida
-     *
-     * @param string $path La ruta
-     *
-     * @return void
-     */
-    public static function redirect($path)
-    {
-        header("Location: $path");
-        exit;
     }
 
     /**

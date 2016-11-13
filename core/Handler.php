@@ -2,9 +2,22 @@
 
 namespace core;
 
-class ErrorHandler
+class Handler
 {
-
+    
+    /**
+     * Registra los errores ocurridos en la aplicación
+     * 
+     * @return void
+     */
+    public static function register()
+    {
+        error_reporting(E_ALL);
+        
+        set_error_handler(__CLASS__ . "::errorHandler");
+        set_exception_handler(__CLASS__ . "::exceptionHandler");
+    }
+    
     /**
      * Convierte todos los errores en excepciones.
      *
@@ -38,10 +51,10 @@ class ErrorHandler
         }
         http_response_code($code);
 
-        // Archivo de configuración
-        require_once '../app/config.php';
-
-        if ($debug_mode) {
+        // Archivo de configuración de la aplicación
+        $app_config = (require_once ROOT . 'config/app.php');
+       
+        if ($app_config['debug']) {
             echo "<h1>¡Error!</h1>";
             echo "<p>Clase de excepción: '" . get_class($exception) . "'</p>";
             echo "<p>Mensaje: '" . $exception->getMessage() . "'</p>";
@@ -49,13 +62,7 @@ class ErrorHandler
             echo "<p>Excepción arrojada en el archivo '" . $exception->getFile() . "' en la línea " . $exception->getLine() . "</p>";
         } else {
 
-            // Si no existe el directorio lo crea
-            $dir = dirname(__DIR__) . '/logs';
-            if (!file_exists($dir)) {
-                mkdir($dir, 0777, true);
-            }
-
-            $log = dirname(__DIR__) . '/logs/' . date('Y-m-d') . '.txt';
+            $log = ROOT . 'storage/logs/' . date('Y-m-d') . '.txt';
             ini_set('error_log', $log);
 
             $message = "Clase de excepción: '" . get_class($exception) . "'";
@@ -64,6 +71,7 @@ class ErrorHandler
             $message .= "\nExcepción arrojada en el archivo '" . $exception->getFile() . "' en la línea " . $exception->getLine();
 
             error_log($message);
+            
             View::template("errors/$code.html"); // Directorio de los archivos de registro
         }
     }

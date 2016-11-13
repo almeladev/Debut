@@ -1,6 +1,6 @@
 <?php
 
-use core\Router\Router;
+use core\Routing\Router;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,7 +12,7 @@ use core\Router\Router;
 | acceder a un controlador y sus diferentes acciones. También es posible
 | asociar una ruta con una función anónima
 |
- */
+*/
 
 Router::get('/welcome', function () {
     echo "<h1>Welcome :)</h1>";
@@ -20,6 +20,7 @@ Router::get('/welcome', function () {
 
 // Home
 Router::get('/', 'HomeController@index');
+Router::get('/menu', 'HomeController@menu');
 
 // login
 Router::get('/login', 'AuthController@getLogin');
@@ -27,8 +28,10 @@ Router::post('/login', 'AuthController@postLogin');
 // logout
 Router::get('/logout', 'AuthController@getlogout');
 
-// CRUD de usuarios.
-Router::get('/users/', 'UserController@index'); // READ
+/**
+ *  CRUD de usuarios.
+ */
+Router::get('/users', 'UserController@index'); // READ
 
 Router::get('/users/create', 'UserController@create'); // CREATE
 Router::post('/users/store', 'UserController@store');
@@ -36,4 +39,17 @@ Router::post('/users/store', 'UserController@store');
 Router::get('/users/edit/{id}', 'UserController@edit'); // UPDATE
 Router::post('/users/update/{id}', 'UserController@update');
 
-Router::post('/users/delete/{id}', 'UserController@delete'); // DELETE
+Router::post('/users/delete/{id}', 'UserController@destroy'); // DELETE
+
+/**
+ * CRUD de posts
+ */
+Router::get('/posts', 'PostController@index'); // READ
+
+Router::get('/posts/create', 'PostController@create'); // CREATE
+Router::post('/posts/store', 'PostController@store');
+
+Router::get('/posts/edit/{id}', 'PostController@edit'); // UPDATE
+Router::post('/posts/update/{id}', 'PostController@update');
+
+Router::post('/posts/delete/{id}', 'PostController@destroy'); // DELETE

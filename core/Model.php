@@ -14,8 +14,15 @@ abstract class Model
      * Campo identificador
      * @var string
      */
-    protected $id = 'id';
+    protected $primaryKey = 'id';
 
+    /**
+     * Campos de la base de datos que
+     * pueden ser asignados
+     * @var mixed
+     */
+    protected $fillable;
+        
     /**
      * Todos los registros de la base de
      * datos
@@ -27,26 +34,95 @@ abstract class Model
         $model = new static();
 
         $sql    = 'SELECT * FROM ' . $model->table;
-        $result = Database::query($sql);
+        $result = DB::query($sql);
 
         return $result;
     }
 
     /**
-     * El registro con identificador elegido
+     * El modelo con identificador elegido
      *
      * @param  int $id El identificador
      *
-     * @return array
+     * @return Object
      */
     public static function find($id)
     {
         $model = new static();
+        
+        $sql = 'SELECT * FROM ' . $model->table . ' WHERE ' . $model->primaryKey . ' = :id';
+        $params  = ['id' => $id];
+        $query = DB::query($sql, $params);
+        
+        // Obtenemos los datos del objeto en un array para tratarlos en la vista
+        $model->id = $id;
+        foreach ($model->fillable as $field) {
+            $model->$field = $query[$field];
+        }
+        
+        return $model;
+    }
+    
+    /**
+     * Guarda los datos del modelo en la
+     * base de datos
+     *
+     * @return boolean
+     */
+    public function save()
+    {
+        $model = new static();
+        
+        $fields = implode(', ', $model->fillable);
+        $statements = preg_replace('#([\w]+)#', ':${1}', $fields);
+        
+        $sql = "INSERT INTO $model->table ($fields)
+                VALUES ($statements)";
+        
+        foreach ($this->fillable as $field) {
+            $params[$field] = $this->$field;
+        }
 
-        $sql    = 'SELECT * FROM ' . $model->table . ' WHERE ' . $model->id . ' = :id';
-        $params = ['id' => $id];
-        $result = Database::query($sql, $params);
+        $query = DB::query($sql, $params, false);
+        return ($query) ? true : false;
+    }
+    
+    /**
+     * Modifica los datos del modelo en la
+     * base de datos
+     *
+     * @return boolean
+     */
+    public function update()
+    {
+        $model = new static();
+        
+        $fields = implode(', ', $model->fillable);
+        $statements = preg_replace('#([\w]+)#', '${1}=:${1}', $fields);
+        
+        $sql = "UPDATE $model->table SET $statements WHERE id=" . $this->id;
 
-        return $result;
+        foreach ($this->fillable as $field) {
+            $params[$field] = $this->$field;
+        }
+        
+        $query = DB::query($sql, $params, false);
+        return ($query) ? true : false;
+    }
+    
+    /**
+     * Elimina los datos del modelo en la
+     * base de datos
+     *
+     * @return boolean
+     */
+    public function delete()
+    {
+        $model = new static();
+        
+        $sql = "DELETE FROM $model->table WHERE id=" . $this->id;
+
+        $query = DB::query($sql, null, false);
+        return ($query) ? true : false;
     }
 }

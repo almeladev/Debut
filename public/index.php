@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Debut - Framework PHP para los que quieren MVC fácil.
+ * Debut - Framework PHP extremadamente simple para los que quieren MVC fácil.
  *
  * @package  Debut
  * @author   Daniel Martínez <danielmartinezalmela@gmail.com>
@@ -9,14 +9,20 @@
  * @license  http://opensource.org/licenses/MIT MIT License
  */
 
-// Autocarga de clases con Composer
-require_once '../vendor/autoload.php';
+// --------------------------------------------------------------
+// Define las rutas del framework
+// --------------------------------------------------------------
+define('ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR);
+define('APP', ROOT . 'app' . DIRECTORY_SEPARATOR);
+define('CORE', ROOT . 'core' . DIRECTORY_SEPARATOR);
 
-// Controlador de errores
-error_reporting(E_ALL);
-set_error_handler('core\ErrorHandler::errorHandler');
-set_exception_handler('core\ErrorHandler::exceptionHandler');
+// --------------------------------------------------------------
+// Autoload
+// --------------------------------------------------------------
+require_once ROOT . 'vendor/autoload.php';
 
-// Inicio de la app
-$router = new core\Router\Router();
-$router->run();
+// --------------------------------------------------------------
+// Arranca la aplicación
+// --------------------------------------------------------------
+$app = new core\Kernel();
+$app->run();

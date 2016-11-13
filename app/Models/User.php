@@ -2,8 +2,8 @@
 
 namespace app\Models;
 
-use core\Database;
 use core\Model;
+use core\DB;
 
 class User extends Model
 {
@@ -20,69 +20,24 @@ class User extends Model
      *
      * @var mixed
      */
-    public $email, $name, $lastname, $username, $password, $age;
-
+    protected $fillable = [
+        'name', 'email', 'password',
+    ];
+    
     /**
-     * Guarda los datos del nuevo usuario en la
-     * base de datos
-     *
-     * @return void
+     * Relacion con la tabla posts. Obtiene
+     * Todos los posts con su autor
+     * 
+     * @return array
      */
-    public function save()
+    public static function posts()
     {
-        $sql = "INSERT INTO $this->table (email, name, lastname, username, password, age)
-                VALUES (:email, :name, :lastname, :username, :password, :age)";
-
-        $params = [
-            'email'    => $this->email,
-            'name'     => $this->name,
-            'lastname' => $this->lastname,
-            'username' => $this->username,
-            'password' => $this->password,
-            'age'      => $this->age,
-        ];
-
-        Database::query($sql, $params, false);
+        $sql = 'SELECT posts.*, users.name as author ' 
+             . 'FROM users ' 
+             . 'INNER JOIN posts on users.id = posts.user_id';
+        
+        $result = DB::query($sql);
+        return $result;
     }
 
-    /**
-     * Modifica los datos del usuario en la
-     * base de datos
-     *
-     * @param  int $id El identificador
-     *
-     * @return void
-     */
-    public function modify($id)
-    {
-        $sql = "UPDATE $this->table
-                SET email=:email, name=:name, lastname=:lastname, username=:username, password=:password, age=:age
-                WHERE id=" . $id;
-
-        $params = [
-            'email'    => $this->email,
-            'name'     => $this->name,
-            'lastname' => $this->lastname,
-            'username' => $this->username,
-            'password' => $this->password,
-            'age'      => $this->age,
-        ];
-
-        Database::query($sql, $params, false);
-    }
-
-    /**
-     * Elimina los datos del usuario en la
-     * base de datos
-     *
-     * @param  int $id El identificador
-     *
-     * @return void
-     */
-    public function destroy($id)
-    {
-        $sql = "DELETE FROM $this->table WHERE id=" . $id;
-
-        Database::query($sql, null, false);
-    }
 }

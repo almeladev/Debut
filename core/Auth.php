@@ -36,7 +36,7 @@ class Auth
             'password' => md5($password),
         ];
 
-        $result = Database::query($sql, $params);
+        $result = DB::query($sql, $params);
 
         if ($result) {
             session_start();
@@ -57,4 +57,27 @@ class Auth
         session_start();
         session_destroy();
     }
+    
+    /**
+     * Datos del usuario que tiene sesión activa
+     * 
+     * @return object
+     */
+    public static function user()
+    {
+        session_start();
+        
+        if ($_SESSION["user"]) {
+            
+            $sql = "SELECT * FROM users WHERE email= :email";
+            $params = ['email' => $_SESSION["user"]];
+            
+            $result = DB::query($sql, $params);
+            
+            // Obtiene el array y lo convierte a objecto
+            return (object) $result;
+        }
+        return false;
+    }
+    
 }

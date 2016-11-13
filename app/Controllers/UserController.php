@@ -5,11 +5,12 @@ namespace app\Controllers;
 use app\Models\User;
 use core\Auth;
 use core\Controller;
-use core\Router\Router;
 use core\View;
+
 
 class UserController extends Controller
 {
+
     /**
      * Muestra la lista de usuarios
      *
@@ -26,8 +27,9 @@ class UserController extends Controller
             ]);
 
         } else {
-            Router::redirect('/');
+            return redirect('/');
         }
+        
     }
 
     /**
@@ -49,19 +51,18 @@ class UserController extends Controller
      */
     public function store()
     {
-        $user = new User();
-
+        $user = new User();     
+        
         // Recuerda validar
-        $user->email    = $_POST["email"];
-        $user->name     = $_POST["name"];
-        $user->lastname = $_POST["lastname"];
-        $user->username = $_POST["username"];
-        $user->password = md5($_POST["pass"]);
-        $user->age      = $_POST["age"];
-
-        $user->save();
-
-        Router::redirect('/users');
+        $user->name     = $this->request->input('name');
+        $user->email    = $this->request->input('email');
+        $user->password = md5($this->request->input('pass'));
+        
+        if ($user->save()) {
+            return redirect('/users');
+        } else {
+            throw new \Exception('No se ha podido crear el usuario', 500);
+        }
     }
 
     /**
@@ -75,7 +76,7 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
-
+        
         View::template('users/edit.html', [
             'user' => $user,
         ]);
@@ -91,19 +92,21 @@ class UserController extends Controller
      */
     public function update($id)
     {
-        $user = new User();
-
+        $user = User::find($id);
+        
         // Recuerda validar
-        $user->email    = $_POST["email"];
-        $user->name     = $_POST["name"];
-        $user->lastname = (empty($_POST['lastname'])) ? null : $_POST['lastname'];
-        $user->username = $_POST["username"];
-        $user->password = md5($_POST["pass"]);
-        $user->age      = (empty($_POST['age'])) ? null : $_POST['age'];
+        $user->name     = $this->request->input('name');
+        $user->email    = $this->request->input('email');
+        if (! empty($this->request->input('pass'))) {
+            $user->password = md5($this->request->input('pass'));
+        }
+        
+        if ($user->update()) {
+            return redirect('/users');
+        } else {
+            throw new \Exception('No se ha podido actualizar el usuario', 500);
+        }
 
-        $user->modify($id);
-
-        Router::redirect('/users');
     }
 
     /**
@@ -113,11 +116,14 @@ class UserController extends Controller
      *
      * @return void
      */
-    public function delete($id)
+    public function destroy($id)
     {
-        $user = new User();
-        $user->destroy($id);
-
-        Router::redirect('/users');
+        $user = User::find($id);
+        
+        if ($user->delete()) {
+            return redirect('/users');
+        } else {
+            throw new \Exception('No se ha podido borrar el usuario', 500);
+        }
     }
 }
