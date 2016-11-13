@@ -97,7 +97,9 @@ class UserController extends Controller
         // Recuerda validar
         $user->name     = $this->request->input('name');
         $user->email    = $this->request->input('email');
-        $user->password = md5($this->request->input('pass'));
+        if (! empty($this->request->input('pass'))) {
+            $user->password = md5($this->request->input('pass'));
+        }
         
         if ($user->update()) {
             return redirect('/users');

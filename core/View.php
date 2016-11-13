@@ -44,7 +44,7 @@ class View
         
         // Añadir cache para optimizar el renderizado de las vistas ya procesadas (necesita permisos)
         $twig = new \Twig_Environment($loader, array(
-            'cache' => ROOT . 'storage/cache',
+            //'cache' => ROOT . 'storage/cache',
         ));
         
         echo $twig->render($template, $args);
