@@ -48,3 +48,6 @@ Es necesario dar permisos a la carpeta "storage" y a sus subcarpetas: <code>$ ch
 ));
 </code></pre>
 ¡Genial para el modo producción!
+
+## Licencia
+Debut se encuentra bajo una licencia MIT. Eres libre de modificar y adaptar el código para uso personal o comercial.
