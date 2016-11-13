@@ -15,10 +15,11 @@ Debut es un framework PHP super simple para los que quieren MVC fácil. Debut di
 <li>Debut no se ha creado a partir de otro framework, pero se inspira en <a href="https://github.com/laravel/laravel">Laravel</a> ;)</li>
 </ul>
 
-## ¿Necesito?
+## ¿Necesito? (La instalación con Vagrant se encarga de todo)
 <ul>
 <li>Recomendado: PHP 5.6 y PHP 7.0</li>
 <li>MySQL</li>
 <li>Apache2</li>
-<li>Módulo reescritura para urls amigables activado (mod_rewrite)</li>
+<li>Módulo reescritura para urls amigables (mod_rewrite) activado</li>
+<li>Composer</li>
 </ul>
