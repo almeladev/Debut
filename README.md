@@ -38,9 +38,9 @@ Los datos por defecto del servidor son los siguientes:
 Si no usas Vagrant, puedes instalar Debut y su base de datos manualmente en tu servidor si cumple con los requerimientos de la aplicación.
 
 ## Post-Instalación
-Una vez tengamos Debut corriendo en nuestro servidor, debemos establecer la configuración que tendrá nuestro framework. El archivo de configuración que usa Debut es el <b>config.ini.example</b>, el cual debemos renombrarlo sin el .example y establecer nuestra configuración propia.
+Una vez tengamos Debut corriendo en nuestro servidor, debemos establecer la configuración que tendrá nuestro framework. El archivo de configuración que usa Debut es el <b>config.ini.example</b>, el cual debemos renombrarlo sin el .example y establecer nuestra configuración propia. La que viene por defecto es la que usa la máquina virtual.
 
-Es necesario dar permisos a la carpeta "storage" y a sus subcarpetas: <code>$ chmod 777 -R storage</code>
+Es necesario dar permisos a la carpeta "storage" y a sus subcarpetas: <code>$ chmod 777 -R storage/</code>
 
 ¡Extra! (opcional): En principio el cache para <i>Twig</i> está desactivado, si queremos usar cache para las vistas debemos descomentar en la clase View en el método template la línea que establece el directorio para la cache. 
 <pre><code>$twig = new \Twig_Environment($loader, array(
