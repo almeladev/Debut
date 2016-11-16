@@ -20,10 +20,10 @@ CREATE TABLE IF NOT EXISTS posts (
   id int NOT NULL AUTO_INCREMENT,
   title varchar(255) NOT NULL,
   content text NOT NULL,
-  user_id int NOT NULL,
+  user_id int DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY (title),
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
 
