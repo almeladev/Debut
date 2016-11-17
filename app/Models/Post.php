@@ -14,12 +14,11 @@ class Post extends Model
     protected $table = 'posts';
 
     /**
-     * Campos de la base de datos que
-     * pueden ser asignados
+     * Campos de la base de datos
      *
      * @var mixed
      */
-    protected $fillable = [
+    protected $fields = [
         'title', 'content', 'user_id',
     ];
 

@@ -15,12 +15,11 @@ class User extends Model
     protected $table = 'users';
 
     /**
-     * Campos de la base de datos que
-     * pueden ser asignados
+     * Campos de la base de datos
      *
      * @var mixed
      */
-    protected $fillable = [
+    protected $fields = [
         'name', 'email', 'password',
     ];
     

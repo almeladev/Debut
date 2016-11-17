@@ -17,11 +17,10 @@ abstract class Model
     protected $primaryKey = 'id';
 
     /**
-     * Campos de la base de datos que
-     * pueden ser asignados
+     * Campos de la base de datos
      * @var mixed
      */
-    protected $fillable;
+    protected $fields;
         
     /**
      * Todos los registros de la base de
@@ -56,7 +55,7 @@ abstract class Model
         
         // Obtenemos los datos del objeto en un array para tratarlos en la vista
         $model->id = $id;
-        foreach ($model->fillable as $field) {
+        foreach ($model->fields as $field) {
             $model->$field = $query[$field];
         }
         
@@ -73,13 +72,13 @@ abstract class Model
     {
         $model = new static();
         
-        $fields = implode(', ', $model->fillable);
+        $fields = implode(', ', $model->fields);
         $statements = preg_replace('#([\w]+)#', ':${1}', $fields);
         
         $sql = "INSERT INTO $model->table ($fields)
                 VALUES ($statements)";
         
-        foreach ($this->fillable as $field) {
+        foreach ($this->fields as $field) {
             $params[$field] = $this->$field;
         }
 
@@ -97,12 +96,12 @@ abstract class Model
     {
         $model = new static();
         
-        $fields = implode(', ', $model->fillable);
+        $fields = implode(', ', $model->fields);
         $statements = preg_replace('#([\w]+)#', '${1}=:${1}', $fields);
         
         $sql = "UPDATE $model->table SET $statements WHERE id=" . $this->id;
 
-        foreach ($this->fillable as $field) {
+        foreach ($this->fields as $field) {
             $params[$field] = $this->$field;
         }
         
