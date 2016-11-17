@@ -26,6 +26,7 @@ body {margin: 20px 0 20px 0;}
     .login-header {
         border-bottom: solid 1px #ccc;
         padding-bottom: 20px;
+        margin: 0 40px 0 40px;
     }
     .login-header a {float:right;}
     .login-header h4 {font-size: 2.1em;}
