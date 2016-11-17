@@ -72,7 +72,7 @@ class Handler
 
             error_log($message);
             
-            View::template("errors/$code.html"); // Directorio de los archivos de registro
+            View::template("errors/$code.twig.html"); // Directorio de los archivos de registro
         }
     }
 }

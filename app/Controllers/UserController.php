@@ -22,7 +22,7 @@ class UserController extends Controller
 
             $users = User::all();
 
-            View::template('users/index.html', [
+            View::template('users/index.twig.html', [
                 'users' => $users,
             ]);
 

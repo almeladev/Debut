@@ -23,7 +23,7 @@ class PostController extends Controller
             // Todos los posts de los usuarios
             $posts = User::posts();
 
-            View::template('posts/index.html', [
+            View::template('posts/index.twig.html', [
                 'posts' => $posts,
             ]);
 

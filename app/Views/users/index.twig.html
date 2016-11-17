@@ -1,41 +1,39 @@
-{% extends "base.html" %}
+{% extends "base.twig.html" %}
 
-{% block title %}Posts{% endblock %}
+{% block title %}Usuarios{% endblock %}
 
 {% block body %}
 
 <a href="/menu" class="btn btn-warning">Home</a>
-<a href="/users" class="btn btn-default">CRUD usuarios</a>
+<a href="/posts" class="btn btn-default ">CRUD posts</a>
 <a href="/logout" class="btn btn-danger">Cerrar sesión</a>
 
-<h1>Posts <button type="button" class="btn btn-primary" data-toggle="modal" 
+<h1>Usuarios <button type="button" class="btn btn-primary" data-toggle="modal" 
                   data-target="#Modal" 
-                  data-whatever="Crear post"
-                  data-action="/posts/store">Crear</button></h1>
+                  data-whatever="Crear usuario"
+                  data-action="/users/store">Crear</button></h1>
 
 <table class="table table-striped table-bordered">
   <thead>
     <tr>
-      <th>Título</th>
-      <th>Contenido</th>
-      <th>Autor</th>
+      <th>Nombre</th>
+      <th>Email</th>
       <th>Acciones</th>
     </tr>
   </thead>
   <tbody>
-  {% for post in posts %}
+  {% for user in users %}
     <tr>
-      <td>{{ post.title }}</td>
-      <td>{{ post.content }}</td>
-      <td>{{ post.author }}</td>
+      <td>{{ user.name }}</td>
+      <td>{{ user.email }}</td>
       <td class="text-center">
-        <form action="/posts/delete/{{ post.id }}" method="post">
+        <form action="/users/delete/{{ user.id }}" method="post">
           <button type="button" class="btn btn-primary" data-toggle="modal" 
                   data-target="#Modal" 
-                  data-whatever="Editar post"
-                  data-title="{{ post.title }}"
-                  data-content="{{ post.content }}"
-                  data-action="/posts/update/{{ post.id }}">Editar</button>
+                  data-whatever="Editar usuario"
+                  data-name="{{ user.name }}"
+                  data-email="{{ user.email }}"
+                  data-action="/users/update/{{ user.id }}">Editar</button>
           <button type="submit" class="btn btn-danger">Borrar</button>
         </form>
       </td>
@@ -55,16 +53,22 @@
       <form action="" method="POST" class="form-horizontal">
           <div class="modal-body">
             <div class="form-group">
-            <label class="col-lg-2 control-label">Título</label>
+            <label class="col-lg-2 control-label">Nombre</label>
             <div class="col-lg-10">
-                <input type="text" class="form-control" placeholder="Escribe un título..." name="title" id="postTitle" value="" />
+              <input type="text" class="form-control" name="name" placeholder="Escribe un nombre..." id="userName" value="" />
             </div>
           </div>
           <div class="form-group">
-            <label class="col-lg-2 control-label">Contenido</label>
+            <label class="col-lg-2 control-label">Email</label>
             <div class="col-lg-10">
-                <textarea class="form-control" rows="3" name="content" placeholder="Escribe el contenido del post..." id="postContent"></textarea>
-              </div>
+              <input type="text" class="form-control" name="email" placeholder="Escribe un email..." id="userEmail" value="" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Contraseña</label>
+            <div class="col-lg-10">
+                <input type="password" class="form-control" name="pass" value="">
+            </div>
           </div>
           </div>
           <div class="modal-footer">
@@ -90,20 +94,18 @@
         // variables
         var recipient = button.data('whatever');
         var action = button.data('action');
-        var title = button.data('title');
-        var content = button.data('content');
+        var name = button.data('name');
+        var email = button.data('email');
         
         var modal = $(this)
         // Mensaje de la modal
         modal.find('.modal-title').text(recipient)
         modal.find("form").attr("action", action);
         // Datos pasados por Twig
-        modal.find("#postTitle").val(title);
-        modal.find("#postContent").val(content);
+        modal.find("#userName").val(name);
+        modal.find("#userEmail").val(email);
         modal.find("#response").html(recipient);
     }); 
 </script>
-
-
 
 {% endblock %}

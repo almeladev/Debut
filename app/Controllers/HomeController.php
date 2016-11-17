@@ -14,7 +14,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        View::template('index.html', [
+        View::template('index.twig.html', [
             'title' => 'Debut framework',
         ]);
     }
@@ -26,7 +26,7 @@ class HomeController extends Controller
      */
     public function menu()
     {
-        View::template('menu.html', [
+        View::template('menu.twig.html', [
             'title' => 'Menú',
         ]);
     }
