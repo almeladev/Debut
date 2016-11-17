@@ -33,7 +33,7 @@ class User extends Model
     {
         $sql = 'SELECT posts.*, users.name as author ' 
              . 'FROM users ' 
-             . 'INNER JOIN posts on users.id = posts.user_id';
+             . 'RIGHT JOIN posts on users.id = posts.user_id';
         
         $result = DB::query($sql);
         return $result;
