@@ -1,4 +1,14 @@
 {
+    "name": "danmnez/debut",
+    "description": "Framework PHP para los que quieren MVC fácil",
+    "keywords": ["framework", "debut", "mvc"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Daniel Martínez",
+            "email": "danielmartinezalmela@gmail.com"
+        }
+    ],
     "require": {
         "twig/twig": "~1.0"
     },
