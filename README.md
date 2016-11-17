@@ -1,5 +1,5 @@
 # Debut
-Debut es un framework PHP super simple para los que quieren MVC fácil. Debut dispone de un <i>core</i> con las clases y métodos necesarios para empezar a trabajar. Puedes crear rutas para tu aplicación y hacer cualquier CRUD de una forma rápida y sencilla. ¡Además su instalación es muy fácil con Vagrant!
+Debut es un framework PHP super simple para los que quieren MVC fácil. Debut dispone de un <i>core</i> con las clases y métodos necesarios para empezar a trabajar en tu próxima aplicación web. Puedes crear rutas para tu aplicación y hacer cualquier CRUD de una forma rápida y sencilla. ¡Además su instalación es muy fácil con Vagrant!
 
 ## Características
 <ul>
