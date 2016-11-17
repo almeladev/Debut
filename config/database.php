@@ -33,7 +33,6 @@ return [
         
 //        'pgsql' => [
 //            'driver' => 'pgsql',
-//            'host'   => env('DB_HOST', 'localhost'),
 //            'host'     => config('DB_HOST', 'localhost'),
 //            'database' => config('DB_DATABASE', ''),
 //            'username' => config('DB_USERNAME', ''),
