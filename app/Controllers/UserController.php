@@ -33,17 +33,6 @@ class UserController extends Controller
     }
 
     /**
-     * Muestra un formulario para crear un nuevo
-     * usuario
-     *
-     * @return void
-     */
-    public function create()
-    {
-        View::template('users/create.html');
-    }
-
-    /**
      * Obtiene los datos de un formulario y crea el
      * usuario
      *
@@ -63,23 +52,6 @@ class UserController extends Controller
         } else {
             throw new \Exception('No se ha podido crear el usuario', 500);
         }
-    }
-
-    /**
-     * Muestra un formulario con los datos del
-     * usuario indicado
-     *
-     * @param  int $id El identificador
-     *
-     * @return void
-     */
-    public function edit($id)
-    {
-        $user = User::find($id);
-        
-        View::template('users/edit.html', [
-            'user' => $user,
-        ]);
     }
 
     /**

@@ -31,17 +31,6 @@ class PostController extends Controller
             return redirect('/');
         }
     }
-    
-    /**
-     * Muestra un formulario para crear un nuevo
-     * post
-     *
-     * @return void
-     */
-    public function create()
-    {
-        View::template('posts/create.html');
-    }
 
     /**
      * Obtiene los datos de un formulario y crea el
@@ -63,23 +52,6 @@ class PostController extends Controller
         } else {
             throw new \Exception('No se ha podido crear el post', 500);
         }
-    }
-
-    /**
-     * Muestra un formulario con los datos del
-     * post indicado
-     *
-     * @param  int $id El identificador
-     *
-     * @return void
-     */
-    public function edit($id)
-    {
-        $post = Post::find($id);
-        
-        View::template('posts/edit.html', [
-            'post' => $post,
-        ]);
     }
 
     /**
