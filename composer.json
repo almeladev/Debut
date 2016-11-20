@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "twig/twig": "~1.0"
+        "twig/twig": "~1.0",
+        "twig/extensions": "^1.4"
     },
     "autoload": {
         "psr-4": {

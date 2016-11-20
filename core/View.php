@@ -47,6 +47,9 @@ class View
             //'cache' => ROOT . 'storage/cache',
         ));
         
+        // Añade extensiones útiles para el motor de plantillas => http://twig.sensiolabs.org/doc/extensions/index.html#extensions-install
+        $twig->addExtension(new \Twig_Extensions_Extension_Text());
+        
         echo $twig->render($template, $args);
     }
 }
