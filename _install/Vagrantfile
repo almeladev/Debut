@@ -14,8 +14,8 @@ Vagrant.configure(VERSION) do |config|
     v.cpus = 1
   end
 
-  # Caja (Por defecto: Ubuntu 14.04).
-  config.vm.box = "ubuntu/trusty64"
+  # Caja (Por defecto: Ubuntu 16.04).
+  config.vm.box = "ubuntu/xenial64"
   # Redireccionamiento de puertos.
   config.vm.network "forwarded_port", guest: 80, host: 8080
   # IP privada.
