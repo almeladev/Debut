@@ -33,13 +33,13 @@ abstract class Model
         $model = new static();
 
         $sql    = 'SELECT * FROM ' . $model->table;
-        $result = DB::query($sql);
+        $query = DB::query($sql);
 
-        return $result;
+        return $query;
     }
 
     /**
-     * El modelo con identificador elegido
+     * El registro con identificador elegido
      *
      * @param  int $id El identificador
      *
@@ -60,6 +60,35 @@ abstract class Model
         }
         
         return $model;
+    }
+    
+    /**
+     * Obtiene los registros dada una condición
+     * 
+     * @param string $column   La columna de la tabla
+     * @param string $operator El operador de la condición
+     * @param mixed  $value    El valor de la condición
+     * 
+     * @return array o Object
+    */
+    public static function where($column, $operator, $value)
+    {
+        $model = new static();
+        
+        $sql = 'SELECT * FROM ' . $model->table . ' WHERE ' . $column . $operator . ':value';
+        $params  = ['value' => $value];
+        $query = DB::query($sql, $params);
+        
+        // En el caso de que devuelve un único resultado
+        if (count($query) == 1) {
+            // Obtenemos los datos del objeto en un array para tratarlos en la vista
+            $model->id = $query[0]['id'];
+            foreach ($model->fields as $field) {
+                $model->$field = $query[0][$field];
+            }
+            return $model;
+        } 
+        return $query;
     }
     
     /**
