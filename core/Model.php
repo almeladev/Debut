@@ -21,7 +21,13 @@ abstract class Model
      * @var mixed
      */
     protected $fields;
-        
+    
+    /**
+     * Consulta a la base de datos
+     * @var array
+     */
+    protected static $query = [];
+    
     /**
      * Todos los registros de la base de
      * datos
@@ -56,7 +62,7 @@ abstract class Model
         // Obtenemos los datos del objeto en un array para tratarlos en la vista
         $model->id = $id;
         foreach ($model->fields as $field) {
-            $model->$field = $query[$field];
+            $model->$field = $query[0][$field];
         }
         
         return $model;
@@ -69,26 +75,17 @@ abstract class Model
      * @param string $operator El operador de la condición
      * @param mixed  $value    El valor de la condición
      * 
-     * @return array o Object
-    */
+     * @return array
+     */
     public static function where($column, $operator, $value)
     {
         $model = new static();
         
         $sql = 'SELECT * FROM ' . $model->table . ' WHERE ' . $column . $operator . ':value';
         $params  = ['value' => $value];
-        $query = DB::query($sql, $params);
+        static::$query = ['sql' => $sql, 'params' => $params];
         
-        // En el caso de que devuelve un único resultado
-        if (count($query) == 1) {
-            // Obtenemos los datos del objeto en un array para tratarlos en la vista
-            $model->id = $query[0]['id'];
-            foreach ($model->fields as $field) {
-                $model->$field = $query[0][$field];
-            }
-            return $model;
-        } 
-        return $query;
+        return new static;
     }
     
     /**
@@ -152,5 +149,18 @@ abstract class Model
 
         $query = DB::query($sql, null, false);
         return ($query) ? true : false;
+    }
+    
+    /**
+     * Obtiene los datos de una consulta
+     * 
+     * @return array
+     */
+    public function get()
+    {
+        $sql    = static::$query['sql'];
+        $params = static::$query['params'];
+        
+        return $result = DB::query($sql, $params);
     }
 }

@@ -21,7 +21,7 @@ class UserController extends Controller
         if (Auth::check()) {
 
             $users = User::all();
-
+  
             View::template('users/index.twig.html', [
                 'users' => $users,
             ]);
