@@ -22,6 +22,21 @@ abstract class Model
      */
     protected $fields;
     
+    
+    /**
+     * Constructor para los modelos
+     * 
+     * @param array $attributes
+     */
+    public function __construct($attributes = []) {  
+        // Permite instanciar el objeto con atributos desde un array asociativo
+        if (! empty($attributes)) {
+            foreach ($attributes as $key => $attribute) {
+                $this->$key = $attribute;
+            }
+        }
+    }
+
     /**
      * Todos los registros de la base de
      * datos

@@ -40,12 +40,17 @@ class PostController extends Controller
      */
     public function store()
     {
-        $post = new Post();     
+        
+        $post = new Post([
+            'title'   => $this->request->input('title'),
+            'content' => $this->request->input('content'),
+            'user_id' => Auth::user()->id
+        ]);     
         
         // Recuerda validar
-        $post->title   = $this->request->input('title');
-        $post->content = $this->request->input('content');
-        $post->user_id = Auth::user()->id;
+//        $post->title   = $this->request->input('title');
+//        $post->content = $this->request->input('content');
+//        $post->user_id = Auth::user()->id;
         
         if ($post->save()) {
             return redirect('/posts');
