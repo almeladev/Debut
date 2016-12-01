@@ -23,12 +23,6 @@ abstract class Model
     protected $fields;
     
     /**
-     * Consulta a la base de datos
-     * @var array
-     */
-    protected static $query = [];
-    
-    /**
      * Todos los registros de la base de
      * datos
      *
@@ -45,7 +39,8 @@ abstract class Model
     }
 
     /**
-     * El registro con identificador elegido
+     * Obtiene el registro con el identificador elegido como
+     * un objeto para luego hacer uso de las acciones save, update y delete
      *
      * @param  int $id El identificador
      *
@@ -62,30 +57,10 @@ abstract class Model
         // Obtenemos los datos del objeto en un array para tratarlos en la vista
         $model->id = $id;
         foreach ($model->fields as $field) {
-            $model->$field = $query[0][$field];
+            $model->$field = $query[$field];
         }
         
         return $model;
-    }
-    
-    /**
-     * Obtiene los registros dada una condición
-     * 
-     * @param string $column   La columna de la tabla
-     * @param string $operator El operador de la condición
-     * @param mixed  $value    El valor de la condición
-     * 
-     * @return array
-     */
-    public static function where($column, $operator, $value)
-    {
-        $model = new static();
-        
-        $sql = 'SELECT * FROM ' . $model->table . ' WHERE ' . $column . $operator . ':value';
-        $params  = ['value' => $value];
-        static::$query = ['sql' => $sql, 'params' => $params];
-        
-        return new static;
     }
     
     /**
@@ -149,18 +124,5 @@ abstract class Model
 
         $query = DB::query($sql, null, false);
         return ($query) ? true : false;
-    }
-    
-    /**
-     * Obtiene los datos de una consulta
-     * 
-     * @return array
-     */
-    public function get()
-    {
-        $sql    = static::$query['sql'];
-        $params = static::$query['params'];
-        
-        return $result = DB::query($sql, $params);
     }
 }

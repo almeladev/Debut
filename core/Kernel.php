@@ -33,6 +33,5 @@ class Kernel
         $router = new Router();
         $router->run();
     }
-    
 }
 
