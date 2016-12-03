@@ -31,14 +31,14 @@ return [
             'charset'  => config('DB_CHARSET', 'utf8'),
         ],
         
-//        'pgsql' => [
-//            'driver' => 'pgsql',
-//            'host'     => config('DB_HOST', 'localhost'),
-//            'database' => config('DB_DATABASE', ''),
-//            'username' => config('DB_USERNAME', ''),
-//            'password' => config('DB_PASSWORD', ''),
-//            'charset'  => config('DB_CHARSET', 'utf8'),
-//        ],
+        'pgsql' => [
+            'driver' => 'pgsql',
+            'host'     => config('DB_HOST', 'localhost'),
+            'database' => config('DB_DATABASE', ''),
+            'username' => config('DB_USERNAME', ''),
+            'password' => config('DB_PASSWORD', ''),
+            'charset'  => config('DB_CHARSET', 'utf8'),
+        ],
         
     ],
 

@@ -13,15 +13,6 @@ class User extends Model
      * @var string
      */
     protected $table = 'users';
-
-    /**
-     * Campos de la base de datos
-     *
-     * @var mixed
-     */
-    protected $fields = [
-        'name', 'email', 'password',
-    ];
     
     /**
      * Relacion con la tabla posts. Obtiene

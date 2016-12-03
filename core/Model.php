@@ -15,12 +15,6 @@ abstract class Model
      * @var string
      */
     protected $primaryKey = 'id';
-
-    /**
-     * Campos de la base de datos
-     * @var mixed
-     */
-    protected $fields;
     
     
     /**
@@ -47,7 +41,7 @@ abstract class Model
     {
         $model = new static();
 
-        $sql    = 'SELECT * FROM ' . $model->table;
+        $sql    = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
         $query = DB::query($sql);
 
         return $query;
@@ -69,9 +63,16 @@ abstract class Model
         $params  = ['id' => $id];
         $query = DB::query($sql, $params);
         
-        // Obtenemos los datos del objeto en un array para tratarlos en la vista
+        // Obtenemos la información de los campos
+        $schema = $model->getSchema();
+        $fields_name = [];
+        foreach ($schema as $info) {
+            $fields_name[] = $info['column_name'];
+        }
+        
+        // Obtenemos los datos del objeto
         $model->id = $id;
-        foreach ($model->fields as $field) {
+        foreach ($fields_name as $field) {
             $model->$field = $query[$field];
         }
         
@@ -88,13 +89,22 @@ abstract class Model
     {
         $model = new static();
         
-        $fields = implode(', ', $model->fields);
+        // Obtenemos la información de los campos, en concreto el nombre
+        $schema = $this->getSchema();
+        $fields_name = [];
+        foreach ($schema as $info) {
+            $fields_name[] = $info['column_name'];
+        }
+        
+        $fields = implode(', ', $fields_name);
         $statements = preg_replace('#([\w]+)#', ':${1}', $fields);
         
         $sql = "INSERT INTO $model->table ($fields)
                 VALUES ($statements)";
         
-        foreach ($this->fields as $field) {
+        // COMPROBAR SI EL CAMPO ES OBLIGATORIO, 
+        // SI ES OBLIGATORIO INDICARSELO AL USUARIO, SINO POR DEFECTO NULL (PROXIMA VERSION)
+        foreach ($fields_name as $field) {
             $params[$field] = $this->$field;
         }
 
@@ -112,12 +122,19 @@ abstract class Model
     {
         $model = new static();
         
-        $fields = implode(', ', $model->fields);
+        // Obtenemos la información de los campos, en concreto el nombre
+        $schema = $this->getSchema();
+        $fields_name = [];
+        foreach ($schema as $info) {
+            $fields_name[] = $info['column_name'];
+        }
+        
+        $fields = implode(', ', $fields_name);
         $statements = preg_replace('#([\w]+)#', '${1}=:${1}', $fields);
         
         $sql = "UPDATE $model->table SET $statements WHERE id=" . $this->id;
 
-        foreach ($this->fields as $field) {
+        foreach ($fields_name as $field) {
             $params[$field] = $this->$field;
         }
         
@@ -139,5 +156,34 @@ abstract class Model
 
         $query = DB::query($sql, null, false);
         return ($query) ? true : false;
+    }
+    
+    /**
+     * Obtiene información sobre los campos del modelo, la cual
+     * contiene el nombre del campo, el tipo, su longitud máxima
+     * y si es nulo
+     * 
+     * @return array
+     */
+    private function getSchema()
+    {
+        $model = new static();
+        
+        $database = config('DB_DATABASE');
+        
+        // REVISAR LA INFORMACIÓN REFERENTE A OTRAS VERSIONES
+        // http://dev.mysql.com/doc/refman/5.6/en/columns-table.html
+        // https://www.postgresql.org/docs/9.1/static/infoschema-columns.html 
+        $sql = "SELECT  column_name,
+                        data_type,
+                        character_maximum_length,
+                        is_nullable
+                FROM information_schema.columns 
+                WHERE   table_name='$model->table'
+                        AND table_schema='$database'
+                        AND column_name <> '$model->primaryKey'";
+        
+        $query = DB::query($sql);
+        return $query;
     }
 }

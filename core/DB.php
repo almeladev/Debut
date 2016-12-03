@@ -22,9 +22,11 @@ abstract class DB
         static $db = null;
 
         if ($db === null) {
+            // dsn de mysql -> http://php.net/manual/en/ref.pdo-mysql.connection.php
             $dsn = $db_config['driver'] . ':host=' . $db_config['host'] . ';dbname=' .
-                $db_config['database'] . ';charset=' . $db_config['charset'];
-
+                $db_config['database']/* . ';charset=' . $db_config['charset']*/;
+            // dsn de pgsql -> http://www.php.net/manual/en/ref.pdo-pgsql.connection.php
+            
             $db = new PDO($dsn, $db_config['username'], $db_config['password']);
 
             // Arroja los errores si los hubiese

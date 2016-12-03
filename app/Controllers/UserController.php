@@ -72,7 +72,7 @@ class UserController extends Controller
         if (! empty($this->request->input('pass'))) {
             $user->password = md5($this->request->input('pass'));
         }
-        
+
         if ($user->update()) {
             return redirect('/users');
         } else {
