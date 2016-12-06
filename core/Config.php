@@ -14,7 +14,7 @@ class Config {
     /**
      * Devuelve la información del archivo
      *
-     * @param   string  $key
+     * @param   string $key
      * @return  array or string
      */
     public static function get($key = null)
@@ -32,7 +32,7 @@ class Config {
     /**
      * Carga la configuración del archivo
      *
-     * @param   string  $filepath
+     * @param   string $filepath
      * @return  void
      */
     private static function load($filepath)

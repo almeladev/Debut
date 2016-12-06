@@ -7,7 +7,6 @@ use core\Auth;
 use core\Controller;
 use core\View;
 
-
 class UserController extends Controller
 {
 
