@@ -113,7 +113,8 @@ abstract class Model
         foreach ($model->fields as $field) {
             $params[$field] = (isset($this->$field)) ? $this->$field : null;
         }
-
+        
+        // Hacemos la consulta a la BBDD y comprobamos resultado
         $query = DB::query($sql, $params, false);
         return ($query) ? true : false;
     }
@@ -130,26 +131,19 @@ abstract class Model
     {
         $model = new static();
         
-        // Obtenemos la información de los campos, en concreto el nombre
-        $schema = $model->fields;
-        $fields_name = [];
-        foreach ($schema as $info) {
-            $fields_name[] = $info['column_name'];
-        }
-        
         // Creamos la consulta
-        $fields = implode(', ', $fields_name);
+        $fields = implode(', ', $model->fields);
         $statements = preg_replace('#([\w]+)#', '${1}=:${1}', $fields);
         $sql = "UPDATE $model->table SET $statements WHERE id=" . $this->id;
         
-        // Formamos los parámetros de la consulta
+        // Asignamos los valores de los campos
         if (!$attributes) {
-            foreach ($fields_name as $field) {
-                $params[$field] = $this->$field;
+            foreach ($model->fields as $field) {
+                $params[$field] = (isset($this->$field)) ? $this->$field : null;
             }
         } else {
-            foreach ($attributes as $key => $attribute) {
-                $params[$key] = $attribute;
+            foreach ($model->fields as $field) {
+                $params[$field] = (isset($attributes[$field])) ? $attributes[$field] : null;
             }
         }
         
@@ -168,8 +162,10 @@ abstract class Model
     {
         $model = new static();
         
+        // Creamos la consulta
         $sql = "DELETE FROM $model->table WHERE id=" . $this->id;
-
+        
+        // Hacemos la consulta a la BBDD y comprobamos resultado
         $query = DB::query($sql, null, false);
         return ($query) ? true : false;
     }
