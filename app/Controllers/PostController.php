@@ -47,11 +47,6 @@ class PostController extends Controller
             'user_id' => Auth::user()->id
         ]);     
         
-        // Recuerda validar
-//        $post->title   = $this->request->input('title');
-//        $post->content = $this->request->input('content');
-//        $post->user_id = Auth::user()->id;
-        
         if ($post->save()) {
             return redirect('/posts');
         } else {

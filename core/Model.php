@@ -8,7 +8,7 @@ abstract class Model
      * La tabla de la base de datos
      * @var string
      */
-    protected $table;
+    protected $table = false;
 
     /**
      * Campo identificador
@@ -17,15 +17,37 @@ abstract class Model
     protected $primaryKey = 'id';
     
     /**
-     * Constructor para los modelos, permite
-     * instanciar el objeto con propiedades
+     * Campos de la tabla, menos identificador
+     * @var array 
+     */
+    protected $fields = array();
+
+
+    /**
+     * Constructor para los modelos
      * 
      * @param array $attributes
      */
-    public function __construct(array $attributes = []) {  
+    public function __construct(array $attributes = []) 
+    {  
+        // Permite instanciar el objeto con propiedades
         if ($attributes) {
             foreach ($attributes as $key => $attribute) {
                 $this->$key = $attribute;
+            }
+        }
+        
+        /* Obtenemos el nombre de los campos de la tabla a partir del esquema 
+         * sin el campo identificador, que será declarado en $primaryKey
+         * Haciendo esto, simplificamos código para extraer la clave primaria
+         * para cada motor de base de datos
+         */
+        if (empty($this->fields)) {
+            $fields = DB::schema($this->table);
+            foreach ($fields as $field) {
+                if ($this->primaryKey !== $field['column_name']) {
+                    $this->fields[] = $field['column_name'];
+                }
             }
         }
     }
@@ -62,16 +84,9 @@ abstract class Model
         $params  = ['id' => $id];
         $query = DB::query($sql, $params);
         
-        // Obtenemos la información de los campos
-        $schema = $model->getSchema();
-        $fields_name = [];
-        foreach ($schema as $info) {
-            $fields_name[] = $info['column_name'];
-        }
-        
         // Obtenemos los datos del objeto
         $model->id = $id;
-        foreach ($fields_name as $field) {
+        foreach ($model->fields as $field) {
             $model->$field = $query[$field];
         }
         
@@ -88,28 +103,15 @@ abstract class Model
     {
         $model = new static();
         
-        // Obtenemos la información de los campos
-        $schema = $this->getSchema();
-        
-        // Obtenemos el nombre de los campos comprobando que existen 
-        // como atributos del modelo
-        $fields_name = [];
-        foreach ($schema as $info) {
-            if (isset($this->$info['column_name'])) {
-                $fields_name[] = $info['column_name'];
-            }
-        }
-        
         // Creamos la consulta
-        $fields = implode(', ', $fields_name);
+        $fields = implode(', ', $model->fields);
         $statements = preg_replace('#([\w]+)#', ':${1}', $fields);
         $sql = "INSERT INTO $model->table ($fields)
                 VALUES ($statements)";
         
-        // COMPROBAR SI EL CAMPO ES OBLIGATORIO, 
-        // SI ES OBLIGATORIO INDICARSELO AL USUARIO, SINO POR DEFECTO NULL (PROXIMA VERSION)
-        foreach ($fields_name as $field) {
-            $params[$field] = $this->$field;
+        // Asignamos los valores de los campos
+        foreach ($model->fields as $field) {
+            $params[$field] = (isset($this->$field)) ? $this->$field : null;
         }
 
         $query = DB::query($sql, $params, false);
@@ -129,7 +131,7 @@ abstract class Model
         $model = new static();
         
         // Obtenemos la información de los campos, en concreto el nombre
-        $schema = $this->getSchema();
+        $schema = $model->fields;
         $fields_name = [];
         foreach ($schema as $info) {
             $fields_name[] = $info['column_name'];
@@ -170,42 +172,5 @@ abstract class Model
 
         $query = DB::query($sql, null, false);
         return ($query) ? true : false;
-    }
-    
-    /**
-     * Obtiene información sobre los campos del modelo, la cual
-     * contiene el nombre del campo, el tipo, su longitud máxima
-     * y si es nulo
-     * 
-     * @return array
-     */
-    private function getSchema()
-    {
-        $model = new static();
-        
-        // Archivo de configuración para la base de datos
-        $db_config = Config::get('database');
-        $db_config = $db_config['connections'][$db_config['default']];
-        
-        // Dependiendo del motor de base de datos, la información del esquema puede ser distinta
-        // en bases de datos PostgreSQL puedes crear más de un esquema (por defecto public) para 
-        // la base de datos mientras que en MySQL el esquema por defecto es la misma base de datos
-        // 
-        // REVISAR LA INFORMACIÓN REFERENTE A OTRAS VERSIONES
-        // http://dev.mysql.com/doc/refman/5.6/en/columns-table.html
-        // https://www.postgresql.org/docs/9.1/static/infoschema-columns.html 
-        $table_schema = ($db_config['driver'] == 'pgsql') ? $db_config['schema'] : $db_config['database'];
-        
-        $sql = "SELECT  column_name,
-                        data_type,
-                        character_maximum_length,
-                        is_nullable
-                FROM information_schema.columns 
-                WHERE   table_name='$model->table'
-                        AND table_schema='$table_schema'
-                        AND column_name <> '$model->primaryKey'";
-        
-        $query = DB::query($sql);
-        return $query;
     }
 }

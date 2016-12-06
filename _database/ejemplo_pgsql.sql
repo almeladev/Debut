@@ -3,7 +3,7 @@ CREATE DATABASE debut;
 
 
 -- users
-CREATE TABLE IF NOT EXISTS debut.users (
+CREATE TABLE IF NOT EXISTS users (
   id SERIAL,
   email varchar(255) NOT NULL UNIQUE,
   name varchar(255) NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS debut.users (
 
 
 -- posts
-CREATE TABLE IF NOT EXISTS debut.posts (
+CREATE TABLE IF NOT EXISTS posts (
   id SERIAL,
   title varchar(255) NOT NULL UNIQUE,
   content text NOT NULL,

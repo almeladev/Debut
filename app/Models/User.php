@@ -24,7 +24,8 @@ class User extends Model
     {
         $sql = 'SELECT posts.*, users.name as author ' 
              . 'FROM users ' 
-             . 'RIGHT JOIN posts on users.id = posts.user_id';
+             . 'RIGHT JOIN posts on users.id = posts.user_id ' 
+             . 'ORDER BY id';
         
         $result = DB::query($sql);
         return $result;

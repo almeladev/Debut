@@ -40,19 +40,11 @@ class UserController extends Controller
     public function store()
     {
         // Recuerda validar
-//        $user = new User([
-//            'name'     => $this->request->input('name'),
-//            'email'    => $this->request->input('email'),
-//            'password' => md5($this->request->input('pass'))
-//        ]);  
-        // Error (NO SE PUEDE CREAR UN USUARIO SIN CONTRASEÑA, CAMPO OBLIGATORIO, CONTROLAR)
         $user = new User([
-            'name'     => "New2",
-            'email'    => "New2@gmail.com",
-//            'password' => '123'
+            'name'     => $this->request->input('name'),
+            'email'    => $this->request->input('email'),
+            'password' => md5($this->request->input('pass'))
         ]);
-        
-        
         
         if ($user->save()) {
             return redirect('/users');

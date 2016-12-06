@@ -62,4 +62,34 @@ abstract class DB
         }
         return false;
     }
+    
+    /**
+     * Obtiene información sobre los campos de una tabla. Devuelve todos los campos
+     * con el nombre, el tipo, su longitud máxima y si es nulo
+     * 
+     * @return array
+     */
+    public static function schema($table)
+    {
+        // Archivo de configuración para la base de datos
+        $db_config = Config::get('database');
+        $db_config = $db_config['connections'][$db_config['default']];
+        
+        /* Dependiendo del motor de base de datos, la información del esquema puede ser distinta
+         * en bases de datos PostgreSQL puedes crear más de un esquema (por defecto public) para 
+         * la base de datos mientras que en MySQL el esquema por defecto es la misma base de datos
+         */
+        $table_schema = ($db_config['driver'] == 'pgsql') ? $db_config['schema'] : $db_config['database'];
+        
+        $sql = "SELECT  column_name,
+                        data_type,
+                        character_maximum_length,
+                        is_nullable
+                FROM information_schema.columns 
+                WHERE   table_name='$table'
+                        AND table_schema='$table_schema'";
+        
+        $query = DB::query($sql);
+        return ($query) ? $query : false;
+    }
 }
