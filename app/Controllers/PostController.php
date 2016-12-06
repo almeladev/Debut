@@ -44,7 +44,7 @@ class PostController extends Controller
         $post = new Post([
             'title'   => $this->request->input('title'),
             'content' => $this->request->input('content'),
-            //'user_id' => Auth::user()->id
+            'user_id' => Auth::user()->id
         ]);     
         
         // Recuerda validar

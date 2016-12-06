@@ -59,8 +59,7 @@ class Auth
      */
     public static function user()
     {    
-        if ($_SESSION["user"]) {
-            
+        if (self::check()) {
             $sql = "SELECT * FROM users WHERE email= :email";
             $params = ['email' => $_SESSION["user"]];
             

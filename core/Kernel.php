@@ -8,6 +8,7 @@ class Kernel
 {
     /**
      * Constructor del Kernel. 
+     * Se incluirán los archivos globales de la aplicación
      */
     public function __construct() 
     {
@@ -30,7 +31,10 @@ class Kernel
         // --------------------------------------------------------------
         // Inicio de sesiones
         // --------------------------------------------------------------
-        session_start();
+        $session_id = session_id();
+        if (empty($session_id)) {
+            session_start();
+        }
         
         // --------------------------------------------------------------
         // Inicio del enrutamiento
