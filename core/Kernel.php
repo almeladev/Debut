@@ -11,7 +11,7 @@ class Kernel
      */
     public function __construct() 
     {
-        require_once ROOT . '/libs/helpers.php';
+        require_once ROOT . 'libs/helpers.php';
         require_once APP . 'Http/routes.php';
     }
     

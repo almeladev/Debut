@@ -16,15 +16,14 @@ abstract class Model
      */
     protected $primaryKey = 'id';
     
-    
     /**
-     * Constructor para los modelos
+     * Constructor para los modelos, permite
+     * instanciar el objeto con propiedades
      * 
      * @param array $attributes
      */
-    public function __construct($attributes = []) {  
-        // Permite instanciar el objeto con atributos desde un array asociativo
-        if (! empty($attributes)) {
+    public function __construct(array $attributes = []) {  
+        if ($attributes) {
             foreach ($attributes as $key => $attribute) {
                 $this->$key = $attribute;
             }
@@ -89,16 +88,21 @@ abstract class Model
     {
         $model = new static();
         
-        // Obtenemos la información de los campos, en concreto el nombre
+        // Obtenemos la información de los campos
         $schema = $this->getSchema();
+        
+        // Obtenemos el nombre de los campos comprobando que existen 
+        // como atributos del modelo
         $fields_name = [];
         foreach ($schema as $info) {
-            $fields_name[] = $info['column_name'];
+            if (isset($this->$info['column_name'])) {
+                $fields_name[] = $info['column_name'];
+            }
         }
         
+        // Creamos la consulta
         $fields = implode(', ', $fields_name);
         $statements = preg_replace('#([\w]+)#', ':${1}', $fields);
-        
         $sql = "INSERT INTO $model->table ($fields)
                 VALUES ($statements)";
         
@@ -115,10 +119,12 @@ abstract class Model
     /**
      * Modifica los datos del modelo en la
      * base de datos
-     *
+     * 
+     * @param array $attributes
+     * 
      * @return boolean
      */
-    public function update()
+    public function update(array $attributes = [])
     {
         $model = new static();
         
@@ -129,15 +135,23 @@ abstract class Model
             $fields_name[] = $info['column_name'];
         }
         
+        // Creamos la consulta
         $fields = implode(', ', $fields_name);
         $statements = preg_replace('#([\w]+)#', '${1}=:${1}', $fields);
-        
         $sql = "UPDATE $model->table SET $statements WHERE id=" . $this->id;
-
-        foreach ($fields_name as $field) {
-            $params[$field] = $this->$field;
+        
+        // Formamos los parámetros de la consulta
+        if (!$attributes) {
+            foreach ($fields_name as $field) {
+                $params[$field] = $this->$field;
+            }
+        } else {
+            foreach ($attributes as $key => $attribute) {
+                $params[$key] = $attribute;
+            }
         }
         
+        // Hacemos la consulta a la BBDD y comprobamos resultado
         $query = DB::query($sql, $params, false);
         return ($query) ? true : false;
     }
@@ -169,18 +183,26 @@ abstract class Model
     {
         $model = new static();
         
-        $database = config('DB_DATABASE');
+        // Archivo de configuración para la base de datos
+        $db_config = Config::get('database');
+        $db_config = $db_config['connections'][$db_config['default']];
         
+        // Dependiendo del motor de base de datos, la información del esquema puede ser distinta
+        // en bases de datos PostgreSQL puedes crear más de un esquema (por defecto public) para 
+        // la base de datos mientras que en MySQL el esquema por defecto es la misma base de datos
+        // 
         // REVISAR LA INFORMACIÓN REFERENTE A OTRAS VERSIONES
         // http://dev.mysql.com/doc/refman/5.6/en/columns-table.html
         // https://www.postgresql.org/docs/9.1/static/infoschema-columns.html 
+        $table_schema = ($db_config['driver'] == 'pgsql') ? $db_config['schema'] : $db_config['database'];
+        
         $sql = "SELECT  column_name,
                         data_type,
                         character_maximum_length,
                         is_nullable
                 FROM information_schema.columns 
                 WHERE   table_name='$model->table'
-                        AND table_schema='$database'
+                        AND table_schema='$table_schema'
                         AND column_name <> '$model->primaryKey'";
         
         $query = DB::query($sql);

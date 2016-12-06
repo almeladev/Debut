@@ -13,22 +13,30 @@ abstract class DB
      */
     public static function connection()
     {
-        // Archivo de configuración de la aplicación
-        $db_config = (require_once ROOT . 'config/database.php');
-
-        $driver_default = $db_config['default'];
-        $db_config = $db_config['connections'][$driver_default];
+        // Archivo de configuración para la base de datos
+        $db_config = Config::get('database');
+        $db_config = $db_config['connections'][$db_config['default']];
         
         static $db = null;
 
         if ($db === null) {
-            // dsn de mysql -> http://php.net/manual/en/ref.pdo-mysql.connection.php
-            $dsn = $db_config['driver'] . ':host=' . $db_config['host'] . ';dbname=' .
-                $db_config['database']/* . ';charset=' . $db_config['charset']*/;
-            // dsn de pgsql -> http://www.php.net/manual/en/ref.pdo-pgsql.connection.php
+            
+            switch ($db_config['driver']) {
+                case 'mysql':
+                    // dsn de mysql -> http://php.net/manual/en/ref.pdo-mysql.connection.php
+                    $dsn =  $db_config['driver'] . ':host=' . $db_config['host'] . ';port=' . $db_config['port'] . ';dbname=' .
+                            $db_config['database'] . ';charset=' . $db_config['charset'];
+                    break;
+                case 'pgsql':
+                    // dsn de pgsql -> http://www.php.net/manual/en/ref.pdo-pgsql.connection.php
+                    $dsn =  $db_config['driver'] . ':host=' . $db_config['host'] . ';port=' . $db_config['port'] . ';dbname=' .
+                            $db_config['database'];
+                    break;
+                default:
+                   throw new \Exception('No existe el driver para la conexión', 404);
+            }
             
             $db = new PDO($dsn, $db_config['username'], $db_config['password']);
-
             // Arroja los errores si los hubiese
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }

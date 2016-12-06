@@ -40,12 +40,20 @@ class UserController extends Controller
      */
     public function store()
     {
-        $user = new User();     
-        
         // Recuerda validar
-        $user->name     = $this->request->input('name');
-        $user->email    = $this->request->input('email');
-        $user->password = md5($this->request->input('pass'));
+//        $user = new User([
+//            'name'     => $this->request->input('name'),
+//            'email'    => $this->request->input('email'),
+//            'password' => md5($this->request->input('pass'))
+//        ]);  
+        // Error (NO SE PUEDE CREAR UN USUARIO SIN CONTRASEÑA, CAMPO OBLIGATORIO, CONTROLAR)
+        $user = new User([
+            'name'     => "New2",
+            'email'    => "New2@gmail.com",
+//            'password' => '123'
+        ]);
+        
+        
         
         if ($user->save()) {
             return redirect('/users');
@@ -67,13 +75,45 @@ class UserController extends Controller
         $user = User::find($id);
         
         // Recuerda validar
-        $user->name     = $this->request->input('name');
-        $user->email    = $this->request->input('email');
-        if (! empty($this->request->input('pass'))) {
-            $user->password = md5($this->request->input('pass'));
-        }
-
-        if ($user->update()) {
+//        $user->name     = $this->request->input('name'); // --> Si por casualidad no quieres actualizar un campo, no hace falta añadirlo.
+//        $user->email    = $this->request->input('email');
+//        if (! empty($this->request->input('pass'))) {
+//            $user->password = md5($this->request->input('pass'));
+//        }
+//        $form = [
+//            'name'     => $this->request->input('name'),
+//            'email'    => $this->request->input('email'),
+//            'password' => md5($this->request->input('pass'))
+//        ];
+        
+//        $user->noexiste = "Esta variable no existe"; // El campo "noexiste" no existe en la tabla de usuarios, luego no se almacenará.
+        
+        // Y si ... ?
+//        $form = [
+//            'name'     => $this->request->input('name'),
+//            'email'    => $this->request->input('email'),
+//            //'password' => md5($this->request->input('pass'))
+//        ];
+//        $user->password = md5($this->request->input('pass'));
+        // Debería actualizarse también la pass ??
+        
+        // Desordenados OK
+//        $form = [
+//            'name'     => $this->request->input('name'),
+//            'password' => md5($this->request->input('pass')),
+//            'email'    => $this->request->input('email'),     
+//        ];
+//        $user->name     = $this->request->input('name'); // --> Si por casualidad no quieres actualizar un campo, no hace falta añadirlo.
+//        $user->password = md5($this->request->input('pass'));
+//        $user->email    = $this->request->input('email');
+        
+        $form = [
+            'name'     => $this->request->input('name'),
+            'email'    => $this->request->input('email'),
+            'password' => md5($this->request->input('pass'))
+        ];
+            
+        if ($user->update($form)) {
             return redirect('/users');
         } else {
             throw new \Exception('No se ha podido actualizar el usuario', 500);

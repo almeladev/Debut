@@ -21,7 +21,7 @@
 function config($var, $default = null)
 {
     $array_ini = parse_ini_file(ROOT . 'config.ini');
-    $data = $array_ini[$var];
+    $data = (isset($array_ini[$var])) ? $array_ini[$var] : null;
     
     $config = (! empty($data)) ? $data : $default;
     

@@ -22,9 +22,11 @@ return [
     |
     */
     'connections' => [
+        
         'mysql' => [
             'driver'   => 'mysql',
             'host'     => config('DB_HOST', 'localhost'),
+            'port'     => config('DB_PORT', '3306'),
             'database' => config('DB_DATABASE', ''),
             'username' => config('DB_USERNAME', ''),
             'password' => config('DB_PASSWORD', ''),
@@ -34,10 +36,11 @@ return [
         'pgsql' => [
             'driver' => 'pgsql',
             'host'     => config('DB_HOST', 'localhost'),
+            'port'     => config('DB_PORT', '5432'),
             'database' => config('DB_DATABASE', ''),
             'username' => config('DB_USERNAME', ''),
             'password' => config('DB_PASSWORD', ''),
-            'charset'  => config('DB_CHARSET', 'utf8'),
+            'schema'   => 'public',
         ],
         
     ],

@@ -52,7 +52,7 @@ class Handler
         http_response_code($code);
 
         // Archivo de configuración de la aplicación
-        $app_config = (require_once ROOT . 'config/app.php');
+        $app_config = Config::get('app');
        
         if ($app_config['debug']) {
             echo "<h1>¡Error!</h1>";
