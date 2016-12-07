@@ -16,7 +16,7 @@
  * @param string $var
  * @param mixed  $default
  * 
- * @return $data
+ * @return $config
  */
 function config($var, $default = null)
 {

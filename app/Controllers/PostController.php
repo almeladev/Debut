@@ -37,12 +37,11 @@ class PostController extends Controller
      * @return void
      */
     public function store()
-    {
-        
+    { 
         $post = new Post([
             'title'   => $this->request->input('title'),
             'content' => $this->request->input('content'),
-            'user_id' => Auth::user()->id
+            //'user_id' => Auth::user()->id
         ]);     
         
         if ($post->save()) {

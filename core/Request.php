@@ -11,7 +11,6 @@ class Request
      */
     public $data = [];
     
-    
     public function __construct() {
         $this->data = $this->mergeData($_POST, $_FILES);
     }
