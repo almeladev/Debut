@@ -62,7 +62,7 @@ class Handler
             echo "<p>Excepción arrojada en el archivo '" . $exception->getFile() . "' en la línea " . $exception->getLine() . "</p>";
         } else {
 
-            $log = ROOT . 'storage/logs/' . date('Y-m-d') . '.txt';
+            $log = ROOT . 'storage/logs/' . date('Y-m-d-H:i:s') . '.log';
             ini_set('error_log', $log);
 
             $message = "Clase de excepción: '" . get_class($exception) . "'";
