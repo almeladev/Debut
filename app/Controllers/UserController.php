@@ -5,7 +5,6 @@ namespace app\Controllers;
 use app\Models\User;
 use core\Auth;
 use core\Controller;
-use core\View;
 
 class UserController extends Controller
 {
@@ -18,17 +17,14 @@ class UserController extends Controller
     public function index()
     {
         if (Auth::check()) {
-
             $users = User::all();
   
-            View::template('users/index.twig.html', [
+            return view('users/index.twig.html', [
                 'users' => $users,
             ]);
-
         } else {
             return redirect('/');
         }
-        
     }
 
     /**

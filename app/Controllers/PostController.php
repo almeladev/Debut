@@ -6,7 +6,6 @@ use app\Models\Post;
 use app\Models\User;
 use core\Auth;
 use core\Controller;
-use core\View;
 
 
 class PostController extends Controller
@@ -22,11 +21,10 @@ class PostController extends Controller
         if (Auth::check()) {
             // Todos los posts de los usuarios
             $posts = User::posts();
-
-            View::template('posts/index.twig.html', [
+            
+            return view('posts/index.twig.html', [
                 'posts' => $posts,
             ]);
-
         } else {
             return redirect('/');
         }

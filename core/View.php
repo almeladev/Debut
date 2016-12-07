@@ -38,7 +38,7 @@ class View
      *
      * @return void
      */
-    public static function template($template, $args = [])
+    public static function template($template, array $args = [])
     {
         $loader = new \Twig_Loader_Filesystem(APP . 'Views');
         

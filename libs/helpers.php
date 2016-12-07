@@ -14,7 +14,7 @@
  * Obtiene los datos de las variables de entorno
  * 
  * @param string $var
- * @param mixed $default
+ * @param mixed  $default
  * 
  * @return $data
  */
@@ -26,6 +26,19 @@ function config($var, $default = null)
     $config = (! empty($data)) ? $data : $default;
     
     return $config;
+}
+
+/**
+ * Renderiza la plantilla con los datos
+ * 
+ * @param string $view
+ * @param array  $args
+ * 
+ * @return void
+ */
+function view($view, array $args = [])
+{
+    return \core\View::template($view, $args);
 }
 
 /**
