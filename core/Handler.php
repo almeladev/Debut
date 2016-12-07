@@ -55,11 +55,12 @@ class Handler
         $app_config = Config::get('app');
        
         if ($app_config['debug']) {
-            echo "<h1>¡Error!</h1>";
-            echo "<p>Clase de excepción: '" . get_class($exception) . "'</p>";
-            echo "<p>Mensaje: '" . $exception->getMessage() . "'</p>";
-            echo "<p>Informe de ejecución:<pre>" . $exception->getTraceAsString() . "</pre></p>";
-            echo "<p>Excepción arrojada en el archivo '" . $exception->getFile() . "' en la línea " . $exception->getLine() . "</p>";
+//            echo "<h1>¡Error!</h1>";
+//            echo "<p>Clase de excepción: '" . get_class($exception) . "'</p>";
+//            echo "<p>Mensaje: '" . $exception->getMessage() . "'</p>";
+//            echo "<p>Informe de ejecución:<pre>" . $exception->getTraceAsString() . "</pre></p>";
+//            echo "<p>Excepción arrojada en el archivo '" . $exception->getFile() . "' en la línea " . $exception->getLine() . "</p>";
+            return view("errors/exceptions.twig");
         } else {
 
             $log = ROOT . 'storage/logs/' . date('Y-m-d-H:i:s') . '.log';
@@ -72,7 +73,7 @@ class Handler
 
             error_log($message);
             
-            View::template("errors/$code.twig.html"); // Directorio de los archivos de registro
+            return view("errors/$code.twig"); // Directorio de los archivos de registro
         }
     }
 }

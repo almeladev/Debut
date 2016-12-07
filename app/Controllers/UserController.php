@@ -19,7 +19,7 @@ class UserController extends Controller
         if (Auth::check()) {
             $users = User::all();
   
-            return view('users/index.twig.html', [
+            return view('users/index.twig', [
                 'users' => $users,
             ]);
         } else {

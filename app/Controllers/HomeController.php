@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('index.twig.html', ['title' => 'Debut framework']);
+        return view('index.twig', ['title' => 'Debut framework']);
     }
     
     /**
@@ -23,6 +23,6 @@ class HomeController extends Controller
      */
     public function menu()
     {
-        return view('menu.twig.html', ['title' => 'Menú']);
+        return view('menu.twig', ['title' => 'Menú']);
     }
 }

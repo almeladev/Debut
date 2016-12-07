@@ -15,7 +15,7 @@ class AuthController extends Controller
     public function getLogin()
     {
         if (!Auth::check()) {
-            return view('auth/login.twig.html');
+            return view('auth/login.twig');
         } else {
             return redirect('/menu');
         }
