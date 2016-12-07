@@ -41,7 +41,7 @@ class UserController extends Controller
             'email'    => $this->request->input('email'),
             'password' => md5($this->request->input('pass'))
         ]);
-        
+                
         if ($user->save()) {
             return redirect('/users');
         } else {

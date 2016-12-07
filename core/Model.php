@@ -22,7 +22,12 @@ abstract class Model
      */
     protected $fields = array();
 
-
+    /**
+     * Indica si el modelo existe
+     * @var boolean
+     */
+    private $exists = false;
+    
     /**
      * Constructor para los modelos
      * 
@@ -84,10 +89,14 @@ abstract class Model
         $params  = ['id' => $id];
         $query = DB::query($sql, $params);
         
-        // Obtenemos los datos del objeto
-        $model->id = $id;
-        foreach ($model->fields as $field) {
-            $model->$field = $query[$field];
+        // Obtenemos los datos del objeto si existe
+        if ($query) {
+            $model->id = $id;
+            foreach ($model->fields as $field) {
+                $model->$field = $query[$field];
+            }
+            // Indica que el modelo existe
+            $model->exists = true;
         }
         
         return $model;
@@ -129,6 +138,11 @@ abstract class Model
      */
     public function update(array $attributes = [])
     {
+        // Si no existe el modelo es imposible actualizarlo
+        if (! $this->exists) {
+            return false;
+        }
+        
         $model = new static();
         
         // Creamos la consulta
@@ -160,6 +174,11 @@ abstract class Model
      */
     public function delete()
     {
+        // Si no existe el modelo es imposible borrarlo
+        if (! $this->exists) {
+            return false;
+        }
+        
         $model = new static();
         
         // Creamos la consulta
