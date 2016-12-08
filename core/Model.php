@@ -85,14 +85,23 @@ abstract class Model
     {
         $model = new static();
         
+        // Removemos el identificador de las columnas de la tabla
+        // Así aseguramos no poder manipular accidentalmente la clave primaria
+        $columns = DB::getNameColumns($model->table);
+        foreach($columns as $key => $column) {
+            if ($column === $model->primaryKey) {
+                unset($columns[$key]);
+                break; // Si remueve el identificador, termina el ciclo
+            }
+        }
+        
         // Creamos la consulta
-        $fields = implode(', ', $model->fields);
-        $statements = preg_replace('#([\w]+)#', ':${1}', $fields);
-        $sql = "INSERT INTO $model->table ($fields)
-                VALUES ($statements)";
+        $fields = implode(', ', $columns);
+        $stmt = preg_replace('#([\w]+)#', ':${1}', $fields);
+        $sql = "INSERT INTO $model->table ($fields) VALUES ($stmt)";
         
         // Asignamos los valores de los campos
-        foreach ($model->fields as $field) {
+        foreach ($columns as $field) {
             $params[$field] = (isset($this->$field)) ? $this->$field : null;
         }
         
@@ -114,6 +123,7 @@ abstract class Model
         $model = new static();
         
         // Removemos el identificador de las columnas de la tabla
+        // Así aseguramos no poder manipular accidentalmente la clave primaria
         $columns = DB::getNameColumns($model->table);
         foreach($columns as $key => $column) {
             if ($column === $model->primaryKey) {
@@ -151,16 +161,11 @@ abstract class Model
      * @return boolean
      */
     public function delete()
-    {
-        // Si no existe el modelo es imposible borrarlo
-        if (! $this->exists) {
-            return false;
-        }
-        
+    { 
         $model = new static();
         
         // Creamos la consulta
-        $sql = "DELETE FROM $model->table WHERE id=" . $this->id;
+        $sql = "DELETE FROM $model->table WHERE id=" . $this->attributes[$model->primaryKey];
         
         // Hacemos la consulta a la BBDD y comprobamos resultado
         $query = DB::query($sql, null, false);

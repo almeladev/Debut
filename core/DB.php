@@ -48,6 +48,7 @@ abstract class DB
     
     /**
      * Obtiene el nombre de las columnas de una tabla
+     * Esto es muy importante para la completa abstracción de la BBDD
      * 
      * @param string $table La tabla a consultar
      * 
