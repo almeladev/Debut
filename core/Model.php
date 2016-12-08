@@ -17,42 +17,16 @@ abstract class Model
     protected $primaryKey = 'id';
     
     /**
-     * Campos de la tabla, menos identificador
-     * @var array 
-     */
-    protected $fields = array();
-
-    /**
-     * Indica si el modelo existe
-     * @var boolean
-     */
-    private $exists = false;
-    
-    /**
      * Constructor para los modelos
      * 
      * @param array $attributes
      */
     public function __construct(array $attributes = []) 
     {  
-        // Permite instanciar el objeto con propiedades
+        // Permite instanciar el modelo con propiedades
         if ($attributes) {
             foreach ($attributes as $key => $attribute) {
                 $this->$key = $attribute;
-            }
-        }
-        
-        /* Obtenemos el nombre de los campos de la tabla a partir del esquema 
-         * sin el campo identificador, que será declarado en $primaryKey
-         * Haciendo esto, simplificamos código para extraer la clave primaria
-         * para cada motor de base de datos
-         */
-        if (empty($this->fields)) {
-            $fields = DB::schema($this->table);
-            foreach ($fields as $field) {
-                if ($this->primaryKey !== $field['column_name']) {
-                    $this->fields[] = $field['column_name'];
-                }
             }
         }
     }
@@ -61,7 +35,7 @@ abstract class Model
      * Todos los registros de la base de
      * datos
      *
-     * @return array
+     * @return array | boolean
      */
     public static function all()
     {
@@ -70,7 +44,7 @@ abstract class Model
         $sql    = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
         $query = DB::query($sql);
 
-        return $query;
+        return ($query) ? $query : false;
     }
 
     /**
@@ -79,7 +53,7 @@ abstract class Model
      *
      * @param  int $id El identificador
      *
-     * @return Object
+     * @return Object | boolean
      */
     public static function find($id)
     {
@@ -89,17 +63,16 @@ abstract class Model
         $params  = ['id' => $id];
         $query = DB::query($sql, $params);
         
-        // Obtenemos los datos del objeto si existe
         if ($query) {
-            $model->id = $id;
-            foreach ($model->fields as $field) {
-                $model->$field = $query[$field];
+            // Obtenemos el nombre de las columnas
+            $columns = DB::getNameColumns($model->table);
+            // Generamos el objeto con sus atributos
+            foreach($columns as $column) {
+                $model->attributes[$column] = $query[$column];
             }
-            // Indica que el modelo existe
-            $model->exists = true;
+            return $model;
         }
-        
-        return $model;
+        return false;
     }
     
     /**
@@ -138,26 +111,31 @@ abstract class Model
      */
     public function update(array $attributes = [])
     {
-        // Si no existe el modelo es imposible actualizarlo
-        if (! $this->exists) {
-            return false;
-        }
-        
         $model = new static();
         
-        // Creamos la consulta
-        $fields = implode(', ', $model->fields);
-        $statements = preg_replace('#([\w]+)#', '${1}=:${1}', $fields);
-        $sql = "UPDATE $model->table SET $statements WHERE id=" . $this->id;
+        // Removemos el identificador de las columnas de la tabla
+        $columns = DB::getNameColumns($model->table);
+        foreach($columns as $key => $column) {
+            if ($column === $model->primaryKey) {
+                unset($columns[$key]);
+                break; // Si remueve el identificador, termina el ciclo
+            }
+        }
         
-        // Asignamos los valores de los campos
+        // Creamos la consulta
+        $fields = implode(', ', $columns);
+        $stmt = preg_replace('#([\w]+)#', '${1}=:${1}', $fields);
+        $sql = "UPDATE $model->table SET $stmt WHERE id=" . $this->attributes[$model->primaryKey];
+        
+        // Asignamos los nuevos valores a los campos
+        // Si no existen, los valores serán los que ya tiene el modelo
         if (!$attributes) {
-            foreach ($model->fields as $field) {
-                $params[$field] = (isset($this->$field)) ? $this->$field : null;
+            foreach ($columns as $field) {
+                $params[$field] = (isset($this->$field)) ? $this->$field : $this->attributes[$field];
             }
         } else {
-            foreach ($model->fields as $field) {
-                $params[$field] = (isset($attributes[$field])) ? $attributes[$field] : null;
+            foreach ($columns as $field) {
+                $params[$field] = (isset($attributes[$field])) ? $attributes[$field] : $this->attributes[$field];
             }
         }
         

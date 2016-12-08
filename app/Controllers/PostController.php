@@ -65,7 +65,8 @@ class PostController extends Controller
         
         // Recuerda validar
         $post->title   = $this->request->input('title');
-        $post->content = $this->request->input('content');
+        //$post->content = $this->request->input('content');
+        //$post->user_id = null;
         
         if ($post->update()) {
             return redirect('/posts');

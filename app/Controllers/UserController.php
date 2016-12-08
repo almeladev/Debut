@@ -62,7 +62,7 @@ class UserController extends Controller
         $user = User::find($id);
         
         $newData = [
-            'name'     => $this->request->input('name'),
+            //'name'     => $this->request->input('name'),
             'email'    => $this->request->input('email'),
             'password' => md5($this->request->input('pass'))
         ];

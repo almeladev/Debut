@@ -7,41 +7,24 @@ use PDO;
 abstract class DB
 {
     /**
-     * Conexión a la base de datos usando la clase PDO
+     * Conexión a la base de datos usando DBAL de Doctrine
      *
      * @return mixed
      */
     public static function connection()
     {
-        // Archivo de configuración para la base de datos
-        $db_config = Config::get('database');
-        $db_config = $db_config['connections'][$db_config['default']];
+        static $conn = null;
         
-        static $db = null;
-
-        if ($db === null) {
+        if ($conn === null) {
             
-            switch ($db_config['driver']) {
-                case 'mysql':
-                    // dsn de mysql -> http://php.net/manual/en/ref.pdo-mysql.connection.php
-                    $dsn =  $db_config['driver'] . ':host=' . $db_config['host'] . ';port=' . $db_config['port'] . ';dbname=' .
-                            $db_config['database'] . ';charset=' . $db_config['charset'];
-                    break;
-                case 'pgsql':
-                    // dsn de pgsql -> http://www.php.net/manual/en/ref.pdo-pgsql.connection.php
-                    $dsn =  $db_config['driver'] . ':host=' . $db_config['host'] . ';port=' . $db_config['port'] . ';dbname=' .
-                            $db_config['database'];
-                    break;
-                default:
-                   throw new \Exception('No existe el driver para la conexión', 404);
-            }
-            
-            $db = new PDO($dsn, $db_config['username'], $db_config['password']);
-            // Arroja los errores si los hubiese
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $config = new \Doctrine\DBAL\Configuration();
+            $db_config = Config::get('database');
+            $connectionParams = $db_config['connections'][$db_config['default']];
+        
+            $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
         }
-
-        return $db;
+        
+        return $conn;
     }
 
     /**
@@ -51,7 +34,7 @@ abstract class DB
      * @param  array   $params Parámetros de la consulta
      * @param  boolean $fetch  Si la consulta recupera datos
      *
-     * @return mixed Datos de la consulta y boolean
+     * @return mixed Datos de la consulta o boolean
      */
     public static function query($sql, $params = null, $fetch = true)
     {
@@ -64,32 +47,26 @@ abstract class DB
     }
     
     /**
-     * Obtiene información sobre los campos de una tabla. Devuelve todos los campos
-     * con el nombre, el tipo, su longitud máxima y si es nulo
+     * Obtiene el nombre de las columnas de una tabla
      * 
-     * @return array
+     * @param string $table La tabla a consultar
+     * 
+     * @return mixed El nombre de las columnas o boolean
      */
-    public static function schema($table)
+    public static function getNameColumns($table)
     {
-        // Archivo de configuración para la base de datos
-        $db_config = Config::get('database');
-        $db_config = $db_config['connections'][$db_config['default']];
+        $stmt = static::connection()->getSchemaManager();
         
-        /* Dependiendo del motor de base de datos, la información del esquema puede ser distinta
-         * en bases de datos PostgreSQL puedes crear más de un esquema (por defecto public) para 
-         * la base de datos mientras que en MySQL el esquema por defecto es la misma base de datos
-         */
-        $table_schema = ($db_config['driver'] == 'pgsql') ? $db_config['schema'] : $db_config['database'];
+        $columns = $stmt->listTableColumns($table);
         
-        $sql = "SELECT  column_name,
-                        data_type,
-                        character_maximum_length,
-                        is_nullable
-                FROM information_schema.columns 
-                WHERE   table_name='$table'
-                        AND table_schema='$table_schema'";
-        
-        $query = DB::query($sql);
-        return ($query) ? $query : false;
+        if (! empty($columns)) {
+            // Obtenemos el nombre de cada campo
+            foreach ($columns as $column) {
+                $name = $column->getName();
+                $columns_name[] = $name;
+            }
+            return $columns_name;
+        }
+        return false;
     }
 }
