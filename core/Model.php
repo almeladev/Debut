@@ -69,7 +69,6 @@ abstract class Model implements \ArrayAccess
      * Si no existe el registro, lanza una excepción
      * 
      * @param  int $id El identificador
-     *
      * @return Object
      */
     public static function find($id)
@@ -142,7 +141,6 @@ abstract class Model implements \ArrayAccess
      * base de datos
      * 
      * @param array $attributes
-     * 
      * @return boolean
      */
     public function update(array $attributes = [])
@@ -226,6 +224,19 @@ abstract class Model implements \ArrayAccess
         return $columns;
     }
     
+    /**
+     * Guarda un nuevo modelo y devuelve la instancia
+     * 
+     * @param array $attributes
+     * @return static
+     */
+    public static function create(array $attributes)
+    {
+            $model = new static($attributes);
+            $model->save();
+            return $model;
+    }
+
     /**
      * Almacena los atributos del modelo en un array
      * 
