@@ -11,11 +11,17 @@ abstract class Model
     protected $table = false;
 
     /**
-     * Campo identificador
+     * El nombre del campo identificador
      * @var string
      */
     protected $primaryKey = 'id';
     
+    /**
+     * El id del modelo
+     * @var mixed 
+     */
+    protected $id = false;
+
     /**
      * Comprueba si existe o no el modelo
      * @var boolean 
@@ -72,12 +78,13 @@ abstract class Model
         
         if ($query) {
             // Obtenemos el nombre de las columnas
-            $columns = DB::getNameColumns($model->table);
+            $columns = $model->getColumnsWithoutId();
             // Generamos el objeto con sus atributos
             foreach($columns as $column) {
                 $model->attributes[$column] = $query[$column];
             }
-            // Indicamos que existe el modelo
+            // Indicamos que existe el modelo, añadimos su identificador y lo retornamos
+            $model->id = $query[$model->primaryKey];
             $model->exists = true;
             return $model;
         } else {
@@ -101,7 +108,7 @@ abstract class Model
         $model = new static();
         
         // Obtenemos las columnas de la tabla
-        $columns = $this->columnsWithoutId();
+        $columns = $this->getColumnsWithoutId();
                 
         // Creamos la consulta
         $fields = implode(', ', $columns);
@@ -111,14 +118,15 @@ abstract class Model
         // Asignamos los valores de los campos
         foreach ($columns as $field) {
             $this->attributes[$field] = (isset($this->$field)) ? $this->$field : null;
-            unset($this->$field); // Elimino la propiedad que ahora pertenece al array de atributos
+            unset($this->$field);
         }
         
         // Hacemos la consulta a la BBDD y comprobamos resultado
         $query = DB::query($sql, $this->attributes, false);
         
         if ($query) {
-            $this->attributes[$model->primaryKey] = DB::connection()->lastInsertId();
+            // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
+            $this->id = DB::connection()->lastInsertId();
             $this->exists = true;
             return true;
         }
@@ -143,16 +151,15 @@ abstract class Model
         $model = new static();
         
         // Obtenemos las columnas de la tabla
-        $columns = $this->columnsWithoutId();
+        $columns = $this->getColumnsWithoutId();
         
         // Creamos la consulta
         $fields = implode(', ', $columns);
         $stmt = preg_replace('#([\w]+)#', '${1}=:${1}', $fields);
-        $sql = "UPDATE $model->table SET $stmt WHERE id=" . $this->attributes[$model->primaryKey];
+        $sql = "UPDATE $model->table SET $stmt WHERE id=" . $this->id;
         
         // Asignamos los nuevos valores a los campos
         // Si no existen, los valores serán los que ya tiene el modelo
-        unset($this->attributes[$model->primaryKey]); // El id ya no es necesario, es autoincremental.
         if (!$attributes) {
             foreach ($columns as $field) {
                 $this->attributes[$field] = (isset($this->$field)) ? $this->$field : $this->attributes[$field];
@@ -184,7 +191,7 @@ abstract class Model
         $model = new static();
         
         // Creamos la consulta
-        $sql = "DELETE FROM $model->table WHERE id=" . $this->attributes[$model->primaryKey];
+        $sql = "DELETE FROM $model->table WHERE id=" . $this->id;
         
         // Hacemos la consulta a la BBDD y comprobamos resultado
         $query = DB::query($sql, null, false);
@@ -197,30 +204,20 @@ abstract class Model
      * contar con el campo autoincremental. Que lo gestionará
      * automáticamente la BBDD
      * 
-     * @return array
+     * @return array Las columnas de la tabla
      */
-    private function columnsWithoutId()
+    private function getColumnsWithoutId()
     {
-        $model = new static();
         // Removemos el identificador de las columnas de la tabla
         // Para no añadir datos sobre el identificador
         // Así aseguramos no poder manipular accidentalmente la clave primaria
-        $columns = DB::getNameColumns($model->table);
+        $columns = DB::getNameColumns($this->table);
         foreach($columns as $key => $column) {
-            if ($column === $model->primaryKey) {
+            if ($column === $this->primaryKey) {
                 unset($columns[$key]);
                 break; // Si remueve el identificador, termina el ciclo
             }
         }
         return $columns;
-    }
-    
-    /**
-     * Añade los atributos al modelo
-     * 
-     */
-    private function getAttributes()
-    {
-        
     }
 }

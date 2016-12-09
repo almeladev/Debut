@@ -43,15 +43,6 @@ class UserController extends Controller
         ]);
                 
         if ($user->save()) {
-            
-            // Permite actualizar despues de un guardado.
-            $newData = [
-                'name'     => 'chorizo',
-                'email'    => 'melon',
-                'password' => '123',
-            ];
-            $user->update($newData);
-            
             return redirect('/users');
         } else {
             throw new \Exception('No se ha podido crear el usuario', 500);
