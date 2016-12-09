@@ -2,28 +2,37 @@
 
 namespace core;
 
-abstract class Model
+/**
+ * El modelo base está pensado para facilitar las tareas comunes
+ * de los modelos. Implementa la interface ArrayAccess para
+ * tratar el array de los atributos
+ */
+abstract class Model implements \ArrayAccess
 {
     /**
      * La tabla de la base de datos
+     * 
      * @var string
      */
     protected $table = false;
 
     /**
      * El nombre del campo identificador
+     * 
      * @var string
      */
     protected $primaryKey = 'id';
     
-    /**
-     * El id del modelo
-     * @var mixed 
-     */
-    public $id = false;
-
+   /**
+    * Los atributos del modelo
+    * 
+    * @var array
+    */
+    protected $attributes = array();
+    
     /**
      * Comprueba si existe o no el modelo
+     * 
      * @var boolean 
      */
     public $exists = false;
@@ -33,14 +42,9 @@ abstract class Model
      * 
      * @param array $attributes
      */
-    public function __construct(array $attributes = []) 
-    {  
-        // Permite instanciar el modelo con propiedades
-        if ($attributes) {
-            foreach ($attributes as $key => $attribute) {
-                $this->$key = $attribute;
-            }
-        }
+    public function __construct(array $attributes = array()) 
+    {
+        $this->fill($attributes);
     }
 
     /**
@@ -72,19 +76,19 @@ abstract class Model
     {
         $model = new static();
         
-        $sql = 'SELECT * FROM ' . $model->table . ' WHERE ' . $model->primaryKey . ' = :id';
-        $params  = ['id' => $id];
+        $sql = 'SELECT * FROM ' . $model->table . ' WHERE ' . $model->primaryKey . ' = :' . $model->primaryKey;
+        $params  = [$model->primaryKey => $id];
         $query = DB::query($sql, $params);
         
         if ($query) {
             // Obtenemos el nombre de las columnas
             $columns = $model->getColumnsWithoutId();
             // Generamos el objeto con sus atributos
-            foreach($columns as $column) {
-                $model->attributes[$column] = $query[$column];
+            foreach($columns as $field) {
+                $model->$field = $query[$field];
             }
             // Indicamos que existe el modelo, añadimos su identificador y lo retornamos
-            $model->id = $query[$model->primaryKey];
+            $model->{$model->primaryKey} = $query[$model->primaryKey];
             $model->exists = true;
             return $model;
         } else {
@@ -117,16 +121,16 @@ abstract class Model
         
         // Asignamos los valores de los campos
         foreach ($columns as $field) {
-            $this->attributes[$field] = (isset($this->$field)) ? $this->$field : null;
-            unset($this->$field);
+            $this->$field = (isset($this->$field)) ? $this->$field : null;
+            $params[] = $this->$field;
         }
         
         // Hacemos la consulta a la BBDD y comprobamos resultado
-        $query = DB::query($sql, $this->attributes, false);
+        $query = DB::query($sql, $params, false);
         
         if ($query) {
             // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
-            $this->id = DB::connection()->lastInsertId();
+            $this->{$model->primaryKey} = DB::connection()->lastInsertId();
             $this->exists = true;
             return true;
         }
@@ -156,22 +160,28 @@ abstract class Model
         // Creamos la consulta
         $fields = implode(', ', $columns);
         $stmt = preg_replace('#([\w]+)#', '${1}=:${1}', $fields);
-        $sql = "UPDATE $model->table SET $stmt WHERE id=" . $this->id;
+        $sql = 'UPDATE ' . $model->table . ' SET ' . $stmt . ' WHERE ' . $model->primaryKey . '=' . $this->{$model->primaryKey};
         
         // Asignamos los nuevos valores a los campos
-        // Si no existen, los valores serán los que ya tiene el modelo
+        // Exceptuando el identificador
         if (!$attributes) {
             foreach ($columns as $field) {
-                $this->attributes[$field] = (isset($this->$field)) ? $this->$field : $this->attributes[$field];
+                $this->$field = (! isset($this->$field)) ?: $this->$field;
+                if ($this->$field !== $model->primaryKey) {
+                    $params[] = $this->$field;
+                }
             }
         } else {
             foreach ($columns as $field) {
-                $this->attributes[$field] = (isset($attributes[$field])) ? $attributes[$field] : $this->attributes[$field];
+                $this->$field = (isset($attributes[$field])) ? $attributes[$field] : $this->$field;
+                if ($this->$field !== $model->primaryKey) {
+                    $params[] = $this->$field;
+                }
             }
         }
         
         // Hacemos la consulta a la BBDD y comprobamos resultado
-        $query = DB::query($sql, $this->attributes, false);
+        $query = DB::query($sql, $params, false);
         return ($query) ? true : false;
     }
     
@@ -191,7 +201,7 @@ abstract class Model
         $model = new static();
         
         // Creamos la consulta
-        $sql = "DELETE FROM $model->table WHERE id=" . $this->id;
+        $sql = 'DELETE FROM ' . $model->table . ' WHERE ' . $model->primaryKey . '=' . $this->{$model->primaryKey};
         
         // Hacemos la consulta a la BBDD y comprobamos resultado
         $query = DB::query($sql, null, false);
@@ -200,17 +210,12 @@ abstract class Model
     
     /**
      * Obtiene las columnas que tendrá el modelo sin el identificador de los campos. 
-     * Esto permitirá hacer inserciones de nuevos registros sin
-     * contar con el campo autoincremental. Que lo gestionará
-     * automáticamente la BBDD
+     * Esto permitirá crear consultas con declaraciones
      * 
      * @return array Las columnas de la tabla
      */
     private function getColumnsWithoutId()
     {
-        // Removemos el identificador de las columnas de la tabla
-        // Para no añadir datos sobre el identificador
-        // Así aseguramos no poder manipular accidentalmente la clave primaria
         $columns = DB::getNameColumns($this->table);
         foreach($columns as $key => $column) {
             if ($column === $this->primaryKey) {
@@ -219,5 +224,120 @@ abstract class Model
             }
         }
         return $columns;
+    }
+    
+    /**
+     * Guarda los atributos del modelo en un array
+     * 
+     * @param array $attributes
+     * @return void
+     */
+    private function fill(array $attributes)
+    {
+        if ($attributes) {
+            foreach ($attributes as $key => $attribute) {
+                $this->$key = $attribute;
+            }
+        }
+    }
+    
+    // --------------------------------------------------------------
+    // Métodos para la interface ArrayAccess
+    // --------------------------------------------------------------
+    
+    /**
+     * Get a data by key
+     *
+     * @param string The key data to retrieve
+     * @access public
+     */
+    public function &__get($key) {
+        return $this->attributes[$key];
+    }
+
+    /**
+     * Assigns a value to the specified data
+     *
+     * @param string The data key to assign the value to
+     * @param mixed  The value to set
+     * @access public
+     */
+    public function __set($key,$value) {
+        $this->attributes[$key] = $value;
+    }
+
+    /**
+     * Whether or not an data exists by key
+     *
+     * @param string An data key to check for
+     * @access public
+     * @return boolean
+     * @abstracting ArrayAccess
+     */
+    public function __isset ($key) {
+        return isset($this->attributes[$key]);
+    }
+
+    /**
+     * Unsets an data by key
+     *
+     * @param string The key to unset
+     * @access public
+     */
+    public function __unset($key) {
+        unset($this->attributes[$key]);
+    }
+
+    /**
+     * Assigns a value to the specified offset
+     *
+     * @param string The offset to assign the value to
+     * @param mixed  The value to set
+     * @access public
+     * @abstracting ArrayAccess
+     */
+    public function offsetSet($offset, $value) {
+        if (is_null($offset)) {
+            $this->attributes[] = $value;
+        } else {
+            $this->attributes[$offset] = $value;
+        }
+    }
+
+    /**
+     * Whether or not an offset exists
+     *
+     * @param string An offset to check for
+     * @access public
+     * @return boolean
+     * @abstracting ArrayAccess
+     */
+    public function offsetExists($offset) {
+        return isset($this->attributes[$offset]);
+    }
+
+    /**
+     * Unsets an offset
+     *
+     * @param string The offset to unset
+     * @access public
+     * @abstracting ArrayAccess
+     */
+    public function offsetUnset($offset) {
+        if ($this->offsetExists($offset)) {
+            unset($this->attributes[$offset]);
+        }
+    }
+
+    /**
+     * Returns the value at specified offset
+     *
+     * @param string The offset to retrieve
+     * @access public
+     * @return mixed
+     * @abstracting ArrayAccess
+     */
+    public function offsetGet($offset) {
+        return $this->offsetExists($offset) ? $this->attributes[$offset] : null;
     }
 }
