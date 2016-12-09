@@ -85,16 +85,9 @@ abstract class Model
     {
         $model = new static();
         
-        // Removemos el identificador de las columnas de la tabla
-        // Así aseguramos no poder manipular accidentalmente la clave primaria
-        $columns = DB::getNameColumns($model->table);
-        foreach($columns as $key => $column) {
-            if ($column === $model->primaryKey) {
-                unset($columns[$key]);
-                break; // Si remueve el identificador, termina el ciclo
-            }
-        }
-        
+        // Obtenemos las columnas de la tabla
+        $columns = $this->columnsWithoutId();
+                
         // Creamos la consulta
         $fields = implode(', ', $columns);
         $stmt = preg_replace('#([\w]+)#', ':${1}', $fields);
@@ -122,15 +115,8 @@ abstract class Model
     {
         $model = new static();
         
-        // Removemos el identificador de las columnas de la tabla
-        // Así aseguramos no poder manipular accidentalmente la clave primaria
-        $columns = DB::getNameColumns($model->table);
-        foreach($columns as $key => $column) {
-            if ($column === $model->primaryKey) {
-                unset($columns[$key]);
-                break; // Si remueve el identificador, termina el ciclo
-            }
-        }
+        // Obtenemos las columnas de la tabla
+        $columns = $this->columnsWithoutId();
         
         // Creamos la consulta
         $fields = implode(', ', $columns);
@@ -170,5 +156,29 @@ abstract class Model
         // Hacemos la consulta a la BBDD y comprobamos resultado
         $query = DB::query($sql, null, false);
         return ($query) ? true : false;
+    }
+    
+    /**
+     * Obtiene las columnas que tendrá el modelo sin el identificador de los campos. 
+     * Esto permitirá hacer inserciones de nuevos registros sin
+     * contar con el campo autoincremental. Que lo gestionará
+     * automáticamente la BBDD
+     * 
+     * @return array
+     */
+    private function columnsWithoutId()
+    {
+        $model = new static();
+        // Removemos el identificador de las columnas de la tabla
+        // Para no añadir datos sobre el identificador
+        // Así aseguramos no poder manipular accidentalmente la clave primaria
+        $columns = DB::getNameColumns($model->table);
+        foreach($columns as $key => $column) {
+            if ($column === $model->primaryKey) {
+                unset($columns[$key]);
+                break; // Si remueve el identificador, termina el ciclo
+            }
+        }
+        return $columns;
     }
 }

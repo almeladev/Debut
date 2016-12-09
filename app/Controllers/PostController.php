@@ -37,12 +37,12 @@ class PostController extends Controller
      * @return void
      */
     public function store()
-    {
+    { 
         $post = new Post([
             'title'   => $this->request->input('title'),
             'content' => $this->request->input('content'),
             'user_id' => Auth::user()->id
-        ]);
+        ]);     
         
         if ($post->save()) {
             return redirect('/posts');
@@ -65,8 +65,7 @@ class PostController extends Controller
         
         // Recuerda validar
         $post->title   = $this->request->input('title');
-        //$post->content = $this->request->input('content');
-        //$post->user_id = null;
+        $post->content = $this->request->input('content');
         
         if ($post->update()) {
             return redirect('/posts');
