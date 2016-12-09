@@ -20,13 +20,13 @@ abstract class Model
      * El id del modelo
      * @var mixed 
      */
-    protected $id = false;
+    public $id = false;
 
     /**
      * Comprueba si existe o no el modelo
      * @var boolean 
      */
-    protected $exists = false;
+    public $exists = false;
     
     /**
      * Constructor para los modelos
