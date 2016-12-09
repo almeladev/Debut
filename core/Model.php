@@ -110,12 +110,19 @@ abstract class Model
         
         // Asignamos los valores de los campos
         foreach ($columns as $field) {
-            $params[$field] = (isset($this->$field)) ? $this->$field : null;
+            $this->attributes[$field] = (isset($this->$field)) ? $this->$field : null;
+            unset($this->$field); // Elimino la propiedad que ahora pertenece al array de atributos
         }
         
         // Hacemos la consulta a la BBDD y comprobamos resultado
-        $query = DB::query($sql, $params, false);
-        return ($query) ? true : false;
+        $query = DB::query($sql, $this->attributes, false);
+        
+        if ($query) {
+            $this->attributes[$model->primaryKey] = DB::connection()->lastInsertId();
+            $this->exists = true;
+            return true;
+        }
+        return false;
     }
     
     /**
@@ -145,18 +152,19 @@ abstract class Model
         
         // Asignamos los nuevos valores a los campos
         // Si no existen, los valores serán los que ya tiene el modelo
+        unset($this->attributes[$model->primaryKey]); // El id ya no es necesario, es autoincremental.
         if (!$attributes) {
             foreach ($columns as $field) {
-                $params[$field] = (isset($this->$field)) ? $this->$field : $this->attributes[$field];
+                $this->attributes[$field] = (isset($this->$field)) ? $this->$field : $this->attributes[$field];
             }
         } else {
             foreach ($columns as $field) {
-                $params[$field] = (isset($attributes[$field])) ? $attributes[$field] : $this->attributes[$field];
+                $this->attributes[$field] = (isset($attributes[$field])) ? $attributes[$field] : $this->attributes[$field];
             }
         }
         
         // Hacemos la consulta a la BBDD y comprobamos resultado
-        $query = DB::query($sql, $params, false);
+        $query = DB::query($sql, $this->attributes, false);
         return ($query) ? true : false;
     }
     
@@ -205,5 +213,14 @@ abstract class Model
             }
         }
         return $columns;
+    }
+    
+    /**
+     * Añade los atributos al modelo
+     * 
+     */
+    private function getAttributes()
+    {
+        
     }
 }
