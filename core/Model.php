@@ -17,6 +17,12 @@ abstract class Model
     protected $primaryKey = 'id';
     
     /**
+     * Comprueba si existe o no el modelo
+     * @var boolean 
+     */
+    protected $exists = false;
+    
+    /**
      * Constructor para los modelos
      * 
      * @param array $attributes
@@ -50,10 +56,11 @@ abstract class Model
     /**
      * Obtiene el registro con el identificador elegido como
      * un objeto para luego hacer uso de las acciones save, update y delete
-     *
+     * Si no existe el registro, lanza una excepción
+     * 
      * @param  int $id El identificador
      *
-     * @return Object | boolean
+     * @return Object
      */
     public static function find($id)
     {
@@ -70,9 +77,12 @@ abstract class Model
             foreach($columns as $column) {
                 $model->attributes[$column] = $query[$column];
             }
+            // Indicamos que existe el modelo
+            $model->exists = true;
             return $model;
+        } else {
+            throw new \Exception('No existe el registro con identificador: ' . $id);
         }
-        return false;
     }
     
     /**
@@ -83,6 +93,11 @@ abstract class Model
      */
     public function save()
     {
+        // Solo continuar si el modelo no existe
+        if ($this->exists) {
+            return false;
+        }
+        
         $model = new static();
         
         // Obtenemos las columnas de la tabla
@@ -113,6 +128,11 @@ abstract class Model
      */
     public function update(array $attributes = [])
     {
+        // Solo continuar si el modelo existe
+        if (! $this->exists) {
+            return false;
+        }
+        
         $model = new static();
         
         // Obtenemos las columnas de la tabla
@@ -148,6 +168,11 @@ abstract class Model
      */
     public function delete()
     { 
+        // Solo continuar si el modelo existe
+        if (! $this->exists) {
+            return false;
+        }
+        
         $model = new static();
         
         // Creamos la consulta
