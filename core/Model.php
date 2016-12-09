@@ -227,17 +227,15 @@ abstract class Model implements \ArrayAccess
     }
     
     /**
-     * Guarda los atributos del modelo en un array
+     * Almacena los atributos del modelo en un array
      * 
      * @param array $attributes
      * @return void
      */
-    private function fill(array $attributes)
+    public function fill(array $attributes)
     {
-        if ($attributes) {
-            foreach ($attributes as $key => $attribute) {
-                $this->$key = $attribute;
-            }
+        foreach ($attributes as $key => $attribute) {
+            $this->$key = $attribute;
         }
     }
     
