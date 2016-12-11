@@ -14,7 +14,7 @@
 # Variables y funciones globales
 # ======================================================= #
 PROJECTFOLDER='www' # Nombre del directorio para los proyectos.
-MYSQL_PASSWORD='123' # Contraseña de MySQL.
+MYSQL_PASSWORD='secret' # Contraseña de MySQL.
 DATABASE_SQL='ejemplo.sql' # Base de datos.
 GIT_REPOS='https://github.com/DanMnez/Debut.git' # Repositorios del proyecto.
 
