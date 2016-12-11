@@ -12,7 +12,7 @@ Debut dispone de un <i>core</i> con las clases y métodos necesarios para empeza
 <li>DEMO login y logout</li>
 <li>DEMO CRUD (Create, Read, Update, Delete) de usuarios y posts</li>
 <li>Uso de motor de plantillas <i>Twig</i> para las vistas</li>
-<li>Compatibilidad con distintas bases de datos gracias a <i>DBAL</i> de Doctrine</li>
+<li>Compatibilidad con distintas bases de datos gracias a la integración de <i>DBAL</i> de Doctrine</li>
 <li>Manejador de dependencias <i>Composer</i> integrado</li>
 <li>Código claro y comentado</li>
 <li>Control de errores para modo desarrollo y modo producción</li>
