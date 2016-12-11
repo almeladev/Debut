@@ -20,11 +20,16 @@
  */
 function config($var, $default = null)
 {
-    $array_ini = parse_ini_file(ROOT . 'config.ini');
-    $data = (isset($array_ini[$var])) ? $array_ini[$var] : null;
+    $file = APP . 'config.php';
+    
+    if (!file_exists($file)) {
+        throw new \Exception('No existe el archivo de configuración', 404);
+    }
+    
+    $array = require $file;
+    $data = (isset($array[$var])) ? $array[$var] : null;
     
     $config = (! empty($data)) ? $data : $default;
-    
     return $config;
 }
 

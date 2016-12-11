@@ -42,7 +42,7 @@ class Config {
         if (!file_exists($file)) {
             throw new \Exception('No existe el archivo de configuración', 404);
         }
-        static::$items = include ROOT . 'config/' . $filepath . '.php';
+        static::$items = require ROOT . 'config/' . $filepath . '.php';
     }
 
 }

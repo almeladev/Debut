@@ -29,7 +29,7 @@ return [
         'pdo_mysql' => [
             'driver'   => 'pdo_mysql',
             'host'     => config('DB_HOST', 'localhost'),
-            'port'     => config('DB_PORT', '3306'),
+            'port'     => config('DB_PORT', 3306),
             'dbname'   => config('DB_DATABASE', ''),
             'user'     => config('DB_USERNAME', ''),
             'password' => config('DB_PASSWORD', ''),
@@ -39,7 +39,7 @@ return [
         'pdo_pgsql' => [
             'driver'   => 'pdo_pgsql',
             'host'     => config('DB_HOST', 'localhost'),
-            'port'     => config('DB_PORT', '5432'),
+            'port'     => config('DB_PORT', 5432),
             'dbname'   => config('DB_DATABASE', ''),
             'user'     => config('DB_USERNAME', ''),
             'password' => config('DB_PASSWORD', ''),

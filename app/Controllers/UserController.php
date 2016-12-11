@@ -42,7 +42,7 @@ class UserController extends Controller
             'password' => md5($this->request->input('pass'))
         ]);
         
-        if ($user->save()) {
+        if ($user->save()) {     
             return redirect('/users');
         } else {
             throw new \Exception('No se ha podido crear el usuario', 500);

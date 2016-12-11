@@ -1,7 +1,7 @@
 {
     "name": "danmnez/debut",
     "description": "Framework PHP para los que quieren MVC fácil",
-    "keywords": ["framework", "debut", "mvc"],
+    "keywords": ["framework", "debut", "mvc", "oop", "pdo"],
     "license": "MIT",
     "authors": [
         {
