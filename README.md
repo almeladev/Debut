@@ -22,6 +22,7 @@ Debut dispone de un <i>core</i> con las clases y métodos necesarios para empeza
 
 ## ¿Necesito? (La instalación con Vagrant se encarga de todo)
 <ul>
+<li>PHP 5.3.0+</li>
 <li>Módulo reescritura para urls amigables (mod_rewrite) activado</li>
 <li>Composer</li>
 </ul>
