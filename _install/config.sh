@@ -5,17 +5,17 @@
 # Archivo de configuración automática para la box 
 # Ubuntu 16.04 en Vagrant.
 #
-# Autor: Daniel Martínez <danmnez.me>
+# Autor: Daniel Martínez <danielmartinezalmela@gmail.com>
 # Creado: 14.09.2016
-# Actualizado: 20.11.2016
+# Actualizado: 11.12.2016
 # ======================================================= #
 
 # ======================================================= #
 # Variables y funciones globales
 # ======================================================= #
 PROJECTFOLDER='www' # Nombre del directorio para los proyectos.
-MYSQL_PASSWORD='123' # Contraseña de MySQL.
-DATABASE_SQL='ejemplo.sql' # Base de datos.
+MYSQL_PASSWORD='secret' # Contraseña de MySQL.
+DATABASE_SQL='ejemplo_mysql.sql' # Base de datos.
 GIT_REPOS='https://github.com/DanMnez/Debut.git' # Repositorios del proyecto.
 
 update() {
