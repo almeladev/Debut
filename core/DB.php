@@ -7,31 +7,24 @@ use PDO;
 abstract class DB
 {
     /**
-     * Conexión a la base de datos usando la clase PDO
+     * Conexión a la base de datos usando DBAL de Doctrine
      *
      * @return mixed
      */
     public static function connection()
     {
-        // Archivo de configuración de la aplicación
-        $db_config = (require_once ROOT . 'config/database.php');
-
-        $driver_default = $db_config['default'];
-        $db_config = $db_config['connections'][$driver_default];
+        static $conn = null;
         
-        static $db = null;
-
-        if ($db === null) {
-            $dsn = $db_config['driver'] . ':host=' . $db_config['host'] . ';dbname=' .
-                $db_config['database'] . ';charset=' . $db_config['charset'];
-
-            $db = new PDO($dsn, $db_config['username'], $db_config['password']);
-
-            // Arroja los errores si los hubiese
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        if ($conn === null) {
+            
+            $config = new \Doctrine\DBAL\Configuration();
+            $db_config = Config::get('database');
+            $connectionParams = $db_config['connections'][$db_config['default']];
+        
+            $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
         }
-
-        return $db;
+        
+        return $conn;
     }
 
     /**
@@ -41,19 +34,39 @@ abstract class DB
      * @param  array   $params Parámetros de la consulta
      * @param  boolean $fetch  Si la consulta recupera datos
      *
-     * @return mixed Datos de la consulta y boolean
+     * @return mixed Datos de la consulta o boolean
      */
     public static function query($sql, $params = null, $fetch = true)
     {
         $stmt = static::connection()->prepare($sql);
         
         if ($stmt->execute($params)) {
-            
-            if ($fetch) {
-                $result = ($params) ? $stmt->fetch(PDO::FETCH_ASSOC) : $stmt->fetchAll(PDO::FETCH_ASSOC);
-                return $result;
+            return ($fetch) ? $result = ($params) ? $stmt->fetch(PDO::FETCH_ASSOC) : $stmt->fetchAll(PDO::FETCH_ASSOC) : true;
+        }
+        return false;
+    }
+    
+    /**
+     * Obtiene el nombre de las columnas de una tabla
+     * Esto es muy importante para la completa abstracción de la BBDD
+     * 
+     * @param string $table La tabla a consultar
+     * 
+     * @return mixed El nombre de las columnas o boolean
+     */
+    public static function getNameColumns($table)
+    {
+        $stmt = static::connection()->getSchemaManager();
+        
+        $columns = $stmt->listTableColumns($table);
+        
+        if (! empty($columns)) {
+            // Obtenemos el nombre de cada campo
+            foreach ($columns as $column) {
+                $name = $column->getName();
+                $columns_name[] = $name;
             }
-            return true;
+            return $columns_name;
         }
         return false;
     }

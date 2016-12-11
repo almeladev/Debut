@@ -14,18 +14,36 @@
  * Obtiene los datos de las variables de entorno
  * 
  * @param string $var
- * @param mixed $default
+ * @param mixed  $default
  * 
- * @return $data
+ * @return $config
  */
 function config($var, $default = null)
 {
-    $array_ini = parse_ini_file(ROOT . 'config.ini');
-    $data = $array_ini[$var];
+    $file = APP . 'config.php';
+    
+    if (!file_exists($file)) {
+        throw new \Exception('No existe el archivo de configuración', 404);
+    }
+    
+    $array = require $file;
+    $data = (isset($array[$var])) ? $array[$var] : null;
     
     $config = (! empty($data)) ? $data : $default;
-    
     return $config;
+}
+
+/**
+ * Renderiza la plantilla con los datos
+ * 
+ * @param string $view
+ * @param array  $args
+ * 
+ * @return void
+ */
+function view($view, array $args = [])
+{
+    return \core\View::template($view, $args);
 }
 
 /**

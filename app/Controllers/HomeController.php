@@ -3,7 +3,6 @@
 namespace app\Controllers;
 
 use core\Controller;
-use core\View;
 
 class HomeController extends Controller
 {
@@ -14,9 +13,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        View::template('index.twig.html', [
-            'title' => 'Debut framework',
-        ]);
+        return view('index.twig', ['title' => 'Debut framework']);
     }
     
     /**
@@ -26,8 +23,6 @@ class HomeController extends Controller
      */
     public function menu()
     {
-        View::template('menu.twig.html', [
-            'title' => 'Menú',
-        ]);
+        return view('menu.twig', ['title' => 'Menú']);
     }
 }

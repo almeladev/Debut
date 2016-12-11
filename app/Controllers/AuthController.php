@@ -4,7 +4,6 @@ namespace app\Controllers;
 
 use core\Auth;
 use core\Controller;
-use core\View;
 
 class AuthController extends Controller
 {
@@ -16,7 +15,7 @@ class AuthController extends Controller
     public function getLogin()
     {
         if (!Auth::check()) {
-            View::template('auth/login.twig.html');
+            return view('auth/login.twig');
         } else {
             return redirect('/menu');
         }

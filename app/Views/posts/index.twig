@@ -1,4 +1,4 @@
-{% extends "base.twig.html" %}
+{% extends "base.twig" %}
 
 {% block title %}Posts{% endblock %}
 
@@ -26,7 +26,7 @@
   {% for post in posts %}
     <tr>
       <td>{{ post.title }}</td>
-      <td>{{ post.content }}</td>
+      <td>{{ post.content|truncate(100) }}</td>
       <td>{{ post.author }}</td>
       <td class="text-center">
         <form action="/posts/delete/{{ post.id }}" method="post">

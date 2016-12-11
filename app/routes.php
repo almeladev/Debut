@@ -15,8 +15,9 @@ use core\Routing\Router;
 */
 
 // Welcome :)
-Router::get('/welcome', function () {
-    echo "<h1>Welcome :)</h1>";
+$app = 'is awesome';
+Router::get('/welcome', function () use ($app) {
+    echo "<h1>Welcome :) Debut $app</h1>";
 });
 
 // Home

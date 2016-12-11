@@ -5,8 +5,6 @@ namespace app\Controllers;
 use app\Models\User;
 use core\Auth;
 use core\Controller;
-use core\View;
-
 
 class UserController extends Controller
 {
@@ -19,17 +17,14 @@ class UserController extends Controller
     public function index()
     {
         if (Auth::check()) {
-
             $users = User::all();
-
-            View::template('users/index.twig.html', [
+  
+            return view('users/index.twig', [
                 'users' => $users,
             ]);
-
         } else {
             return redirect('/');
         }
-        
     }
 
     /**
@@ -40,14 +35,14 @@ class UserController extends Controller
      */
     public function store()
     {
-        $user = new User();     
-        
         // Recuerda validar
-        $user->name     = $this->request->input('name');
-        $user->email    = $this->request->input('email');
-        $user->password = md5($this->request->input('pass'));
+        $user = new User([
+            'name'     => $this->request->input('name'),
+            'email'    => $this->request->input('email'),
+            'password' => md5($this->request->input('pass'))
+        ]);
         
-        if ($user->save()) {
+        if ($user->save()) {     
             return redirect('/users');
         } else {
             throw new \Exception('No se ha podido crear el usuario', 500);
@@ -66,14 +61,13 @@ class UserController extends Controller
     {
         $user = User::find($id);
         
-        // Recuerda validar
-        $user->name     = $this->request->input('name');
-        $user->email    = $this->request->input('email');
-        if (! empty($this->request->input('pass'))) {
-            $user->password = md5($this->request->input('pass'));
-        }
-        
-        if ($user->update()) {
+        $newData = [
+            'name'     => $this->request->input('name'),
+            'email'    => $this->request->input('email'),
+            'password' => md5($this->request->input('pass'))
+        ];
+            
+        if ($user->update($newData)) {
             return redirect('/users');
         } else {
             throw new \Exception('No se ha podido actualizar el usuario', 500);

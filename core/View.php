@@ -38,15 +38,21 @@ class View
      *
      * @return void
      */
-    public static function template($template, $args = [])
+    public static function template($template, array $args = [])
     {
         $loader = new \Twig_Loader_Filesystem(APP . 'Views');
         
         // Añadir cache para optimizar el renderizado de las vistas ya procesadas (necesita permisos)
         $twig = new \Twig_Environment($loader, array(
+            //'debug' => true,
             //'cache' => ROOT . 'storage/cache',
         ));
         
+        // Añade extensiones útiles para el motor de plantillas => http://twig.sensiolabs.org/doc/extensions/index.html#extensions-install
+        $twig->addExtension(new \Twig_Extensions_Extension_Text());
+        // Añade extensiones para depurar
+        //$twig->addExtension(new \Twig_Extension_Debug());
+
         echo $twig->render($template, $args);
     }
 }

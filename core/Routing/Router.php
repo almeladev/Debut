@@ -9,7 +9,7 @@ class Router
      *
      * @var array
      */
-    private static $routes = [];
+    private static $routes = array();
 
     /**
      * Añade a la ruta el método de envío GET

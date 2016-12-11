@@ -13,15 +13,6 @@ class User extends Model
      * @var string
      */
     protected $table = 'users';
-
-    /**
-     * Campos de la base de datos
-     *
-     * @var mixed
-     */
-    protected $fields = [
-        'name', 'email', 'password',
-    ];
     
     /**
      * Relacion con la tabla posts. Obtiene
@@ -33,7 +24,8 @@ class User extends Model
     {
         $sql = 'SELECT posts.*, users.name as author ' 
              . 'FROM users ' 
-             . 'RIGHT JOIN posts on users.id = posts.user_id';
+             . 'RIGHT JOIN posts on users.id = posts.user_id ' 
+             . 'ORDER BY id';
         
         $result = DB::query($sql);
         return $result;

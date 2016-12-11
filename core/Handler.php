@@ -52,7 +52,7 @@ class Handler
         http_response_code($code);
 
         // Archivo de configuración de la aplicación
-        $app_config = (require_once ROOT . 'config/app.php');
+        $app_config = Config::get('app');
        
         if ($app_config['debug']) {
             echo "<h1>¡Error!</h1>";
@@ -62,7 +62,7 @@ class Handler
             echo "<p>Excepción arrojada en el archivo '" . $exception->getFile() . "' en la línea " . $exception->getLine() . "</p>";
         } else {
 
-            $log = ROOT . 'storage/logs/' . date('Y-m-d') . '.txt';
+            $log = ROOT . 'storage/logs/' . date('Y-m-d-H:i:s') . '.log';
             ini_set('error_log', $log);
 
             $message = "Clase de excepción: '" . get_class($exception) . "'";
@@ -72,7 +72,7 @@ class Handler
 
             error_log($message);
             
-            View::template("errors/$code.twig.html"); // Directorio de los archivos de registro
+            return view("errors/$code.twig"); // Directorio de los archivos de registro
         }
     }
 }

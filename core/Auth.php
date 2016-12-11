@@ -11,8 +11,6 @@ class Auth
      */
     public static function check()
     {
-        session_start();
-
         if (isset($_SESSION["user"])) {
             return true;
         }
@@ -35,13 +33,10 @@ class Auth
             'email'    => $identity,
             'password' => md5($password),
         ];
-
         $result = DB::query($sql, $params);
 
         if ($result) {
-            session_start();
             $_SESSION["user"] = $identity;
-
             return true;
         }
         return false;
@@ -54,7 +49,6 @@ class Auth
      */
     public static function logout()
     {
-        session_start();
         session_destroy();
     }
     
@@ -64,11 +58,8 @@ class Auth
      * @return object
      */
     public static function user()
-    {
-        session_start();
-        
-        if ($_SESSION["user"]) {
-            
+    {    
+        if (self::check()) {
             $sql = "SELECT * FROM users WHERE email= :email";
             $params = ['email' => $_SESSION["user"]];
             

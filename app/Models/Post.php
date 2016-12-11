@@ -12,14 +12,15 @@ class Post extends Model
      * @var string
      */
     protected $table = 'posts';
-
+    
     /**
-     * Campos de la base de datos
-     *
-     * @var mixed
+     * Reglas para la validación
+     * 
+     * @var string 
      */
-    protected $fields = [
-        'title', 'content', 'user_id',
-    ];
+//    public $rules = [
+//        'title'   => 'required',
+//        'content' => 'required',
+//    ];
 
 }

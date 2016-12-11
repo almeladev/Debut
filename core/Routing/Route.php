@@ -20,7 +20,7 @@ class Route
      * Partes de la ruta
      * @var array
      */
-    private $matches = [];
+    private $matches = array();
 
     public function __construct($path, $callable)
     {
