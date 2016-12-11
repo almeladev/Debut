@@ -15,7 +15,7 @@
 # ======================================================= #
 PROJECTFOLDER='www' # Nombre del directorio para los proyectos.
 MYSQL_PASSWORD='secret' # Contraseña de MySQL.
-DATABASE_SQL='ejemplo.sql' # Base de datos.
+DATABASE_SQL='ejemplo_mysql.sql' # Base de datos.
 GIT_REPOS='https://github.com/DanMnez/Debut.git' # Repositorios del proyecto.
 
 update() {
