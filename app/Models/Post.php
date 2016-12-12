@@ -16,11 +16,11 @@ class Post extends Model
     /**
      * Reglas para la validación
      * 
-     * @var string 
+     * @var array
      */
-//    public $rules = [
-//        'title'   => 'required',
-//        'content' => 'required',
-//    ];
+    public $rules = [
+        'title'   => 'required|unique',
+        'content' => 'required',
+    ];
 
 }
