@@ -8,6 +8,7 @@ Debut dispone de un <i>core</i> con las clases y métodos necesarios para empeza
 <li>Sencillo, estructurado, con ejemplos y fácil de entender</li>
 <li>Instalación 100% automática con Vagrant</li>
 <li>Integración con Bootstrap CSS y JS</li>
+<li>Autocarga de clases automática</li>
 <li>Puedes definir rutas cortas y claras</li>
 <li>DEMO login y logout</li>
 <li>DEMO CRUD (Create, Read, Update, Delete) de usuarios y posts</li>
