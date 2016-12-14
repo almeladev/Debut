@@ -121,7 +121,7 @@ abstract class Model implements \ArrayAccess
         // Asignamos los valores de los campos
         foreach ($columns as $field) {
             $this->$field = (isset($this->$field)) ? $this->$field : null;
-            $params[] = $this->$field;
+            $params[$field] = $this->$field;
         }
         
         // Hacemos la consulta a la BBDD y comprobamos resultado
@@ -166,14 +166,14 @@ abstract class Model implements \ArrayAccess
             foreach ($columns as $field) {
                 $this->$field = (! isset($this->$field)) ?: $this->$field;
                 if ($this->$field !== $model->primaryKey) {
-                    $params[] = $this->$field;
+                    $params[$field] = $this->$field;
                 }
             }
         } else {
             foreach ($columns as $field) {
                 $this->$field = (isset($attributes[$field])) ? $attributes[$field] : $this->$field;
                 if ($this->$field !== $model->primaryKey) {
-                    $params[] = $this->$field;
+                    $params[$field] = $this->$field;
                 }
             }
         }
