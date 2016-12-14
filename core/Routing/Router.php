@@ -61,12 +61,7 @@ class Router
      */
     private function getUrl()
     {
-        if (!isset($_GET['url'])) {
-            $url = '/';
-        } else {
-            $url = $_GET['url'];
-        }
-
+        $url = (!isset($_GET['url'])) ? '/' : $_GET['url'];
         return $url;
     }
 
