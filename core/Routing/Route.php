@@ -63,7 +63,7 @@ class Route
     {
         if (is_string($this->callable)) {
 
-            $params = explode('@', $this->callable);
+            $params = explode('#', $this->callable);
 
             $controller = $params[0];
             $controller = "app\Controllers\\$controller";

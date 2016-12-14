@@ -21,27 +21,27 @@ Router::get('/welcome', function () use ($app) {
 });
 
 // Home
-Router::get('/', 'HomeController@index');
-Router::get('/menu', 'HomeController@menu');
+Router::get('/', 'HomeController#index');
+Router::get('/menu', 'HomeController#menu');
 
 // login
-Router::get('/login', 'AuthController@getLogin');
-Router::post('/login', 'AuthController@postLogin');
+Router::get('/login', 'AuthController#getLogin');
+Router::post('/login', 'AuthController#postLogin');
 // logout
-Router::get('/logout', 'AuthController@getlogout');
+Router::get('/logout', 'AuthController#getlogout');
 
 /**
  * CRUD de usuarios.
  */
-Router::get('/users', 'UserController@index');                  // READ
-Router::post('/users/store', 'UserController@store');           // CREATE
-Router::post('/users/update/{id}', 'UserController@update');    // UPDATE
-Router::post('/users/delete/{id}', 'UserController@destroy');   // DELETE
+Router::get('/users', 'UserController#index');                  // READ
+Router::post('/users/store', 'UserController#store');           // CREATE
+Router::post('/users/update/{id}', 'UserController#update');    // UPDATE
+Router::post('/users/delete/{id}', 'UserController#destroy');   // DELETE
 
 /**
  * CRUD de posts
  */
-Router::get('/posts', 'PostController@index');                  // READ
-Router::post('/posts/store', 'PostController@store');           // CREATE
-Router::post('/posts/update/{id}', 'PostController@update');    // UPDATE
-Router::post('/posts/delete/{id}', 'PostController@destroy');   // DELETE
+Router::get('/posts', 'PostController#index');                  // READ
+Router::post('/posts/store', 'PostController#store');           // CREATE
+Router::post('/posts/update/{id}', 'PostController#update');    // UPDATE
+Router::post('/posts/delete/{id}', 'PostController#destroy');   // DELETE
