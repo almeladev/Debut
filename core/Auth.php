@@ -23,21 +23,25 @@ class Auth
      * @param $identity El identificador
      * @param $password Contraseña
      *
-     * @return boolean true si ha iniciado sesión. false si no.
+     * @return boolean true si ha iniciado sesión. false si no
      */
     public static function login($identity, $password)
     {
-        $sql = "SELECT * FROM users WHERE email= :email AND password= :password";
+        $sql = 'SELECT * FROM users WHERE email= :email';
+        $params = ['email' => $identity];
+        
+        $user = DB::query($sql, $params);
 
-        $params = [
-            'email'    => $identity,
-            'password' => md5($password),
-        ];
-        $result = DB::query($sql, $params);
-
-        if ($result) {
-            $_SESSION["user"] = $identity;
-            return true;
+        if ($user) {
+            // Verifica que la contraseña sea correcta
+            if (Hash::check($password, $user['password'])) {
+                
+                // La password no será guardada en $_SESSION, por seguridad
+                unset($user['password']);
+                
+                $_SESSION["user"] = $user;
+                return true;
+            }
         }
         return false;
     }

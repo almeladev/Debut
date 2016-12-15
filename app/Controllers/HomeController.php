@@ -3,6 +3,7 @@
 namespace app\Controllers;
 
 use core\Controller;
+use core\Auth;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,13 @@ class HomeController extends Controller
      */
     public function menu()
     {
-        return view('menu.twig', ['title' => 'Menú']);
+        if (Auth::check()) {
+            return view('menu.twig', ['title' => 'Menú']);
+        }
+        
+        // Acceso denegado (falta de permisos)
+        //return view('');
+        
+        return redirect('/');
     }
 }

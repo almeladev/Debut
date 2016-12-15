@@ -47,6 +47,18 @@ function view($view, array $args = [])
 }
 
 /**
+ * Encripta una contraseña
+ * 
+ * @param type $password
+ * 
+ * @return string
+ */
+function encrypt($password)
+{
+    return \core\Hash::make($password);
+}
+
+/**
  * Redirreciona a la ruta elegida
  *
  * @param string $path La ruta
