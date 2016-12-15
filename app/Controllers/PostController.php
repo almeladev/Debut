@@ -3,7 +3,6 @@
 namespace app\Controllers;
 
 use app\Models\Post;
-use app\Models\User;
 use core\Auth;
 use core\Controller;
 
@@ -19,8 +18,8 @@ class PostController extends Controller
     public function index()
     {
         if (Auth::check()) {
-            // Todos los posts de los usuarios
-            $posts = User::posts();
+            // Todos los posts con sus usuarios
+            $posts = Post::withUsers();
             
             return view('posts/index.twig', [
                 'posts' => $posts,

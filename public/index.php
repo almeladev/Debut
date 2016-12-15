@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Debut - Framework PHP extremadamente simple para los que quieren MVC fácil.
+ * Debut - Micro-framework PHP para los que quieren MVC fácil.
  *
  * @package  Debut
  * @author   Daniel Martínez <danielmartinezalmela@gmail.com>

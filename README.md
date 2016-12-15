@@ -1,5 +1,5 @@
 # Debut
-Debut es un micro framework PHP super simple pensado para ofrecer una estructura mínima para trabajar con el patrón arquitectónico Modelo–Vista–Controlador.
+Debut es un micro framework PHP súper simple pensado para ofrecer una estructura mínima para trabajar con el patrón arquitectónico Modelo–Vista–Controlador.
 
 Debut dispone de un <i>core</i> con las clases y métodos necesarios para empezar a trabajar en tu próxima aplicación web. Puedes crear rutas para tu aplicación y hacer cualquier CRUD de una forma rápida y sencilla. ¡Además su instalación es muy fácil con Vagrant!
 
