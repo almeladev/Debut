@@ -14,7 +14,7 @@ return array(
     /**
      * Configuración general para la aplicación
      * 
-     * APP_DEBUG: modo depurador 
+     * APP_DEBUG: modo depurador. Si se desactiva, empezará a usarse caché en las vistas y el registro de logs (storage)
      */
     "APP_DEBUG" => true,
     
