@@ -42,14 +42,7 @@ Si no usas Vagrant, puedes instalar Debut y su base de datos manualmente en tu s
 ## Post-Instalación
 Una vez tengamos Debut corriendo en nuestro servidor, debemos establecer la configuración que tendrá nuestro framework. El archivo de configuración que usa Debut se encuentra en <b>app/config.php</b>, en él debemos establecer nuestra configuración propia.
 
-Es necesario dar permisos a la carpeta "storage" y a sus subcarpetas: <code>$ chmod 777 -R storage/</code>
-
-¡Extra! (opcional): En principio el cache para <i>Twig</i> está desactivado, si queremos usar cache para las vistas debemos descomentar en la clase View en el método template la línea que establece el directorio para la cache. 
-<pre><code>$twig = new \Twig_Environment($loader, array(
-  //'cache' => ROOT . 'storage/cache',
-));
-</code></pre>
-¡Genial para el modo producción!
+Es necesario dar permisos a la carpeta "storage" y a sus subcarpetas si vamos a trabajar en modo producción: <code>$ chmod 777 -R storage/</code>
 
 ## Licencia
 Debut se encuentra bajo una licencia MIT. Eres libre de modificar y adaptar el código para uso personal o comercial.
