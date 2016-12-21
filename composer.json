@@ -1,6 +1,6 @@
 {
     "name": "danmnez/debut",
-    "description": "Framework PHP para los que quieren MVC fácil",
+    "description": "Micro-framework PHP para los que quieren MVC fácil",
     "keywords": ["framework", "debut", "mvc", "oop", "pdo"],
     "license": "MIT",
     "authors": [
@@ -12,9 +12,13 @@
     "require": {
         "twig/twig": "~1.0",
         "twig/extensions": "^1.4",
-        "doctrine/dbal": "v2.5.5"
+        "doctrine/dbal": "2.5.*",
+        "doctrine/migrations": "v1.4.1"
     },
     "autoload": {
+        "classmap": [
+            "migrations"
+        ],
         "psr-4": {
              "core\\": "core/",
              "app\\": "app/"

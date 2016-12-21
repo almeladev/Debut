@@ -28,7 +28,7 @@ return array(
     "DB_PORT"       => 3306,
     "DB_DATABASE"   => "debut",
     "DB_USERNAME"   => "root",
-    "DB_PASSWORD"   => "hezusuma",
+    "DB_PASSWORD"   => "secret",
     "DB_CHARSET"    => "utf8",
     
 );
