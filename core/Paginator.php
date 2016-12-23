@@ -90,44 +90,41 @@ class Paginator {
     }
     
     /**
-     * Get the html links for the generated page offset
+     * Obtiene los enlaces html para el desplazamiento por páginas
      * 
-     * @param array $params A list of parameters (probably get/post) to
-     * pass around with each request
-     * @return mixed  Return description (if any) ...
-     * @access public 
+     * @return mixed  El HTML de la paginación o false
      */
     public function getLinks()
     {
-      // Initiate the links array
-      $plinks = array();
+      // Inicializa el conjunto de enlaces
       $links  = array();
-      $slinks = array();
       
-      // If we have more then one pages
+      // Solo seguimos si tenemos más de una página
       if (($this->pages) > 1) {
-        // Assign the 'previous page' link into the array if we are not on the first page
+          
+        // Si no está en la primera página, asigna el enlace "Anterior"
         if ($this->page != 1) {
-            $plinks[] = '<li><a href="?page='.($this->page - 1).'">&laquo; Prev</a></li>';
+            $links[] = '<li><a href="?page='.($this->page - 1).'">&laquo; Anterior</a></li>';
         }
         
-        // Assign all the page numbers & links to the array
-        for ($j = 1; $j < ($this->pages + 1); $j++) {
-          if ($this->page == $j) {
-            $links[] = '<li class="active"><a>'.$j.'</a></li>'; // If we are on the same page as the current item
+        // Asigna todos los números al array
+        for ($i = 1; $i < ($this->pages + 1); $i++) {
+          if ($this->page == $i) {
+            $links[] = '<li class="active"><a>'.$i.'</a></li>'; // Añade estilos a la página activa
           } else {
-            $links[] = ' <li><a href="?page='.$j.'">'.$j.'</a></li>'; // add the link to the array
+            $links[] = ' <li><a href="?page='.$i.'">'.$i.'</a></li>';
           }
         }
         
-        // Assign the 'next page' if we are not on the last page
+        // Si no está en la última página, asigna el enlace "Siguiente"
         if ($this->page < $this->pages) {
-            $slinks[] = '<li><a href="?page='.($this->page + 1).'"> Next &raquo; </a></li>';
+            $links[] = '<li><a href="?page='.($this->page + 1).'"> Siguiente &raquo; </a></li>';
         }
         
-        // Push the array into a string using any some glue
-        return implode(' ', $plinks).implode($this->mainSeperator, $links).implode(' ', $slinks);
+        // Devuelve el array de links como un string
+        return implode($links);
       }
+      
       return false;
     }
 }
