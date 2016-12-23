@@ -48,8 +48,7 @@ abstract class Model implements \ArrayAccess
     }
 
     /**
-     * Todos los registros de la base de
-     * datos
+     * Todos los registros de la tabla
      *
      * @return array | boolean
      */

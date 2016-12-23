@@ -5,7 +5,7 @@ namespace app\Controllers;
 use app\Models\Post;
 use core\Auth;
 use core\Controller;
-
+use core\Paginator;
 
 class PostController extends Controller
 {
@@ -18,11 +18,20 @@ class PostController extends Controller
     public function index()
     {
         if (Auth::check()) {
+            
             // Todos los posts con sus usuarios
-            $posts = Post::withUsers();
+            $all = Post::withUsers();
+  
+            // Paginación del array de posts
+            $pagination = new Paginator($all);
+            
+            // Posts paginados
+            $posts = $pagination->getResults(); // Posts por página
+            $links = $pagination->getLinks();   // páginas
             
             return view('posts/index.twig', [
                 'posts' => $posts,
+                'links' => $links
             ]);
         } else {
             return redirect('/');

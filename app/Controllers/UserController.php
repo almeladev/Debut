@@ -5,6 +5,7 @@ namespace app\Controllers;
 use app\Models\User;
 use core\Auth;
 use core\Controller;
+use core\Paginator;
 
 class UserController extends Controller
 {
@@ -17,10 +18,19 @@ class UserController extends Controller
     public function index()
     {
         if (Auth::check()) {
-            $users = User::all();
-  
+            
+            // Todos los usuarios
+            $all = User::all();
+            // Paginación del array de usuarios
+            $pagination = new Paginator($all, 1);
+            
+            // Usuarios paginados
+            $users = $pagination->getResults();
+            $links = $pagination->getLinks();
+                    
             return view('users/index.twig', [
                 'users' => $users,
+                'links' => $links
             ]);
         } else {
             return redirect('/');
