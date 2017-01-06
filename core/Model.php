@@ -2,12 +2,6 @@
 
 namespace core;
 
-
-/**
- * El modelo base está pensado para facilitar las tareas comunes
- * de los modelos. Implementa la interface ArrayAccess para
- * tratar el array de los atributos
- */
 abstract class Model
 {
     /**
@@ -133,14 +127,11 @@ abstract class Model
         $query = DB::query($sql, $params);
         
         if ($query) {
-            // Obtenemos el nombre de las columnas
-            $columns = $model->getColumnsWithoutId();
             // Generamos el objeto con sus atributos
-            foreach($columns as $field) {
-                $model->$field = $query[$field];
+            foreach($query as $key => $field) {
+                $model->$key = $field;
             }
-            // Indicamos que existe el modelo, añadimos su identificador y lo retornamos
-            $model->{$model->primaryKey} = $query[$model->primaryKey];
+            // Indicamos que existe el modelo y lo retornamos
             $model->exists = true;
             return $model;
         } else {
