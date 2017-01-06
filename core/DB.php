@@ -45,29 +45,4 @@ abstract class DB
         }
         return false;
     }
-    
-    /**
-     * Obtiene el nombre de las columnas de una tabla
-     * Esto es muy importante para la completa abstracción de la BBDD
-     * 
-     * @param string $table La tabla a consultar
-     * 
-     * @return mixed El nombre de las columnas o boolean
-     */
-    public static function getNameColumns($table)
-    {
-        $stmt = static::connection()->getSchemaManager();
-        
-        $columns = $stmt->listTableColumns($table);
-        
-        if (! empty($columns)) {
-            // Obtenemos el nombre de cada campo
-            foreach ($columns as $column) {
-                $name = $column->getName();
-                $columns_name[] = $name;
-            }
-            return $columns_name;
-        }
-        return false;
-    }
 }

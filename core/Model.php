@@ -184,8 +184,8 @@ abstract class Model
      * Modifica los datos del modelo en la
      * base de datos
      * 
-     * @param array $attributes
-     * @return boolean
+     * @param array $attributes Los atributos del modelo
+     * @return bool
      */
     public function update(array $attributes = [])
     {
@@ -195,36 +195,12 @@ abstract class Model
         }
         
         $model = new static();
+        $conn = DB::connection();
+        $data = (!$attributes) ? $this->attributes : $attributes;
         
-        // Obtenemos las columnas de la tabla
-        $columns = $this->getColumnsWithoutId();
-        
-        // Creamos la consulta
-        $fields = implode(', ', $columns);
-        $stmt = preg_replace('#([\w]+)#', '${1}=:${1}', $fields);
-        $sql = 'UPDATE ' . $model->table . ' SET ' . $stmt . ' WHERE ' . $model->primaryKey . '=' . $this->{$model->primaryKey};
-        
-        // Asignamos los nuevos valores a los campos
-        // Exceptuando el identificador
-        if (!$attributes) {
-            foreach ($columns as $field) {
-                $this->$field = (! isset($this->$field)) ?: $this->$field;
-                if ($this->$field !== $model->primaryKey) {
-                    $params[$field] = $this->$field;
-                }
-            }
-        } else {
-            foreach ($columns as $field) {
-                $this->$field = (isset($attributes[$field])) ? $attributes[$field] : $this->$field;
-                if ($this->$field !== $model->primaryKey) {
-                    $params[$field] = $this->$field;
-                }
-            }
-        }
-        
-        // Hacemos la consulta a la BBDD y comprobamos resultado
-        $query = DB::query($sql, $params, false);
-        return ($query) ? true : false;
+        // Usamos el método update de DBAL y simplificamos
+        $update = $conn->update($model->table, $data, array($model->primaryKey => $this->{$model->primaryKey}));
+        return ($update) ? true : false;
     }
     
     /**
@@ -248,24 +224,6 @@ abstract class Model
         // Hacemos la consulta a la BBDD y comprobamos resultado
         $query = DB::query($sql, null, false);
         return ($query) ? true : false;
-    }
-    
-    /**
-     * Obtiene las columnas que tendrá el modelo sin el identificador de los campos. 
-     * Esto permitirá crear consultas con declaraciones
-     * 
-     * @return array Las columnas de la tabla
-     */
-    private function getColumnsWithoutId()
-    {
-        $columns = DB::getNameColumns($this->table);
-        foreach($columns as $key => $column) {
-            if ($column === $this->primaryKey) {
-                unset($columns[$key]);
-                break; // Si remueve el identificador, termina el ciclo
-            }
-        }
-        return $columns;
     }
     
     /**

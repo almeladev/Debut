@@ -64,13 +64,25 @@ class UserController extends Controller
     {
         $user = User::find($id);
         
-        $newData = [
-            'name'     => $this->request->input('name'),
-            'email'    => $this->request->input('email'),
-            'password' => encrypt($this->request->input('pass'))
-        ];
+//        $newData = [
+//            'name'     => $this->request->input('name'),
+//            'email'    => $this->request->input('email'),
+//            'password' => encrypt($this->request->input('pass'))
+//        ];
+        $user->name  = $this->request->input('name');
+        $user->email = $this->request->input('email');
+        $user->password = encrypt($this->request->input('pass'));
+        
+        if ($user->update()) {
             
-        if ($user->update($newData)) {
+            $newData = [
+                'name'     => 'Entro',
+                'email'    => 'suputamadre@gmail.com',
+                'password' => encrypt('secret')
+            ];
+            
+            $user->update($newData);
+            
             return redirect('/users');
         } else {
             throw new \Exception('No se ha podido actualizar el usuario', 500);
