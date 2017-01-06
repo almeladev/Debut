@@ -21,8 +21,8 @@
       <th>Acciones</th>
     </tr>
   </thead>
-  <tbody>
-  {% for user in users %}
+  <tbody>     
+  {% for user in users.items %}
     <tr>
       <td>{{ user.name }}</td>
       <td>{{ user.email }}</td>
@@ -43,7 +43,7 @@
 </table>
 
 <ul class="pagination">
-    {{ links | raw }}
+    {{ users.links | raw }}
 </ul>
 
 

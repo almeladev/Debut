@@ -23,7 +23,7 @@
     </tr>
   </thead>
   <tbody>
-  {% for post in posts %}
+  {% for post in posts.items %}
     <tr>
       <td>{{ post.title }}</td>
       <td>{{ post.content|truncate(100) }}</td>
@@ -45,7 +45,7 @@
 </table>
   
 <ul class="pagination">
-    {{ links | raw }}
+    {{ posts.links | raw }}
 </ul>
 
 <!-- // Modales -->

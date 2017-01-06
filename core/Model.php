@@ -2,12 +2,13 @@
 
 namespace core;
 
+
 /**
  * El modelo base está pensado para facilitar las tareas comunes
  * de los modelos. Implementa la interface ArrayAccess para
  * tratar el array de los atributos
  */
-abstract class Model implements \ArrayAccess
+abstract class Model
 {
     /**
      * La tabla de la base de datos
@@ -50,16 +51,69 @@ abstract class Model implements \ArrayAccess
     /**
      * Todos los registros de la tabla
      *
-     * @return array | boolean
+     * @return \Collection
      */
     public static function all()
     {
         $model = new static();
 
-        $sql    = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
+        $sql   = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
         $query = DB::query($sql);
 
-        return ($query) ? $query : false;
+        if ($query) {
+            
+            // Obtenemos el nombre del modelo e instanciamos la clase de colecciones
+            $classname = get_called_class();
+            $collection = new Collection();
+            
+            foreach ($query as $attributes) {                
+                // Instanciamos el item e indicamos que existe
+                $item = new $classname($attributes);
+                $item->exists = true;
+                
+                // Agregamos a la colección
+                $collection->addItem($item);
+            }
+            return $collection;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Todos los registros de la tabla paginados
+     * 
+     * @return \Collection 
+     */
+    public static function paginate($perPage)
+    {
+        $model = new static();
+        
+        $sql    = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
+        $query = DB::query($sql);
+        
+        if ($query) {
+            
+            // Obtenemos el nombre del modelo, instanciamos la clase de colecciones y la clase de paginación
+            $classname = get_called_class();
+            $collection = new Collection();
+            $pagination = new Paginator($query, $perPage);
+
+            foreach ($pagination->getResults() as $attributes) {
+                // Instanciamos el item e indicamos que existe
+                $item = new $classname($attributes);
+                $item->exists = true;
+                
+                // Agregamos a la colección
+                $collection->addItem($item);
+            }
+            
+            // Los links para la paginación
+            $collection->links = $pagination->getLinks();
+            return $collection;
+        }
+        
+        return false;
     }
 
     /**
@@ -250,7 +304,7 @@ abstract class Model implements \ArrayAccess
     }
     
     // --------------------------------------------------------------
-    // Métodos para la interface ArrayAccess
+    // Métodos mágicos para el array de atributos
     // --------------------------------------------------------------
     
     /**
@@ -259,7 +313,7 @@ abstract class Model implements \ArrayAccess
      * @param string The key data to retrieve
      * @access public
      */
-    public function &__get($key) {
+    public function __get($key) {
         return $this->attributes[$key];
     }
 
@@ -282,70 +336,7 @@ abstract class Model implements \ArrayAccess
      * @return boolean
      * @abstracting ArrayAccess
      */
-    public function __isset ($key) {
+    public function __isset($key) {
         return isset($this->attributes[$key]);
-    }
-
-    /**
-     * Unsets an data by key
-     *
-     * @param string The key to unset
-     * @access public
-     */
-    public function __unset($key) {
-        unset($this->attributes[$key]);
-    }
-
-    /**
-     * Assigns a value to the specified offset
-     *
-     * @param string The offset to assign the value to
-     * @param mixed  The value to set
-     * @access public
-     * @abstracting ArrayAccess
-     */
-    public function offsetSet($offset, $value) {
-        if (is_null($offset)) {
-            $this->attributes[] = $value;
-        } else {
-            $this->attributes[$offset] = $value;
-        }
-    }
-
-    /**
-     * Whether or not an offset exists
-     *
-     * @param string An offset to check for
-     * @access public
-     * @return boolean
-     * @abstracting ArrayAccess
-     */
-    public function offsetExists($offset) {
-        return isset($this->attributes[$offset]);
-    }
-
-    /**
-     * Unsets an offset
-     *
-     * @param string The offset to unset
-     * @access public
-     * @abstracting ArrayAccess
-     */
-    public function offsetUnset($offset) {
-        if ($this->offsetExists($offset)) {
-            unset($this->attributes[$offset]);
-        }
-    }
-
-    /**
-     * Returns the value at specified offset
-     *
-     * @param string The offset to retrieve
-     * @access public
-     * @return mixed
-     * @abstracting ArrayAccess
-     */
-    public function offsetGet($offset) {
-        return $this->offsetExists($offset) ? $this->attributes[$offset] : null;
     }
 }
