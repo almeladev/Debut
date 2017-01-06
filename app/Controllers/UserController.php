@@ -19,20 +19,11 @@ class UserController extends Controller
     {
         if (Auth::check()) {
             
-            // Todos los usuarios
-//            $all = User::all();
-//            // Paginación del array de usuarios
-//            $pagination = new Paginator($all, 1);
-//            
-//            // Usuarios paginados
-//            $users = $pagination->getResults();
-//            $links = $pagination->getLinks();
-                    
-            $users = User::all();
+            // Todos los usuarios paginados 5 por página
+            $users = User::paginate(5);
             
             return view('users/index.twig', [
                 'users' => $users,
-//                'links' => $links
             ]);
         } else {
             return redirect('/');

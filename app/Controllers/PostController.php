@@ -19,17 +19,8 @@ class PostController extends Controller
     {
         if (Auth::check()) {
             
-//            // Todos los posts con sus usuarios
-//            $all = Post::withUsers();
-//  
-//            // Paginación del array de posts
-//            $pagination = new Paginator($all);
-//            
-//            // Posts paginados
-//            $posts = $pagination->getResults(); // Posts por página
-//            $links = $pagination->getLinks();   // páginas
-            
-            $posts = Post::paginate(10);
+            // Todos los posts con sus usuarios paginados (ver modelo de posts)
+            $posts = Post::withUsers();
             
             return view('posts/index.twig', [
                 'posts' => $posts,

@@ -85,7 +85,7 @@ abstract class Model
      * 
      * @return \Collection 
      */
-    public static function paginate($perPage)
+    public static function paginate($perPage = null)
     {
         $model = new static();
         

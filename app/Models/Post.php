@@ -26,7 +26,7 @@ class Post extends Model
     
     /**
      * Relacion con la tabla users. Obtiene
-     * Todos los posts con su autor
+     * Todos los posts con su autor paginados
      * 
      * @return array
      */
@@ -37,8 +37,30 @@ class Post extends Model
              . 'RIGHT JOIN posts on users.id = posts.user_id ' 
              . 'ORDER BY id';
         
-        $result = DB::query($sql);
-        return $result;
+        $query = DB::query($sql);
+        
+        if ($query) {
+            
+            // Obtenemos el nombre del modelo, instanciamos la clase de colecciones y la clase de paginación
+            $classname = get_called_class();
+            $collection = new \core\Collection();
+            $pagination = new \core\Paginator($query);
+
+            foreach ($pagination->getResults() as $attributes) {
+                // Instanciamos el item e indicamos que existe
+                $item = new $classname($attributes);
+                $item->exists = true;
+                
+                // Agregamos a la colección
+                $collection->addItem($item);
+            }
+            
+            // Los links para la paginación
+            $collection->links = $pagination->getLinks();
+            return $collection;
+        }
+        
+        return false;
     }
 
 }
