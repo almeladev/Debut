@@ -13,6 +13,11 @@ class User extends Model
      */
     protected $table = 'users';
     
-    //
+    /**
+     * Reglas para la validación
+     * 
+     * @var array
+     */
+    protected $rules = [];
 
 }

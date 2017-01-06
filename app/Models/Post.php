@@ -19,8 +19,8 @@ class Post extends Model
      * 
      * @var array
      */
-    public $rules = [
-        'title'   => 'required|unique',
+    protected $rules = [
+        'title'   => 'required|unique|max:10',
         'content' => 'required',
     ];
     

@@ -4,6 +4,7 @@ namespace migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
+
 use app\Models\User;
 use app\Models\Post;
 use Faker\Factory as Faker;
@@ -40,11 +41,11 @@ class Version20161221134035 extends AbstractMigration
         $faker = Faker::create();
         
         // Administrador
-//        User::create([
-//            'email'    => 'admin@debut.app',
-//            'name'     => 'admin',
-//            'password' => encrypt('secret')
-//        ]);
+        User::create([
+            'email'    => 'admin@debut.app',
+            'name'     => 'admin',
+            'password' => encrypt('secret')
+        ]);
         
         // Posts ...
         $num_posts = 50;
@@ -53,7 +54,7 @@ class Version20161221134035 extends AbstractMigration
             Post::create([
                 'title'   => 'title ' . $i,
                 'content' => $faker->text(500),
-                'user_id' => 3
+                'user_id' => NULL
             ]);
         }
         

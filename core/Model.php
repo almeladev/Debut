@@ -26,9 +26,16 @@ abstract class Model
     protected $attributes = array();
     
     /**
+     * Las reglas del modelo
+     * 
+     * @var array
+     */
+    protected $rules = array();
+    
+    /**
      * Comprueba si existe o no el modelo
      * 
-     * @var boolean 
+     * @var bool 
      */
     public $exists = false;
     
@@ -114,7 +121,7 @@ abstract class Model
      * Si no existe el registro, lanza una excepción
      * 
      * @param  int $id El identificador
-     * @return Object
+     * @return object
      */
     public static function find($id)
     {
@@ -151,9 +158,12 @@ abstract class Model
         }
         
         $model = new static();
-        $conn = DB::connection();
+        
+        // Validamos los datos
+        $validation = Validator::make($this->attributes, $this->rules);
         
         // Usamos el método insert de DBAL y simplificamos
+        $conn = DB::connection();
         $insert = $conn->insert($model->table, $this->attributes);
         
         if ($insert) {
@@ -216,9 +226,9 @@ abstract class Model
      */
     public static function create(array $attributes)
     {
-            $model = new static($attributes);
-            $model->save();
-            return $model;
+        $model = new static($attributes);
+        $model->save();
+        return $model;
     }
 
     /**

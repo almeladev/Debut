@@ -18,8 +18,8 @@ class UserController extends Controller
     {
         if (Auth::check()) {
             
-            // Todos los usuarios paginados 5 por página
-            $users = User::paginate(5);
+            // Todos los usuarios paginados (10 por página por defecto)
+            $users = User::paginate();
             
             return view('users/index.twig', [
                 'users' => $users,
