@@ -55,7 +55,6 @@ abstract class Model
         $query = DB::query($sql);
 
         if ($query) {
-            
             // Obtenemos el nombre del modelo e instanciamos la clase de colecciones
             $classname = get_called_class();
             $collection = new Collection();
@@ -87,7 +86,6 @@ abstract class Model
         $query = DB::query($sql);
         
         if ($query) {
-            
             // Obtenemos el nombre del modelo, instanciamos la clase de colecciones y la clase de paginación
             $classname = get_called_class();
             $collection = new Collection();
@@ -153,31 +151,17 @@ abstract class Model
         }
         
         $model = new static();
+        $conn = DB::connection();
         
-        // Obtenemos las columnas de la tabla
-        $columns = $this->getColumnsWithoutId();
-                
-        // Creamos la consulta
-        $fields = implode(', ', $columns);
-        $stmt = preg_replace('#([\w]+)#', ':${1}', $fields);
-        $sql = "INSERT INTO $model->table ($fields) VALUES ($stmt)";
+        // Usamos el método insert de DBAL y simplificamos
+        $insert = $conn->insert($model->table, $this->attributes);
         
-        // Asignamos los valores de los campos
-        foreach ($columns as $field) {
-            $this->$field = (isset($this->$field)) ? $this->$field : null;
-            $params[$field] = $this->$field;
-        }
-        
-        // Hacemos la consulta a la BBDD y comprobamos resultado
-        $query = DB::query($sql, $params, false);
-        
-        if ($query) {
+        if ($insert) {
             // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
             $this->{$model->primaryKey} = DB::connection()->lastInsertId();
             $this->exists = true;
             return true;
         }
-        return false;
     }
     
     /**
@@ -207,7 +191,7 @@ abstract class Model
      * Elimina los datos del modelo en la
      * base de datos
      *
-     * @return boolean
+     * @return bool
      */
     public function delete()
     { 
@@ -217,13 +201,11 @@ abstract class Model
         }
         
         $model = new static();
+        $conn = DB::connection();
         
-        // Creamos la consulta
-        $sql = 'DELETE FROM ' . $model->table . ' WHERE ' . $model->primaryKey . '=' . $this->{$model->primaryKey};
-        
-        // Hacemos la consulta a la BBDD y comprobamos resultado
-        $query = DB::query($sql, null, false);
-        return ($query) ? true : false;
+        // Usamos el método delete de DBAL y simplificamos
+        $delete = $conn->delete($model->table, array($model->primaryKey => $this->{$model->primaryKey}));
+        return ($delete) ? true : false;
     }
     
     /**

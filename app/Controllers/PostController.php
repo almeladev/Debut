@@ -5,7 +5,6 @@ namespace app\Controllers;
 use app\Models\Post;
 use core\Auth;
 use core\Controller;
-use core\Paginator;
 
 class PostController extends Controller
 {
