@@ -13,6 +13,7 @@ class Validator {
         'required' => 'El :attribute es requerido',
         'unique'   => 'El :attribute ya existe',
         'max'      => 'El :attribute no puede ser mayor que :max',
+        'min'      => 'El :attribute no puede ser menor que :min',
     ];
     
     /**
@@ -30,28 +31,36 @@ class Validator {
     protected $data = array();
     
     /**
+     * Los errores ocurridos durante la validación
+     * 
+     * @var array
+     */
+    protected $errors = array();
+    
+    /**
      * Permite validar cualquier array de atributos sin necesidad
      * de instanciar la clase pasandole algunas reglas y mensajes
      * personalizados
      * 
-     * @param array $data
-     * @param array $rules
-     * @param array $messages
+     * @param array  $data
+     * @param array  $rules
+     * @param array  $messages
      * 
      * @return \static
      */
     public static function make(array $data, array $rules, array $messages = null)
     {
-        $model = new static();
-        $model->data  = $data;
-        $model->rules = $model->parseRules($rules);
+        $validator = new static();
+        $validator->data  = $data;
+        $validator->rules = $validator->parseRules($rules);
         
-        $model->validate();
-        return $model;
+        $validator->validate();
+        return $validator;
     }
     
     /**
      * Obtiene las reglas de validación para cada atributo
+     * en un array
      * 
      * @param array $rules
      * @return array
@@ -64,30 +73,45 @@ class Validator {
         return $rules;
     }
     
+    /**
+     * Valida los datos llamando a cada método que corresponde 
+     * a la regla
+     * 
+     * @throws \Exception
+     */
     protected function validate()
     {
-        foreach ($this->rules as $rules) {
+        foreach ($this->rules as $key => $rules) {
             foreach ($rules as $rule) {
                 
-                // Estilo CamelCase para los métodos
-                $rule = ucwords($rule);
-                
                 $method = null;
-                $param  = null;
+                $param  = null; 
+   
+                // Primera letra en mayúscula (identificar el método)
+                $ucRule = ucfirst($rule);
                 
                 // Comprobar si la regla tiene parámetros
                 if (strstr($rule, ':') !== false) {
-                    $partsRule   = explode(':', $rule);
+                    $partsRule   = explode(':', $ucRule);
                     $method = 'validate'.$partsRule[0];
+                    
+                    // Obtenemos los parámetros y la regla original en minúsculas
                     $param  = $partsRule[1];
-                    $rule   = $partsRule[0];
+                    $rule   = strtolower($partsRule[0]);
                 } else {
-                    $method = 'validate'. $rule;
+                    $method = 'validate'. $ucRule;
                 }
                 
                 if (is_callable(array($this, $method))) {
+                    // Parámetros de los métodos de validación
+                    $value = $this->data[$key];
+                    $attribute = $key;
+                    
                     // El método adecuado de validación
-                    $this->$method($param);
+                    // Si devuelve falso genera un mensaje de error con los datos precisos
+                    if (! $this->$method($attribute, $value, $param)) {
+                        $this->errors[] = str_replace([':attribute', ":$rule"], [$attribute, $param], $this->messages[$rule]);
+                    }
                 } else {
                     throw new \Exception('El método ' . $method . ' no existe');
                 }
@@ -95,21 +119,99 @@ class Validator {
         }
     }
     
-    protected function validateRequired()
+    /**
+     * Comprueba que el valor existe
+     * 
+     * @param mixed $value
+     * @return bool
+     */
+    protected function validateRequired($attribute, $value)
     {
-        echo "required";
+        if (is_null($value)) {
+            return false;
+        } elseif (is_string($value) && trim($value) === '') {
+            return false;
+        } elseif ((is_array($value) || $value instanceof \Countable) && count($value) < 1) {
+            return false;
+        }
+        
+        return true;
     }
     
-    protected function validateUnique()
+    /**
+     * Comprueba que el valor sea único en la base de datos
+     * 
+     * @param string $attribute
+     * @param mixed  $value
+     * @param mixed  $param
+     * 
+     * @return bool
+     */
+    protected function validateUnique($attribute, $value, $param)
     {
-        echo "unique";
+        $sql   = "SELECT $attribute FROM $param WHERE $attribute = '$value'";
+        $query = DB::query($sql);
+        
+        // Si existe, devuelve false y la validación será incorrecta
+        return ($query) ? false : true;
     }
     
-    protected function validateMax($param)
-    {
-        echo "max:$param";
+    /**
+     * Comprueba que la cadena no sea mayor a la permitida
+     * 
+     * @param string $attribute
+     * @param mixed $value
+     * @param mixed $param
+     * 
+     * @return bool
+     */
+    protected function validateMax($attribute, $value, $param)
+    { 
+        if (strlen($value) > (int) $param) {
+            return false;
+        }
+        
+        return true;
     }
     
+    /**
+     * Comprueba que la cadena no sea menor a la permitida
+     * 
+     * @param string $attribute
+     * @param mixed $value
+     * @param mixed $param
+     * 
+     * @return bool
+     */
+    protected function validateMin($attribute, $value, $param)
+    { 
+        if (strlen($value) < (int) $param) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Muestra los errores ocurridos durante la validación de los datos
+     * 
+     * @return array
+     */
+    public function errors()
+    {
+        return $this->errors;
+    }
+    
+    /**
+     * Indica si ha ocurrido algún error durante la validación de los datos
+     * 
+     * @return bool
+     */
+    public function fails()
+    {
+        return ($this->errors) ? true : false;
+    }
+
     /**
      * Getter de rules
      * 

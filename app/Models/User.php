@@ -18,6 +18,10 @@ class User extends Model
      * 
      * @var array
      */
-    protected $rules = [];
+    protected $rules = [
+        'name' => 'max:30|required',
+        'email' => 'required|unique:users',
+        'password' => 'required|min:6',
+    ];
 
 }

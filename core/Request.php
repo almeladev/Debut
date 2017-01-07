@@ -5,15 +5,15 @@ namespace core;
 class Request
 {
     /**
-     * Array de los datos pasados por POST
+     * Las peticiones
      * 
      * @var array 
      */
-    public $data = [];
+    private $requests = [];
     
-    public function __construct() 
+    public function __construct()
     {
-        $this->data = $this->mergeData($_POST, $_FILES);
+        $this->requests = $this->mergeData($_POST, $_FILES);
     }
     
     /**
@@ -35,7 +35,7 @@ class Request
     }
     
     /**
-     * Acceso a los datos de $data
+     * Acceso a los datos de las peticiones
      * 
      * @param string $key
      * 
@@ -43,7 +43,17 @@ class Request
      */
     public function input($key)
     {
-        return array_key_exists($key, $this->data) ? $this->data[$key] : null;
+        return array_key_exists($key, $this->requests) ? $this->requests[$key] : null;
+    }
+    
+    /**
+     * Obtener todas las requests
+     * 
+     * @return array
+     */
+    public function all()
+    {
+        return $this->requests;
     }
 }
 

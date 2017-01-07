@@ -159,19 +159,25 @@ abstract class Model
         
         $model = new static();
         
-        // Validamos los datos
-        $validation = Validator::make($this->attributes, $this->rules);
+        // Validamos las Requests
+        $request = new Request();
+        $validation = Validator::make($request->all(), $this->rules);
         
-        // Usamos el método insert de DBAL y simplificamos
-        $conn = DB::connection();
-        $insert = $conn->insert($model->table, $this->attributes);
-        
-        if ($insert) {
-            // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
-            $this->{$model->primaryKey} = DB::connection()->lastInsertId();
-            $this->exists = true;
-            return true;
+        // Si la validación ha sido exitosa inserta los datos
+        if (! $validation->fails()) {
+            // Usamos el método insert de DBAL y simplificamos
+            $conn = DB::connection();
+            $insert = $conn->insert($model->table, $this->attributes);
+
+            if ($insert) {
+                // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
+                $this->{$model->primaryKey} = DB::connection()->lastInsertId();
+                $this->exists = true;
+                return true;
+            }
         }
+        //json_encode($validation->errors());
+        
     }
     
     /**

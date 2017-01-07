@@ -41,7 +41,7 @@ class UserController extends Controller
         $user = new User([
             'name'     => $this->request->input('name'),
             'email'    => $this->request->input('email'),
-            'password' => encrypt($this->request->input('pass'))
+            'password' => encrypt($this->request->input('password'))
         ]);
         
         if ($user->save()) {     
@@ -66,7 +66,7 @@ class UserController extends Controller
         $newData = [
             'name'     => $this->request->input('name'),
             'email'    => $this->request->input('email'),
-            'password' => encrypt($this->request->input('pass'))
+            'password' => encrypt($this->request->input('password'))
         ];
         
         if ($user->update($newData)) { 
