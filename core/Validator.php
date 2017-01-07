@@ -5,13 +5,14 @@ namespace core;
 class Validator {
     
     /**
-     * Los mensajes para las reglas fallidas
+     * Los mensajes por defecto para las reglas fallidas
      * 
-     * @var type 
+     * @var array 
      */
     protected $messages = [
         'required' => 'El :attribute es requerido',
         'unique'   => 'El :attribute ya existe',
+        'max'      => 'El :attribute no puede ser mayor que :max',
     ];
     
     /**
@@ -55,7 +56,7 @@ class Validator {
      * @param array $rules
      * @return array
      */
-    private function parseRules(array $rules = [])
+    protected function parseRules(array $rules = [])
     {
         foreach ($rules as $key => $rule) {
             $rules[$key] = (is_string($rule)) ? explode('|', $rule) : $rule;
@@ -63,14 +64,50 @@ class Validator {
         return $rules;
     }
     
-    private function validate()
+    protected function validate()
     {
-        echo "hola";
+        foreach ($this->rules as $rules) {
+            foreach ($rules as $rule) {
+                
+                // Estilo CamelCase para los métodos
+                $rule = ucwords($rule);
+                
+                $method = null;
+                $param  = null;
+                
+                // Comprobar si la regla tiene parámetros
+                if (strstr($rule, ':') !== false) {
+                    $partsRule   = explode(':', $rule);
+                    $method = 'validate'.$partsRule[0];
+                    $param  = $partsRule[1];
+                    $rule   = $partsRule[0];
+                } else {
+                    $method = 'validate'. $rule;
+                }
+                
+                if (is_callable(array($this, $method))) {
+                    // El método adecuado de validación
+                    $this->$method($param);
+                } else {
+                    throw new \Exception('El método ' . $method . ' no existe');
+                }
+            }
+        }
     }
     
-    private function validateRequired()
+    protected function validateRequired()
     {
-        //
+        echo "required";
+    }
+    
+    protected function validateUnique()
+    {
+        echo "unique";
+    }
+    
+    protected function validateMax($param)
+    {
+        echo "max:$param";
     }
     
     /**
