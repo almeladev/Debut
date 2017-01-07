@@ -47,7 +47,7 @@ class UserController extends Controller
         if ($user->save()) {     
             return redirect('/users');
         } else {
-            throw new \Exception('No se ha podido crear el usuario', 500);
+            echo json_encode($user->getErrors());
         }
     }
 
@@ -72,7 +72,7 @@ class UserController extends Controller
         if ($user->update($newData)) { 
             return redirect('/users');
         } else {
-            throw new \Exception('No se ha podido actualizar el usuario', 500);
+            echo json_encode($user->getErrors());
         }
 
     }
@@ -91,7 +91,7 @@ class UserController extends Controller
         if ($user->delete()) {
             return redirect('/users');
         } else {
-            throw new \Exception('No se ha podido borrar el usuario', 500);
+            echo json_encode($user->getErrors());
         }
     }
 }

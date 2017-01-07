@@ -33,6 +33,13 @@ abstract class Model
     protected $rules = array();
     
     /**
+     * Los errores del modelo
+     * 
+     * @var array
+     */
+    protected $errors = array();
+    
+    /**
      * Comprueba si existe o no el modelo
      * 
      * @var bool 
@@ -176,8 +183,8 @@ abstract class Model
                 return true;
             }
         }
-        //json_encode($validation->errors());
         
+        $this->errors = $validation->errors();
     }
     
     /**
@@ -248,6 +255,16 @@ abstract class Model
         foreach ($attributes as $key => $attribute) {
             $this->$key = $attribute;
         }
+    }
+    
+    /**
+     * Obtiene los errores de validación del modelo
+     * 
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->errors;
     }
     
     // --------------------------------------------------------------

@@ -46,7 +46,7 @@ class PostController extends Controller
         if ($post->save()) {
             return redirect('/posts');
         } else {
-            throw new \Exception('No se ha podido crear el post', 500);
+            echo json_encode($post->getErrors());
         }
     }
 
@@ -69,7 +69,7 @@ class PostController extends Controller
         if ($post->update()) {
             return redirect('/posts');
         } else {
-            throw new \Exception('No se ha podido actualizar el posts', 500);
+            echo json_encode($post->getErrors());
         }
 
     }
@@ -88,7 +88,7 @@ class PostController extends Controller
         if ($post->delete()) {
             return redirect('/posts');
         } else {
-            throw new \Exception('No se ha podido borrar el post', 500);
+            echo json_encode($post->getErrors());
         }
     }
 }
