@@ -47,6 +47,12 @@ abstract class Model
     public $exists = false;
     
     /**
+     * Reglas para los atributos del modelo, 
+     * método obligatorio
+     */
+    abstract protected function rules();
+    
+    /**
      * Constructor para los modelos
      * 
      * @param array $attributes
@@ -57,8 +63,9 @@ abstract class Model
     }
 
     /**
-     * Todos los registros de la tabla
-     *
+     * Devuelve todos los registros de la tabla
+     * como una colección de objetos
+     * 
      * @return \Collection
      */
     public static function all()
@@ -88,7 +95,8 @@ abstract class Model
     }
     
     /**
-     * Todos los registros de la tabla paginados
+     * Devuelve todos los registros de la tabla
+     * como una colección de objetos paginados
      * 
      * @return \Collection 
      */
@@ -139,10 +147,8 @@ abstract class Model
         $query = DB::query($sql, $params);
         
         if ($query) {
-            // Generamos el objeto con sus atributos
-            foreach($query as $key => $field) {
-                $model->$key = $field;
-            }
+            // Añadimos los atributos al modelo
+            $model->attributes = $query;
             // Indicamos que existe el modelo y lo retornamos
             $model->exists = true;
             return $model;
@@ -166,25 +172,28 @@ abstract class Model
         
         $model = new static();
         
-        // Validamos las Requests
-        $request = new Request();
-        $validation = Validator::make($request->all(), $this->rules);
-        
-        // Si la validación ha sido exitosa inserta los datos
-        if (! $validation->fails()) {
-            // Usamos el método insert de DBAL y simplificamos
-            $conn = DB::connection();
-            $insert = $conn->insert($model->table, $this->attributes);
+        // Validamos las Requests con las reglas del modelo, si las hubiera
+        if ($this->rules()) {
+            $request = new Request();
+            $validation = Validator::make($request->all(), $this->rules());
 
-            if ($insert) {
-                // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
-                $this->{$model->primaryKey} = DB::connection()->lastInsertId();
-                $this->exists = true;
-                return true;
+            // Si la validación ha obtenido errores los añadimos al modelo
+            if ($validation->fails()) {
+                $this->errors = $validation->errors();
+                return false;
             }
         }
         
-        $this->errors = $validation->errors();
+        // Usamos el método insert de DBAL y simplificamos
+        $conn = DB::connection();
+        $insert = $conn->insert($model->table, $this->attributes);
+
+        if ($insert) {
+            // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
+            $this->{$model->primaryKey} = DB::connection()->lastInsertId();
+            $this->exists = true;
+            return true;
+        }
     }
     
     /**
@@ -204,6 +213,18 @@ abstract class Model
         $model = new static();
         $conn = DB::connection();
         $data = (!$attributes) ? $this->attributes : $attributes;
+        
+        // Validamos las Requests con las reglas del modelo, si las hubiera
+        if ($this->rules()) {
+            $request = new Request();
+            $validation = Validator::make($request->all(), $this->rules());
+
+            // Si la validación ha obtenido errores los añadimos al modelo
+            if ($validation->fails()) {
+                $this->errors = $validation->errors();
+                return false;
+            }
+        }
         
         // Usamos el método update de DBAL y simplificamos
         $update = $conn->update($model->table, $data, array($model->primaryKey => $this->{$model->primaryKey}));
@@ -278,7 +299,10 @@ abstract class Model
      * @access public
      */
     public function __get($key) {
-        return $this->attributes[$key];
+        if (array_key_exists($key, $this->attributes)) {
+            return $this->attributes[$key];
+        }
+        return false;
     }
 
     /**

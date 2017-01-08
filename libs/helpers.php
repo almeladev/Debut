@@ -6,7 +6,8 @@
 |--------------------------------------------------------------------------
 |
 | En este archivo podemos añadir funciones personalizadas para nuestro
-| proyecto
+| proyecto, algunas de estas funciones usan clases que se usan 
+| frecuentemente
 |
 */
 
@@ -43,7 +44,7 @@ function config($var, $default = null)
  */
 function view($view, array $args = [])
 {
-    return \core\View::template($view, $args);
+    return \core\View::make($view, $args);
 }
 
 /**
@@ -67,10 +68,24 @@ function encrypt($password)
  */
 function redirect($path = null)
 {
-    if ($path) {
-        header('Location: ' . $path);
-        exit;
-    }
+    return new core\Routing\Redirector($path);
 }
 
+/**
+ * Agrega a la sesión mensajes temporales
+ * 
+ * @param mixed $message
+ */
+function flash_messages($message)
+{
+    $_SESSION['flash_messages'] = (array) $message;
+}
+
+/**
+ * Elimina todos los mensajes temporales de la sesión
+ */
+function clear_flash_messages()
+{
+    unset($_SESSION['flash_messages']);
+}
 

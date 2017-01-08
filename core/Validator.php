@@ -104,7 +104,7 @@ class Validator {
                 
                 if (is_callable(array($this, $method))) {
                     // Parámetros de los métodos de validación
-                    $value = $this->data[$key];
+                    $value = isset($this->data[$key]) ? $this->data[$key] : null;
                     $attribute = $key;
                     
                     // El método adecuado de validación
@@ -149,11 +149,18 @@ class Validator {
      */
     protected function validateUnique($attribute, $value, $param)
     {
-        $sql   = "SELECT $attribute FROM $param WHERE $attribute = '$value'";
-        $query = DB::query($sql);
+        // Los parámetros son la tabla y el id del registro
+        $partsParam = explode(',', $param);
+        $table = $partsParam[0];
+        $id = $partsParam[1];
         
-        // Si existe, devuelve false y la validación será incorrecta
-        return ($query) ? false : true;
+        // Consulta para comprobar su existencia
+        $sql   = "SELECT * FROM $table WHERE $attribute = '$value'";
+        $params = ['id' => $id];
+        $query = DB::query($sql, $params);
+        
+        // Si existe el registro y no coincide con su id
+        return ($query && $query['id'] !== $id) ? false : true;
     }
     
     /**

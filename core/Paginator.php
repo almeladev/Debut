@@ -2,7 +2,8 @@
 
 namespace core;
 
-class Paginator {
+class Paginator 
+{
 
     /**
      * Las propiedades de la paginación

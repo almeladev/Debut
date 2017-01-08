@@ -17,12 +17,15 @@ class Post extends Model
     /**
      * Reglas para la validación
      * 
-     * @var array
+     * @return array
      */
-    protected $rules = [
-        'title'   => 'required|unique:posts|max:10',
-        'content' => 'required',
-    ];
+    protected function rules()
+    {
+        return [
+            'title'   => 'required|unique:posts|max:10',
+            'content' => 'required',
+        ];
+    }
     
     /**
      * Relacion con la tabla users. Obtiene

@@ -22,11 +22,11 @@ class UserController extends Controller
             $users = User::paginate();
             
             return view('users/index.twig', [
-                'users' => $users,
+                'users' => $users
             ]);
-        } else {
-            return redirect('/');
         }
+        
+        return redirect('/');
     }
 
     /**
@@ -45,9 +45,9 @@ class UserController extends Controller
         ]);
         
         if ($user->save()) {     
-            return redirect('/users');
+            return redirect()->back();
         } else {
-            echo json_encode($user->getErrors());
+            return redirect()->back()->with($user->getErrors());
         }
     }
 
@@ -72,7 +72,7 @@ class UserController extends Controller
         if ($user->update($newData)) { 
             return redirect('/users');
         } else {
-            echo json_encode($user->getErrors());
+            return redirect()->back()->with($user->getErrors());
         }
 
     }
@@ -91,7 +91,7 @@ class UserController extends Controller
         if ($user->delete()) {
             return redirect('/users');
         } else {
-            echo json_encode($user->getErrors());
+            return redirect()->back()->with($user->getErrors());
         }
     }
 }

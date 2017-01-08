@@ -2,7 +2,8 @@
 
 namespace core;
 
-class Hash {
+class Hash 
+{
     
     /**
      * Encripta una contraseña dada usando el algoritmo

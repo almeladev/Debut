@@ -24,9 +24,9 @@ class PostController extends Controller
             return view('posts/index.twig', [
                 'posts' => $posts,
             ]);
-        } else {
-            return redirect('/');
         }
+        
+        return redirect('/');
     }
 
     /**
@@ -44,9 +44,9 @@ class PostController extends Controller
         ]);     
         
         if ($post->save()) {
-            return redirect('/posts');
+            return redirect()->back();
         } else {
-            echo json_encode($post->getErrors());
+            return redirect()->back()->with($post->getErrors());
         }
     }
 
@@ -67,9 +67,9 @@ class PostController extends Controller
         $post->content = $this->request->input('content');
         
         if ($post->update()) {
-            return redirect('/posts');
+            return redirect()->back();
         } else {
-            echo json_encode($post->getErrors());
+            return redirect()->back()->with($post->getErrors());
         }
 
     }
@@ -86,9 +86,9 @@ class PostController extends Controller
         $post = Post::find($id);
         
         if ($post->delete()) {
-            return redirect('/posts');
+            return redirect()->back();
         } else {
-            echo json_encode($post->getErrors());
+            return redirect()->back()->with($post->getErrors());
         }
     }
 }

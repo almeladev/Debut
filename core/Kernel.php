@@ -31,8 +31,7 @@ class Kernel
         // --------------------------------------------------------------
         // Inicio de sesiones
         // --------------------------------------------------------------
-        $session_id = session_id();
-        if (empty($session_id)) {
+        if (! session_id()) {
             @session_start();
         }
         

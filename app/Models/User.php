@@ -14,14 +14,16 @@ class User extends Model
     protected $table = 'users';
     
     /**
-     * Reglas para la validación
+     * Reglas para los atributos del modelo
      * 
-     * @var array
+     * @return array
      */
-    protected $rules = [
-        'name' => 'max:30|required',
-        'email' => 'required|unique:users',
-        'password' => 'required|min:6',
-    ];
-
+    protected function rules()
+    {
+        return [
+            'name' => 'max:30|required',
+            'email' => 'required|unique:users,' . $this->id,
+            'password' => 'required|min:6',
+        ];
+    }
 }

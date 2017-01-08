@@ -35,7 +35,7 @@ class View
      *
      * @return void
      */
-    public static function template($template, array $args = [])
+    public static function make($template, array $args = [])
     {
         $loader = new \Twig_Loader_Filesystem(APP . 'Views');
         
@@ -58,6 +58,11 @@ class View
         // Añade extensiones para depurar
         $twig->addExtension(new \Twig_Extension_Debug());
         // ---------------------------------------------------------------------------
+        
+        // Añadimos los datos de la sesión para tratar con ellos 
+        // y eliminamos los mensajes temporales
+        $twig->addGlobal('session', $_SESSION);
+        clear_flash_messages();
         
         echo $twig->render($template, $args);
     }

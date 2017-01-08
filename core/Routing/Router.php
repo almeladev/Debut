@@ -83,6 +83,6 @@ class Router
                 return $route->call();
             }
         }
-        throw new \Exception('No se ha encontrado la ruta.', 404);
+        throw new \Exception('No se ha encontrado la ruta', 404);
     }
 }
