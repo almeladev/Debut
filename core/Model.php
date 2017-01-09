@@ -68,7 +68,7 @@ abstract class Model
      * Devuelve todos los registros de la tabla
      * como una colección de objetos
      * 
-     * @return \Collection
+     * @return \Collection|bool
      */
     public static function all()
     {
@@ -100,7 +100,7 @@ abstract class Model
      * Devuelve todos los registros de la tabla
      * como una colección de objetos paginados
      * 
-     * @return \Collection 
+     * @return \Collection|bool
      */
     public static function paginate($perPage = null)
     {

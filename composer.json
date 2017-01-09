@@ -12,17 +12,17 @@
     "require": {
         "twig/twig": "~1.0",
         "twig/extensions": "^1.4",
-        "doctrine/dbal": "2.5.*",
-        "doctrine/migrations": "1.4.*",
-        "fzaninotto/faker": "1.6.*"
+        "doctrine/dbal": "2.5.*"
     },
     "autoload": {
-        "classmap": [
-            "migrations"
-        ],
         "psr-4": {
              "core\\": "core/",
              "app\\": "app/"
-        }
+        },
+        "files": [
+            "app/routes.php",
+            "app/functions.php",
+            "core/helpers.php"
+        ]
     }
 }
