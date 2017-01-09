@@ -22,7 +22,7 @@ class Post extends Model
     protected function rules()
     {
         return [
-            'title'   => 'required|unique:'.$this->table.','.$this->id.'|max:10',
+            'title'   => 'required|unique:'.$this->table.','.$this->id.'|max:255',
             'content' => 'required',
         ];
     }
