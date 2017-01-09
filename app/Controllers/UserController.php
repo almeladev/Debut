@@ -36,7 +36,7 @@ class UserController extends Controller
      * @return void
      */
     public function store()
-    {
+    {        
         // Recuerda validar
         $user = new User([
             'name'     => $this->request->input('name'),
@@ -47,7 +47,7 @@ class UserController extends Controller
         if ($user->save()) {     
             return redirect()->back();
         } else {
-            return redirect()->back()->with($user->getErrors());
+            return redirect()->back()->with('errors', $user->getErrors());
         }
     }
 
@@ -72,9 +72,8 @@ class UserController extends Controller
         if ($user->update($newData)) { 
             return redirect('/users');
         } else {
-            return redirect()->back()->with($user->getErrors());
+            return redirect()->back()->with('errors', $user->getErrors());
         }
-
     }
 
     /**
@@ -91,7 +90,7 @@ class UserController extends Controller
         if ($user->delete()) {
             return redirect('/users');
         } else {
-            return redirect()->back()->with($user->getErrors());
+            return redirect()->back()->with('errors', $user->getErrors());
         }
     }
 }

@@ -6,7 +6,8 @@ class Redirector
 {
     
     /**
-     * Permite redireccionar a la ruta indicada
+     * Permite redireccionar a la ruta indicada usando
+     * el propio constructor de la clase
      * 
      * @param string $path
      * @return \core\Routing\Redirector
@@ -31,8 +32,8 @@ class Redirector
         return $this->route($path, $statusCode);
     }
     
-    public function with($message)
+    public function with($type, $message)
     {
-        flash_messages($message);
+        flash_messages($type, $message);
     }
 }

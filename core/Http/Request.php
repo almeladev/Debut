@@ -1,6 +1,6 @@
 <?php
 
-namespace core;
+namespace core\Http;
 
 class Request
 {
@@ -55,5 +55,7 @@ class Request
     {
         return $this->requests;
     }
+
+    
 }
 

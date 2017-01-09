@@ -16,20 +16,9 @@
         
 </head>
 <body>
-<div class="container">
-    
-    <!-- Mensajes de alerta -->
-    {% set alert_messages %}
-    {% if session.flash_messages %}
-        <div class="alert alert-danger">
-            <ul>
-            {% for messages in session.flash_messages %}
-                <li>{{messages}}</li>
-            {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-    {% endset %}
+<div class="container"> 
+    <!-- macros para las vistas  -->
+    {% import 'macros.twig' as macros %}
     
     {% block body %}
     {% endblock %}

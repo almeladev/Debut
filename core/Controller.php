@@ -2,6 +2,8 @@
 
 namespace core;
 
+use core\Http\Request;
+
 class Controller
 {
     /**

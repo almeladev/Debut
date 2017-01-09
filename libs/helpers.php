@@ -76,9 +76,9 @@ function redirect($path = null)
  * 
  * @param mixed $message
  */
-function flash_messages($message)
+function flash_messages($type, $message)
 {
-    $_SESSION['flash_messages'] = (array) $message;
+    $_SESSION['flash_messages'][$type] = (array) $message;
 }
 
 /**

@@ -2,6 +2,8 @@
 
 namespace core;
 
+use core\Http\Request;
+
 abstract class Model
 {
     /**
