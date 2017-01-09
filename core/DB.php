@@ -41,7 +41,10 @@ abstract class DB
         $stmt = static::connection()->prepare($sql);
         
         if ($stmt->execute($params)) {
-            return ($fetch) ? $result = ($params) ? $stmt->fetch(PDO::FETCH_ASSOC) : $stmt->fetchAll(PDO::FETCH_ASSOC) : true;
+            if ($fetch) {
+                $array = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return (count($array) === 1) ? $array[0] : $array;
+            }
         }
         return false;
     }
