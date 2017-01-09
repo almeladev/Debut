@@ -2,6 +2,10 @@
 
 namespace core;
 
+use Exception;
+use Countable;
+use ReflectionClass;
+
 class Validator {
     
     /**
@@ -113,7 +117,7 @@ class Validator {
                         $this->errors[] = str_replace([':attribute', ":$rule"], [$attribute, $param], $this->messages[$rule]);
                     }
                 } else {
-                    throw new \Exception('El método ' . $method . ' no existe');
+                    throw new Exception('El método ' . $method . ' no existe');
                 }
             }
         }
@@ -131,7 +135,7 @@ class Validator {
             return false;
         } elseif (is_string($value) && trim($value) === '') {
             return false;
-        } elseif ((is_array($value) || $value instanceof \Countable) && count($value) < 1) {
+        } elseif ((is_array($value) || $value instanceof Countable) && count($value) < 1) {
             return false;
         }
         
@@ -154,13 +158,17 @@ class Validator {
         $table = $partsParam[0];
         $id = $partsParam[1];
         
+        // Obtenemos la primary key del modelo (SOLO PARA DEBUT)
+        $reflectionClass = new ReflectionClass('core\Model');
+        $primaryKey = $reflectionClass->getDefaultProperties()['primaryKey'];
+        
         // Consulta para comprobar su existencia
         $sql   = "SELECT * FROM $table WHERE $attribute = '$value'";
-        $params = ['id' => $id];
+        $params = [$primaryKey => $id];
         $query = DB::query($sql, $params);
         
         // Si existe el registro y no coincide con su id
-        return ($query && $query['id'] !== $id) ? false : true;
+        return ($query && $query[$primaryKey] !== $id) ? false : true;
     }
     
     /**
