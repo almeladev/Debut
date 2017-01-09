@@ -22,7 +22,7 @@ class User extends Model
     {
         return [
             'name' => 'max:30|required',
-            'email' => 'required|unique:users,' . $this->id,
+            'email' => 'required|unique:'.$this->table.','.$this->id,
             'password' => 'required|min:6',
         ];
     }

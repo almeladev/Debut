@@ -155,6 +155,12 @@ class Validator {
     {
         // Los parámetros son la tabla y el id del registro
         $partsParam = explode(',', $param);
+        
+        if (!isset($partsParam[0]) || !isset($partsParam[1])) {
+            throw new Exception("El método de validación unique necesita los parámetros 'tabla' y 'id'");
+        }
+        
+        // Asignamos las partes
         $table = $partsParam[0];
         $id = $partsParam[1];
         

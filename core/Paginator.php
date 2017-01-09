@@ -74,20 +74,29 @@ class Paginator
      */
     public function getResults()
     {
-      // Asigna la página usando el método GET, sino hay página asume que es la expecificada por defecto (1)
-      $this->page = (empty($this->curPage) !== false) ? $this->curPage : $this->page = $this->_defaults['page'];
+        // Asigna la página usando el método GET, sino hay página asume que es la expecificada por defecto (1)
+        $this->page = (empty($this->curPage) !== false) ? $this->curPage : $this->page = $this->_defaults['page'];
       
-      // El tamaño del array
-      $this->length = count($this->array);
+        // El tamaño del array
+        $this->length = count($this->array);
+
+        // Número de páginas
+        $this->pages = ceil($this->length / $this->perPage);
+
+        // Calcula el punto de partida
+        $this->start = ceil(($this->page - 1) * $this->perPage);
       
-      // Número de páginas
-      $this->pages = ceil($this->length / $this->perPage);
-      
-      // Calcula el punto de partida
-      $this->start = ceil(($this->page - 1) * $this->perPage);
-      
-      // retorna la porción del resultado
-      return array_slice($this->array, $this->start, $this->perPage);
+        // Validaciones para los resultados
+        if (count($this->array) <= $this->start) {
+            return redirect('?page=' . $this->pages);
+        } elseif ($this->page <= 0) {
+            return redirect($_GET['url']);
+        } elseif (!is_numeric($this->page)) {
+            return redirect($_GET['url']);
+        }
+        
+        // retorna la porción del resultado, si la página no existe le redirige a la última existente
+        return array_slice($this->array, $this->start, $this->perPage);
     }
     
     /**

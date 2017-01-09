@@ -138,7 +138,7 @@ abstract class Model
      * Si no existe el registro, lanza una excepción
      * 
      * @param  int $id El identificador
-     * @return object
+     * @return object|bool
      */
     public static function find($id)
     {
@@ -154,16 +154,16 @@ abstract class Model
             // Indicamos que existe el modelo y lo retornamos
             $model->exists = true;
             return $model;
-        } else {
-            throw new \Exception('No existe el registro con identificador: ' . $id);
         }
+        
+        return false;
     }
     
     /**
      * Guarda los datos del modelo en la
      * base de datos
      *
-     * @return boolean
+     * @return bool
      */
     public function save()
     {
@@ -189,13 +189,18 @@ abstract class Model
         // Usamos el método insert de DBAL y simplificamos
         $conn = DB::connection();
         $insert = $conn->insert($model->table, $this->attributes);
-
-        if ($insert) {
-            // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
-            $this->{$model->primaryKey} = DB::connection()->lastInsertId();
-            $this->exists = true;
-            return true;
+        
+        // Si no se ha llegado a insertar registramos el error
+        if (! $insert) {
+            $this->errors[] = 'El registro no se ha creado';
+            return false;
         }
+        
+        // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
+        $this->{$model->primaryKey} = DB::connection()->lastInsertId();
+        $this->exists = true;
+        
+        return true;
     }
     
     /**
@@ -230,7 +235,14 @@ abstract class Model
         
         // Usamos el método update de DBAL y simplificamos
         $update = $conn->update($model->table, $data, array($model->primaryKey => $this->{$model->primaryKey}));
-        return ($update) ? true : false;
+        
+        // Si no se ha llegado a actualizar registramos el error
+        if (! $update) {
+            $this->errors[] = 'El registro no se ha modificado';
+            return false;
+        }
+        
+        return true;
     }
     
     /**
@@ -251,7 +263,14 @@ abstract class Model
         
         // Usamos el método delete de DBAL y simplificamos
         $delete = $conn->delete($model->table, array($model->primaryKey => $this->{$model->primaryKey}));
-        return ($delete) ? true : false;
+        
+        // Si no se ha llegado a borrar registramos el error
+        if (! $delete) {
+            $this->errors[] = 'El registro no se ha borrado';
+            return false;
+        }
+        
+        return true;
     }
     
     /**
@@ -289,10 +308,6 @@ abstract class Model
     {
         return $this->errors;
     }
-    
-    // --------------------------------------------------------------
-    // Métodos mágicos para el array de atributos
-    // --------------------------------------------------------------
     
     /**
      * Get a data by key
