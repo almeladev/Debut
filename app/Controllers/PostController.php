@@ -47,7 +47,7 @@ class PostController extends Controller
         if ($post->save()) {
             return redirect()->back();
         } else {
-            return redirect()->back()->with('errors', $post->getErrors());
+            return redirect()->back()->with('danger', $post->getErrors());
         }
     }
 
@@ -70,7 +70,7 @@ class PostController extends Controller
         if ($post->update()) {
             return redirect()->back();
         } else {
-            return redirect()->back()->with('errors', $post->getErrors());
+            return redirect()->back()->with('danger', $post->getErrors());
         }
     }
 
@@ -88,7 +88,7 @@ class PostController extends Controller
         if ($post->delete()) {
             return redirect()->back();
         } else {
-            return redirect()->back()->with('errors', $post->getErrors());
+            return redirect()->back()->with('danger', $post->getErrors());
         }
     }
 }

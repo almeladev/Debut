@@ -80,7 +80,13 @@ if (! function_exists('flash_messages')) {
      */
     function flash_messages($type, $message)
     {
-        $_SESSION['flash_messages'][$type] = (array) $message;
+        if (! is_array($type)) {
+            $_SESSION['flash_messages'][$type] = (array) $message;
+        } else {
+            foreach ($type as $key => $t) {
+                $_SESSION['flash_messages'][$t] = $message[$key];
+            }
+        }
     }
 }
 

@@ -3,10 +3,13 @@
 namespace app\Controllers;
 
 use core\Auth;
+use app\Models\User;
 use core\Controller;
+use core\Http\Request;
 
 class AuthController extends Controller
 {
+    
     /**
      * Accede a la vista de login
      *
@@ -26,9 +29,9 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function postLogin()
+    public function postLogin(Request $request)
     { 
-        if (Auth::login($this->request->input('email'), $this->request->input('password'))) {
+        if (Auth::login($request->input('email'), $request->input('password'))) {
             return redirect('/menu');
         }
         return redirect('/login');
@@ -50,12 +53,14 @@ class AuthController extends Controller
         return view('auth/register.twig');
     }
     
-    public function postRegister()
-    {
-        $errors = Auth::register($this->request->all());
-        if($errors){
-            return redirect()->back()->with('status', $errors);
+    public function postRegister(Request $request)
+    {   
+        $user = User::create($request->all());
+        
+        if(! $user->getErrors()){
+            return redirect('/login')->with('success', 'Ya se ha registrado en el sistema!');
         }
-        return redirect('/login')->with('status', 'Ya se ha registrado en el sistema!');
+        
+        return redirect()->back()->with(['danger', 'post'], [$user->getErrors(), $request->all()]);
     }
 }

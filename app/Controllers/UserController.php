@@ -36,19 +36,19 @@ class UserController extends Controller
      *
      * @return void
      */
-    public function store()
+    public function store(Request $request)
     {        
         // Recuerda validar
         $user = new User([
-            'name'     => $this->request->input('name'),
-            'email'    => $this->request->input('email'),
-            'password' => encrypt($this->request->input('password'))
+            'name'     => $request->input('name'),
+            'email'    => $request->input('email'),
+            'password' => encrypt($request->input('password'))
         ]);
         
         if ($user->save()) {     
             return redirect()->back();
         } else {
-            return redirect()->back()->with('errors', $user->getErrors());
+            return redirect()->back()->with('danger', $user->getErrors());
         }
     }
 
@@ -64,17 +64,21 @@ class UserController extends Controller
     {
         $user = User::find($id);
         
-        $newData = [
-            'name'     => $request->input('name'),
-            'email'    => $request->input('email'),
-            'password' => encrypt($request->input('password'))
-        ];
+        if (\core\Hash::check($request->input('oldpassword'), $user->password)) {
+            $newData = [
+                'name'     => $request->input('name'),
+                'email'    => $request->input('email'),
+                'password' => encrypt($request->input('newpassword'))
+            ];
         
-        if ($user->update($newData)) { 
-            return redirect('/users');
-        } else {
-            return redirect()->back()->with('errors', $user->getErrors());
+            if ($user->update($newData)) { 
+                return redirect('/users');
+            } else {
+                return redirect()->back()->with('danger', $user->getErrors());
+            }
         }
+        
+        return redirect()->back()->with('danger', 'La anterior contraseña no coincide');
     }
 
     /**
@@ -89,9 +93,9 @@ class UserController extends Controller
         $user = User::find($id);
         
         if ($user->delete()) {
-            return redirect('/users');
+            return redirect()->back();
         } else {
-            return redirect()->back()->with('errors', $user->getErrors());
+            return redirect()->back()->with('danger', $user->getErrors());
         }
     }
 }

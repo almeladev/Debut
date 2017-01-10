@@ -5,10 +5,10 @@ namespace core;
 use ReflectionClass;
 
 /**
- * Esta clase permite instanciar los parámetros de tipo
- * objeto automáticamente en los métodos de cualquier clase
+ * Simple inyector de dependencias
+ * para obtener los objetos de los parámetros
  */
-class Instanciator {
+class DI {
     
     
     /**

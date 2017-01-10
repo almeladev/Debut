@@ -59,9 +59,11 @@ class View
         $twig->addExtension(new \Twig_Extension_Debug());
         // ---------------------------------------------------------------------------
         
-        // Añadimos los datos de la sesión para tratar con ellos 
-        // y eliminamos los mensajes temporales
+        // Añadimos los datos de la sesión
+        // esto nos permite pasar datos temporales a la vista
         $twig->addGlobal('session', $_SESSION);
+        
+        // Eliminamos los mensajes temporales
         clear_flash_messages();
         
         echo $twig->render($template, $args);

@@ -3,7 +3,7 @@
 namespace core\Routing;
 
 use Exception;
-use core\Instanciator;
+use core\DI;
 
 class Route
 {
@@ -86,7 +86,7 @@ class Route
                     // Instanciamos los parámetros de tipo objeto si existieran
                     // y los almacenamos en el orden adecuado para enviarlos
                     // al controlador correspondiente
-                    $objects = Instanciator::make($controller_object, $action);
+                    $objects = DI::make($controller_object, $action);
                     $data_params = $this->matches;
                     foreach ($objects as $key => $param) {
                         array_splice($data_params, $key, 0, [$param]);

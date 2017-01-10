@@ -35,37 +35,6 @@ class Paginator
       $this->curPage = (!isset($_GET['page']) ? $this->_defaults['page'] : $_GET['page']);
       $this->perPage = ($perPage == null) ? $this->_defaults['perPage'] : $perPage;
     }
-    
-    /**
-     * Global setter
-     * 
-     * Utiliza el array de propiedades
-     * 
-     * @param string $name  El nombre de la propiedad
-     * @param string $value El valor de la propiedad
-     * @return void
-     */
-    public function __set($name, $value) 
-    { 
-      $this->_properties[$name] = $value;
-    }
-    
-    /**
-     * Global getter
-     * 
-     * Obtiene la propiedad del array de propiedades
-     * si existe
-     * 
-     * @param string $name El nombre de la propiedad
-     * @return mixed El valor de la propiedad o false
-     */
-    public function __get($name)
-    {
-      if (array_key_exists($name, $this->_properties)) {
-        return $this->_properties[$name];
-      }
-      return false;
-    }
 
     /**
      * Obtiene los resultados de la paginación
@@ -86,7 +55,7 @@ class Paginator
         // Calcula el punto de partida
         $this->start = ceil(($this->page - 1) * $this->perPage);
       
-        // Validaciones para los resultados
+        // Validaciones para los resultados (manipulación URL)
         if (count($this->array) <= $this->start) {
             return redirect('?page=' . $this->pages);
         } elseif ($this->page <= 0) {
@@ -119,11 +88,11 @@ class Paginator
         
         // Asigna todos los números al array
         for ($i = 1; $i < ($this->pages + 1); $i++) {
-          if ($this->page == $i) {
-            $links[] = '<li class="active"><a>'.$i.'</a></li>'; // Añade estilos a la página activa
-          } else {
-            $links[] = ' <li><a href="?page='.$i.'">'.$i.'</a></li>';
-          }
+            if ($this->page == $i) {
+                $links[] = '<li class="active"><a>'.$i.'</a></li>'; // Añade estilos a la página activa
+            } else {
+                $links[] = '<li><a href="?page='.$i.'">'.$i.'</a></li>';
+            }
         }
         
         // Si no está en la última página, asigna el enlace "Siguiente"
@@ -135,6 +104,37 @@ class Paginator
         return implode($links);
       }
       
+      return false;
+    }
+    
+    /**
+     * Global setter
+     * 
+     * Utiliza el array de propiedades
+     * 
+     * @param string $name  El nombre de la propiedad
+     * @param string $value El valor de la propiedad
+     * @return void
+     */
+    public function __set($name, $value) 
+    { 
+      $this->_properties[$name] = $value;
+    }
+    
+    /**
+     * Global getter
+     * 
+     * Obtiene la propiedad del array de propiedades
+     * si existe
+     * 
+     * @param string $name El nombre de la propiedad
+     * @return mixed El valor de la propiedad o false
+     */
+    public function __get($name)
+    {
+      if (array_key_exists($name, $this->_properties)) {
+        return $this->_properties[$name];
+      }
       return false;
     }
 }

@@ -13,7 +13,7 @@
                   data-whatever="Crear post"
                   data-action="/posts/store">Crear</button></h1>
 
-{{ macros.messages('errors') }}
+{{ request.messages('danger') }}
 
 <table class="table table-striped table-bordered">
   <thead>
@@ -52,7 +52,7 @@
 
 <!-- // Modales -->
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -69,7 +69,7 @@
           <div class="form-group">
             <label class="col-lg-2 control-label">Contenido</label>
             <div class="col-lg-10">
-                <textarea class="form-control" rows="3" name="content" placeholder="Escribe el contenido del post..." id="postContent"></textarea>
+                <textarea class="form-control" rows="10" name="content" placeholder="Escribe el contenido del post..." id="postContent"></textarea>
               </div>
           </div>
           </div>
