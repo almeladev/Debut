@@ -5,6 +5,7 @@ namespace app\Controllers;
 use app\Models\User;
 use core\Auth;
 use core\Controller;
+use core\Http\Request;
 
 class UserController extends Controller
 {
@@ -59,14 +60,14 @@ class UserController extends Controller
      *
      * @return void
      */
-    public function update($id)
+    public function update(Request $request, $id)
     {
         $user = User::find($id);
         
         $newData = [
-            'name'     => $this->request->input('name'),
-            'email'    => $this->request->input('email'),
-            'password' => encrypt($this->request->input('password'))
+            'name'     => $request->input('name'),
+            'email'    => $request->input('email'),
+            'password' => encrypt($request->input('password'))
         ];
         
         if ($user->update($newData)) { 

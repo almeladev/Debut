@@ -30,13 +30,13 @@
       <td>{{ user.email }}</td>
       <td class="text-center">
         <form action="/users/delete/{{ user.id }}" method="post">
-          <button type="button" class="btn btn-primary" data-toggle="modal" 
+          <button title="Editar usuario" type="button" class="btn btn-primary glyphicon glyphicon-pencil" data-toggle="modal" 
                   data-target="#Modal" 
                   data-whatever="Editar usuario"
                   data-name="{{ user.name }}"
                   data-email="{{ user.email }}"
-                  data-action="/users/update/{{ user.id }}">Editar</button>
-          <button type="submit" class="btn btn-danger">Borrar</button>
+                  data-action="/users/update/{{ user.id }}"></button>
+          <button title="Borrar usuario" type="submit" class="btn btn-danger glyphicon glyphicon-trash"></button>
         </form>
       </td>
     </tr>

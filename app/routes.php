@@ -24,11 +24,17 @@ Router::get('/welcome', function () use ($app) {
 Router::get('/', 'HomeController#index');
 Router::get('/menu', 'HomeController#menu');
 
-// login
+/**
+ * Auth
+ */
+// Login
 Router::get('/login', 'AuthController#getLogin');
 Router::post('/login', 'AuthController#postLogin');
-// logout
+// Logout
 Router::get('/logout', 'AuthController#getlogout');
+// Register
+Router::get('/register', 'AuthController#getRegister');
+Router::post('/register', 'AuthController#postRegister');
 
 /**
  * CRUD de usuarios.

@@ -74,7 +74,7 @@ abstract class Model
     {
         $model = new static();
 
-        $sql   = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
+        $sql = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
         $query = DB::query($sql);
 
         if ($query) {
@@ -106,7 +106,7 @@ abstract class Model
     {
         $model = new static();
         
-        $sql    = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
+        $sql = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
         $query = DB::query($sql);
         
         if ($query) {
@@ -145,7 +145,7 @@ abstract class Model
         $model = new static();
         
         $sql = 'SELECT * FROM ' . $model->table . ' WHERE ' . $model->primaryKey . ' = :' . $model->primaryKey;
-        $params  = [$model->primaryKey => $id];
+        $params = [$model->primaryKey => $id];
         $query = DB::query($sql, $params);
         
         if ($query) {

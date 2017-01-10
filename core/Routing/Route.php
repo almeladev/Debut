@@ -2,6 +2,9 @@
 
 namespace core\Routing;
 
+use Exception;
+use core\Instanciator;
+
 class Route
 {
     /**
@@ -22,6 +25,12 @@ class Route
      */
     private $matches = array();
 
+    /**
+     * Constructor
+     * 
+     * @param string $path
+     * @param mixed  $callable
+     */
     public function __construct($path, $callable)
     {
         $this->path     = trim($path, '/');
@@ -65,8 +74,7 @@ class Route
 
             $params = explode('#', $this->callable);
 
-            $controller = $params[0];
-            $controller = "app\Controllers\\$controller";
+            $controller = "app\Controllers\\$params[0]";
             $action     = $params[1];
 
             if (class_exists($controller)) {
@@ -74,11 +82,21 @@ class Route
                 $controller_object = new $controller();
 
                 if (is_callable([$controller_object, $action])) {
-                    return call_user_func_array([$controller_object, $action], $this->matches);
+                    
+                    // Instanciamos los parámetros de tipo objeto si existieran
+                    // y los almacenamos en el orden adecuado para enviarlos
+                    // al controlador correspondiente
+                    $objects = Instanciator::make($controller_object, $action);
+                    $data_params = $this->matches;
+                    foreach ($objects as $key => $param) {
+                        array_splice($data_params, $key, 0, [$param]);
+                    }
+                    
+                    return call_user_func_array([$controller_object, $action], $data_params);
                 }
-                throw new \Exception("El método $action (en el controlador $controller) no ha sido encontrado.");
+                throw new Exception("El método $action (en el controlador $controller) no ha sido encontrado.");
             }
-            throw new \Exception("El controlador $controller no ha sido encontrado.");
+            throw new Exception("El controlador $controller no ha sido encontrado.");
 
         } else {
             return call_user_func_array($this->callable, $this->matches);

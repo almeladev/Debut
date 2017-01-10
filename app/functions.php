@@ -6,8 +6,7 @@
 |--------------------------------------------------------------------------
 |
 | En este archivo podemos añadir funciones personalizadas para nuestro
-| proyecto, algunas de estas funciones usan clases que se usan 
-| frecuentemente
+| proyecto
 |
 */
 
@@ -15,5 +14,4 @@ function example()
 {
     echo "hello world!";
 }
-
 

@@ -28,17 +28,17 @@
   {% for post in posts.items %}
     <tr>
       <td>{{ post.title }}</td>
-      <td>{{ post.content|truncate(100) }}</td>
+      <td>{{ post.content|truncate(200) }}</td>
       <td>{{ post.author }}</td>
       <td class="text-center">
         <form action="/posts/delete/{{ post.id }}" method="post">
-          <button type="button" class="btn btn-primary" data-toggle="modal" 
+          <button title="Editar post" type="button" class="btn btn-primary glyphicon glyphicon-pencil" data-toggle="modal" 
                   data-target="#Modal" 
                   data-whatever="Editar post"
                   data-title="{{ post.title }}"
                   data-content="{{ post.content }}"
-                  data-action="/posts/update/{{ post.id }}">Editar</button>
-          <button type="submit" class="btn btn-danger">Borrar</button>
+                  data-action="/posts/update/{{ post.id }}"></button>
+          <button title="Borrar post" type="submit" class="btn btn-danger glyphicon glyphicon-trash"></button>
         </form>
       </td>
     </tr>

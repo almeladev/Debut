@@ -2,6 +2,8 @@
 
 namespace core;
 
+use app\Models\User;
+
 class Auth
 {
     /**
@@ -42,7 +44,13 @@ class Auth
         }
         return false;
     }
-
+    
+//    public static function register($attributes = [])
+//    {
+//        $user = User::create($attributes);
+//        return (!$user->exists) ? $user->getErrors() : false;
+//    }
+            
     /**
      * Elimina la sesión del usuario
      *

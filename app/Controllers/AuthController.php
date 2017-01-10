@@ -16,9 +16,8 @@ class AuthController extends Controller
     {
         if (!Auth::check()) {
             return view('auth/login.twig');
-        } else {
-            return redirect('/menu');
         }
+        return redirect('/menu');
     }
 
     /**
@@ -29,11 +28,10 @@ class AuthController extends Controller
      */
     public function postLogin()
     { 
-        if (Auth::login($this->request->input('email'), $this->request->input('pass'))) {
+        if (Auth::login($this->request->input('email'), $this->request->input('password'))) {
             return redirect('/menu');
-        } else {
-            return redirect('/login');
         }
+        return redirect('/login');
     }
 
     /**
@@ -45,5 +43,19 @@ class AuthController extends Controller
     {
         Auth::logout();
         return redirect('/');
+    }
+    
+    public function getRegister()
+    {
+        return view('auth/register.twig');
+    }
+    
+    public function postRegister()
+    {
+        $errors = Auth::register($this->request->all());
+        if($errors){
+            return redirect()->back()->with('status', $errors);
+        }
+        return redirect('/login')->with('status', 'Ya se ha registrado en el sistema!');
     }
 }

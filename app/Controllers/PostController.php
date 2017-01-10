@@ -2,9 +2,10 @@
 
 namespace app\Controllers;
 
-use app\Models\Post;
 use core\Auth;
 use core\Controller;
+use app\Models\Post;
+use core\Http\Request;
 
 class PostController extends Controller
 {
@@ -35,11 +36,11 @@ class PostController extends Controller
      *
      * @return void
      */
-    public function store()
+    public function store(Request $request)
     { 
         $post = new Post([
-            'title'   => $this->request->input('title'),
-            'content' => $this->request->input('content'),
+            'title'   => $request->input('title'),
+            'content' => $request->input('content'),
             'user_id' => Auth::user()->id
         ]);     
         
@@ -58,13 +59,13 @@ class PostController extends Controller
      *
      * @return void
      */
-    public function update($id)
+    public function update(Request $request, $id)
     {
         $post = Post::find($id);
         
         // Recuerda validar
-        $post->title   = $this->request->input('title');
-        $post->content = $this->request->input('content');
+        $post->title   = $request->input('title');
+        $post->content = $request->input('content');
         
         if ($post->update()) {
             return redirect()->back();
