@@ -45,5 +45,8 @@ Una vez tengamos Debut corriendo en nuestro servidor, debemos establecer la conf
 
 Es necesario dar permisos a la carpeta "storage" y a sus subcarpetas si vamos a trabajar en modo producción: <code>$ chmod 777 -R storage/</code>
 
+## Demo
+Para usar la demo de Debut debemos ejecutar el archivo <b>demo.php</b> que se encuentra en la carpeta <b>_example</b>. Este archivo se encargará de crear las tablas y los registros de ejemplo en la base de datos.
+
 ## Licencia
 Debut se encuentra bajo una licencia MIT. Eres libre de modificar y adaptar el código para uso personal o comercial.
