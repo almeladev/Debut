@@ -10,7 +10,7 @@ Debut dispone de un <i>core</i> con las clases y métodos necesarios para empeza
 <li>Integración con Bootstrap CSS y JS</li>
 <li>Autocarga de clases automática</li>
 <li>Puedes definir rutas cortas y claras</li>
-<li>DEMO login y logout</li>
+<li>DEMO login, logout y registro</li>
 <li>DEMO CRUD (Create, Read, Update, Delete) de usuarios y posts</li>
 <li>Uso de motor de plantillas <i>Twig</i> para las vistas</li>
 <li>Compatibilidad con distintas bases de datos gracias a la integración de <i>DBAL</i> de Doctrine</li>

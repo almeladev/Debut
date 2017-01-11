@@ -5,9 +5,9 @@
 # Archivo de configuración automática para la box 
 # Ubuntu 16.04 en Vagrant.
 #
-# Autor: Daniel Martínez <danielmartinezalmela@gmail.com>
+# Autor: Daniel Martínez <danmnez.me>
 # Creado: 14.09.2016
-# Actualizado: 11.12.2016
+# Actualizado: 11.01.2017
 # ======================================================= #
 
 # ======================================================= #
@@ -15,7 +15,7 @@
 # ======================================================= #
 PROJECTFOLDER='www' # Nombre del directorio para los proyectos.
 MYSQL_PASSWORD='secret' # Contraseña de MySQL.
-DATABASE_SQL='ejemplo_mysql.sql' # Base de datos.
+DATABASE_SQL='debut' # Base de datos.
 GIT_REPOS='https://github.com/DanMnez/Debut.git' # Repositorios del proyecto.
 
 update() {
@@ -107,9 +107,14 @@ cd "/var/www/html/${PROJECTFOLDER}"
 composer install
 
 # ======================================================= #
-# Carga la base de datos
+# Crea la base de datos
 # ======================================================= #
-sudo mysql -h "localhost" -u "root" "-p${MYSQL_PASSWORD}" < "/var/www/html/${PROJECTFOLDER}/_database/${DATABASE_SQL}"
+sudo mysql -h "localhost" -u "root" "-p${MYSQL_PASSWORD}" -e "CREATE DATABASE ${DATABASE_SQL}"
+
+# ======================================================= #
+# Ejecuta la demo
+# ======================================================= #
+php _example/demo.php
 
 # ======================================================= #
 # Mensaje de fin

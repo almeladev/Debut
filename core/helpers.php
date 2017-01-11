@@ -1,6 +1,5 @@
 <?php
 
-use Exception;
 use core\View;
 use core\Hash;
 use core\Routing\Redirector;
@@ -20,7 +19,7 @@ if (! function_exists('config')) {
         $file = APP . 'config.php';
 
         if (!file_exists($file)) {
-            throw new Exception('No existe el archivo de configuración', 404);
+            throw new \Exception('No existe el archivo de configuración', 404);
         }
 
         $array = require $file;
