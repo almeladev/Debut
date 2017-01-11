@@ -69,7 +69,13 @@ class AuthController extends Controller
      */
     public function postRegister(Request $request)
     {   
-        $user = User::create($request->all());
+        $newUser = [
+            'name'     => $request->input('name'),
+            'email'    => $request->input('email'),
+            'password' => encrypt($request->input('password'))
+        ];
+        
+        $user = User::create($newUser);
         
         if(! $user->getErrors()){
             return redirect('/login')->with('success', 'Ya se ha registrado en el sistema!');
