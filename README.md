@@ -1,7 +1,7 @@
 # Debut
 Debut es un micro framework PHP súper simple pensado para ofrecer una estructura mínima para trabajar con el patrón arquitectónico Modelo–Vista–Controlador.
 
-Debut dispone de un <i>core</i> con las clases y métodos necesarios para empezar a trabajar en tu próxima aplicación web. Puedes crear rutas para tu aplicación y hacer cualquier CRUD de una forma rápida y sencilla. ¡Además su instalación es muy fácil con Vagrant!
+Debut dispone de un <i>core</i> con las clases y métodos necesarios para empezar a trabajar en tu próxima aplicación web. Puedes crear rutas para tu aplicación y hacer cualquier CRUD de una forma rápida y sencilla. ¡Además su instalación es muy fácil con Vagrant y ya integra una demo!
 
 ## Características
 <ul>
@@ -18,7 +18,8 @@ Debut dispone de un <i>core</i> con las clases y métodos necesarios para empeza
 <li>Código claro y comentado</li>
 <li>Control de errores para modo desarrollo y modo producción</li>
 <li>Cache propio para las vistas</li>
-<li>Debut no se ha creado a partir de otro framework</li>
+<li>Inyección de dependencias automático para los controladores</li>
+<li>y más!</li>
 </ul>
 
 ## ¿Necesito? (La instalación con Vagrant se encarga de todo)
@@ -29,7 +30,7 @@ Debut dispone de un <i>core</i> con las clases y métodos necesarios para empeza
 </ul>
 
 ## Instalación
-Puedes instalar un servidor con todo lo necesario para que Debut funcione con <a href="https://www.vagrantup.com/downloads.html">Vagrant</a> y los archivos <b>Vagrantfile</b> y <b>config.sh</b> que se encuentran en la carpeta "_install". Añadiendo estos dos archivos a cualquier directorio de tu equipo, sitúandote en él y ejecutando un <b>vagrant up</b>. ¡Así de simple!
+Puedes instalar fácilmente un servidor con todo lo necesario para que Debut funcione con <a href="https://www.vagrantup.com/downloads.html">Vagrant</a> y los archivos <b>Vagrantfile</b> y <b>config.sh</b> que se encuentran en la carpeta "_vagrant". Añadiendo estos dos archivos a cualquier directorio de tu equipo, sitúandote en él y ejecutando un <b>vagrant up</b>. ¡Así de simple!
 
 Los datos por defecto del servidor son los siguientes:
 * Box: <code>Ubuntu 16.04</code>
