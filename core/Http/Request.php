@@ -11,6 +11,11 @@ class Request
      */
     protected $requests = [];
     
+    /**
+     * Rescata las peticiones
+     * 
+     * @return void
+     */
     public function __construct()
     {
         $this->requests = $this->mergeData($_POST, $_FILES);
@@ -22,7 +27,7 @@ class Request
      * @param array $post
      * @param array $files
      * 
-     * @return array fusionado
+     * @return array
      */
     protected function mergeData(array $post, array $files)
     {
@@ -37,7 +42,7 @@ class Request
     /**
      * Acceso a los datos de las peticiones
      * 
-     * @param string $key
+     * @param string $name
      * 
      * @return mixed
      */

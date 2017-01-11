@@ -2,6 +2,8 @@
 
 namespace core\Routing;
 
+use Exception;
+
 class Router
 {
     /**
@@ -14,8 +16,8 @@ class Router
     /**
      * Añade a la ruta el método de envío GET
      *
-     * @param string $path     La ruta de la tabla
-     * @param mixed  $callable La tarea (controlador, acción, etc.)
+     * @param string $path
+     * @param mixed  $callable
      *
      * @return self
      */
@@ -27,8 +29,8 @@ class Router
     /**
      * Añade a la ruta el método de envío POST
      *
-     * @param string $path     La ruta de la tabla
-     * @param mixed  $callable La tarea (controlador, acción, etc.)
+     * @param string $path
+     * @param mixed  $callable
      *
      * @return self
      */
@@ -40,13 +42,13 @@ class Router
     /**
      * Añade la ruta a la tabla de rutas
      *
-     * @param string $path     La ruta de la tabla
-     * @param mixed  $callable La tarea (controlador, acción, etc.)
-     * @param string $method   Forma de envío
+     * @param string $path
+     * @param mixed  $callable
+     * @param string $method
      *
      * @return object $route La ruta
      */
-    private static function add($path, $callable, $method)
+    public static function add($path, $callable, $method)
     {
         $route = new Route($path, $callable);
         static::$routes[$method][] = $route;
@@ -57,7 +59,7 @@ class Router
     /**
      * Obtiene la URL
      *
-     * @return string $url La url seleccionada
+     * @return string $url
      */
     private function getUrl()
     {
@@ -75,7 +77,7 @@ class Router
     public function run()
     {
         if (!isset(static::$routes[$_SERVER['REQUEST_METHOD']])) {
-            throw new \Exception('No existe el método de solicitud', 404);
+            throw new Exception('No existe el método de solicitud', 404);
         }
 
         foreach (static::$routes[$_SERVER['REQUEST_METHOD']] as $route) {
@@ -83,6 +85,6 @@ class Router
                 return $route->call();
             }
         }
-        throw new \Exception('No se ha encontrado la ruta', 404);
+        throw new Exception('No se ha encontrado la ruta', 404);
     }
 }

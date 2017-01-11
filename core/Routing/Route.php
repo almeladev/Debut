@@ -2,25 +2,28 @@
 
 namespace core\Routing;
 
-use Exception;
 use core\DI;
+use Exception;
 
 class Route
 {
     /**
      * Ruta
+     * 
      * @var string
      */
     private $path;
 
     /**
      * Tarea
+     * 
      * @var mixed
      */
     private $callable;
 
     /**
      * Partes de la ruta
+     * 
      * @var array
      */
     private $matches = array();
@@ -30,6 +33,8 @@ class Route
      * 
      * @param string $path
      * @param mixed  $callable
+     * 
+     * @return void
      */
     public function __construct($path, $callable)
     {
@@ -41,9 +46,9 @@ class Route
      * Prepara la ruta con expresiones regulares
      * y capta las variables
      *
-     * @param string $url La URL
+     * @param string $url
      *
-     * @return boolean
+     * @return bool
      */
     public function match($url)
     {
