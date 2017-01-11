@@ -4,7 +4,6 @@ namespace core;
 
 class Hash 
 {
-    
     /**
      * Encripta una contraseña dada usando el algoritmo
      * de password_hash()

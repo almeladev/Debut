@@ -2,6 +2,8 @@
 
 namespace core;
 
+use Exception;
+
 class Collection 
 {
     /**
@@ -14,8 +16,8 @@ class Collection
     /**
      * Permite añadir items a la colección
      * 
-     * @param object $obj El objeto a añadir
-     * @param int    $key Clave expecífica a usar
+     * @param object $obj
+     * @param int    $key
      * 
      * @throws \Exception
      */
@@ -25,7 +27,7 @@ class Collection
             $this->items[] = $obj;
         } else {
             if (isset($this->items[$key])) {
-                throw new \Exception('La clave ' . $key . ' ya está en uso.');
+                throw new Exception('La clave ' . $key . ' ya está en uso.');
             }else {
                 $this->items[$key] = $obj;
             }
@@ -35,7 +37,7 @@ class Collection
     /**
      * Permite borrar items de la colección
      * 
-     * @param int $key La clave
+     * @param int $key
      * 
      * @throws \Exception
      */
@@ -44,7 +46,7 @@ class Collection
         if (isset($this->items[$key])) {
             unset($this->items[$key]);
         } else {
-            throw new \Exception('La clave ' . $key . ' es inválida.');
+            throw new Exception('La clave ' . $key . ' es inválida.');
         }
     }
 
@@ -53,15 +55,15 @@ class Collection
      * 
      * @param int $key La clave
      * 
-     * @return object El item
      * @throws \Exception
+     * @return object El item
      */
     public function getItem($key) 
     {
         if (isset($this->items[$key])) {
             return $this->items[$key];
         } else {
-            throw new \Exception('La clave ' . $key . ' es inválida.');
+            throw new Exception('La clave ' . $key . ' es inválida.');
         }
     }
     

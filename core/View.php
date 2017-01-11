@@ -2,6 +2,13 @@
 
 namespace core;
 
+use Exception;
+use core\Config;
+use Twig_Environment;
+use Twig_Extension_Debug;
+use Twig_Loader_Filesystem;
+use Twig_Extensions_Extension_Text;
+
 class View
 {
     
@@ -10,7 +17,7 @@ class View
     /**
      * Agrega el archivo de la vista
      *
-     * @param string $view El archivo de la vista
+     * @param string $view
      *
      * @return void
      */
@@ -23,7 +30,7 @@ class View
         if (is_readable($file)) {
             require $file;
         } else {
-            throw new \Exception('La vista $file no ha sido encontrada');
+            throw new Exception('La vista $file no ha sido encontrada');
         }
     }
 
@@ -37,7 +44,7 @@ class View
      */
     public static function make($template, array $args = [])
     {
-        $loader = new \Twig_Loader_Filesystem(APP . 'Views');
+        $loader = new Twig_Loader_Filesystem(APP . 'Views');
         
         // Archivo de configuración de la aplicación
         $app_config = Config::get('app');
@@ -47,16 +54,16 @@ class View
         $cache = (!$app_config['debug']) ? ROOT . 'storage/cache' : false;
         
         // Es necesario dar permisos para el modo producción (true debug)
-        $twig = new \Twig_Environment($loader, array(
+        $twig = new Twig_Environment($loader, array(
             'debug' => $app_config['debug'],
             'cache' => $cache,
         ));
         
         // ----------------------- EXTENSIONES ---------------------------------------
         // Añade extensiones útiles para el motor de plantillas => http://twig.sensiolabs.org/doc/extensions/index.html#extensions-install
-        $twig->addExtension(new \Twig_Extensions_Extension_Text());
+        $twig->addExtension(new Twig_Extensions_Extension_Text());
         // Añade extensiones para depurar
-        $twig->addExtension(new \Twig_Extension_Debug());
+        $twig->addExtension(new Twig_Extension_Debug());
         // ---------------------------------------------------------------------------
         
         // Añadimos los datos de la sesión

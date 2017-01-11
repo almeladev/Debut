@@ -2,9 +2,11 @@
 
 namespace core;
 
+use core\Config;
+use ErrorException;
+
 class Handler
 {
-    
     /**
      * Registra los errores ocurridos en la aplicación
      * 
@@ -13,7 +15,6 @@ class Handler
     public static function register()
     {
         error_reporting(E_ALL);
-        
         set_error_handler(__CLASS__ . "::errorHandler");
         set_exception_handler(__CLASS__ . "::exceptionHandler");
     }
@@ -21,24 +22,25 @@ class Handler
     /**
      * Convierte todos los errores en excepciones.
      *
-     * @param int    $level   Nivel de error
-     * @param string $message Mensaje de error
-     * @param string $file    Nombre del archivo donde se generó el error
-     * @param int    $line    Número de línea en el archivo
+     * @param int    $level
+     * @param string $message
+     * @param string $file
+     * @param int    $line
      *
+     * @throws \ErrorException
      * @return void
      */
     public static function errorHandler($level, $message, $file, $line)
     {
         if (error_reporting() !== 0) {
-            throw new \ErrorException($message, 0, $level, $file, $line);
+            throw new ErrorException($message, 0, $level, $file, $line);
         }
     }
 
     /**
      * Gestor de excepciones.
      *
-     * @param Exception $exception La excepción
+     * @param Exception $exception
      *
      * @return void
      */

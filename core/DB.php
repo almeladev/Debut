@@ -3,6 +3,9 @@
 namespace core;
 
 use PDO;
+use core\Config;
+use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DriverManager;
 
 abstract class DB
 {
@@ -17,11 +20,11 @@ abstract class DB
         
         if ($conn === null) {
             
-            $config = new \Doctrine\DBAL\Configuration();
+            $config = new Configuration();
             $db_config = Config::get('database');
             $connectionParams = $db_config['connections'][$db_config['default']];
         
-            $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
+            $conn = DriverManager::getConnection($connectionParams, $config);
         }
         
         return $conn;
@@ -30,11 +33,11 @@ abstract class DB
     /**
      * Ejecuta una consulta a la base de datos y devuelve un array
      *
-     * @param  string  $sql    Consulta SQL
-     * @param  array   $params Parámetros de la consulta
-     * @param  boolean $fetch  Si la consulta recupera datos
+     * @param  string  $sql
+     * @param  array   $params
+     * @param  boolean $fetch
      *
-     * @return mixed Datos de la consulta o boolean
+     * @return mixed|bool
      */
     public static function query($sql, $params = null, $fetch = true)
     {

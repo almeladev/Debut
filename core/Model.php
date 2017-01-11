@@ -2,6 +2,10 @@
 
 namespace core;
 
+use core\DB;
+use core\Paginator;
+use core\Validator;
+use core\Collection;
 use core\Http\Request;
 
 abstract class Model
@@ -58,6 +62,8 @@ abstract class Model
      * Constructor para los modelos
      * 
      * @param array $attributes
+     * 
+     * @return void
      */
     public function __construct(array $attributes = array()) 
     {
@@ -100,6 +106,8 @@ abstract class Model
      * Devuelve todos los registros de la tabla
      * como una colección de objetos paginados
      * 
+     * @param int $perPage
+     * 
      * @return \Collection|bool
      */
     public static function paginate($perPage = null)
@@ -134,11 +142,11 @@ abstract class Model
 
     /**
      * Obtiene el registro con el identificador elegido como
-     * un objeto para luego hacer uso de las acciones save, update y delete
-     * Si no existe el registro, lanza una excepción
+     * un objeto
      * 
-     * @param  int $id El identificador
-     * @return object|bool
+     * @param  int $id
+     * 
+     * @return \core\Model|bool
      */
     public static function find($id)
     {
@@ -207,7 +215,8 @@ abstract class Model
      * Modifica los datos del modelo en la
      * base de datos
      * 
-     * @param array $attributes Los atributos del modelo
+     * @param array $attributes
+     * 
      * @return bool
      */
     public function update(array $attributes = [])
@@ -277,7 +286,8 @@ abstract class Model
      * Guarda un nuevo modelo y devuelve la instancia
      * 
      * @param array $attributes
-     * @return static
+     * 
+     * @return \core\Model
      */
     public static function create(array $attributes)
     {
@@ -310,10 +320,11 @@ abstract class Model
     }
     
     /**
-     * Get a data by key
+     * Obtiene los datos de los atributos
      *
-     * @param string The key data to retrieve
-     * @access public
+     * @param string
+     * 
+     * @return mixed|bool
      */
     public function __get($key) {
         if (array_key_exists($key, $this->attributes)) {
@@ -323,23 +334,23 @@ abstract class Model
     }
 
     /**
-     * Assigns a value to the specified data
+     * Asigna datos a los atributos
      *
-     * @param string The data key to assign the value to
-     * @param mixed  The value to set
-     * @access public
+     * @param string
+     * @param mixed
+     * 
+     * @return void
      */
-    public function __set($key,$value) {
+    public function __set($key, $value) {
         $this->attributes[$key] = $value;
     }
 
     /**
-     * Whether or not an data exists by key
+     * Comprueba si existe el atributo
      *
-     * @param string An data key to check for
-     * @access public
-     * @return boolean
-     * @abstracting ArrayAccess
+     * @param string
+     * 
+     * @return bool
      */
     public function __isset($key) {
         return isset($this->attributes[$key]);

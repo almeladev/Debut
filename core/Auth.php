@@ -2,12 +2,15 @@
 
 namespace core;
 
+use core\DB;
+use core\Hash;
+
 class Auth
 {
     /**
      * Comprueba si se ha iniciado sesión.
      *
-     * @return bool true si ha iniciado sesión. false si no.
+     * @return bool
      */
     public static function check()
     {
@@ -17,10 +20,10 @@ class Auth
     /**
      * Inicia sesión con los datos pasados por parámetro
      *
-     * @param $identity El identificador
-     * @param $password Contraseña
+     * @param $identity
+     * @param $password
      *
-     * @return bool true si ha iniciado sesión. false si no
+     * @return bool
      */
     public static function login($identity, $password)
     {

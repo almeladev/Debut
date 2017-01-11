@@ -50,7 +50,7 @@ class Validator {
      * @param array  $rules
      * @param array  $messages
      * 
-     * @return \static
+     * @return \core\Validator
      */
     public static function make(array $data, array $rules, array $messages = null)
     {

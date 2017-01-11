@@ -25,8 +25,9 @@ class Paginator
     /**
      * Constructor
      * 
-     * @param array $array   Array que será paginado
-     * @param int   $perPage La cantidad de elementos que se deben mostrar por página
+     * @param array $array
+     * @param int   $perPage
+     * 
      * @return void
      */
     public function __construct($array, $perPage = null)
@@ -71,7 +72,7 @@ class Paginator
     /**
      * Obtiene los enlaces html para el desplazamiento por páginas
      * 
-     * @return mixed  El HTML de la paginación o false
+     * @return mixed|bool
      */
     public function getLinks()
     {
@@ -108,26 +109,11 @@ class Paginator
     }
     
     /**
-     * Global setter
-     * 
-     * Utiliza el array de propiedades
-     * 
-     * @param string $name  El nombre de la propiedad
-     * @param string $value El valor de la propiedad
-     * @return void
-     */
-    public function __set($name, $value) 
-    { 
-      $this->_properties[$name] = $value;
-    }
-    
-    /**
-     * Global getter
-     * 
      * Obtiene la propiedad del array de propiedades
      * si existe
      * 
      * @param string $name El nombre de la propiedad
+     * 
      * @return mixed El valor de la propiedad o false
      */
     public function __get($name)
@@ -136,5 +122,18 @@ class Paginator
         return $this->_properties[$name];
       }
       return false;
+    }
+    
+    /**
+     * Asigna propiedades
+     * 
+     * @param string $name
+     * @param string $value
+     * 
+     * @return void
+     */
+    public function __set($name, $value) 
+    { 
+      $this->_properties[$name] = $value;
     }
 }

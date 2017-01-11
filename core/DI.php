@@ -4,12 +4,7 @@ namespace core;
 
 use ReflectionClass;
 
-/**
- * Simple inyector de dependencias
- * para obtener los objetos de los parámetros
- */
 class DI {
-    
     
     /**
      * Los parámetros del método del objeto
@@ -31,7 +26,7 @@ class DI {
      * @param object $object
      * @param string $method
      * 
-     * @return array Array de objetos instanciados con su posición en el método
+     * @return array
      */
     public static function make($object, $method)
     {
@@ -44,7 +39,6 @@ class DI {
         
         return $instanciator->instances;
     }
-    
     
     /**
      * Permite instanciar automáticamente los parámetros de 
@@ -68,7 +62,7 @@ class DI {
      * @param object $object
      * @param string $method
      * 
-     * @return object|bool
+     * @return \core\DI|bool
      */
     protected function getParameters($object, $method)
     {

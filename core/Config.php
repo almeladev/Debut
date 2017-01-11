@@ -2,6 +2,8 @@
 
 namespace core;
 
+use Exception;
+
 class Config {
 
     /**
@@ -15,7 +17,8 @@ class Config {
      * Devuelve la información del archivo
      *
      * @param   string $key
-     * @return  array or string
+     * 
+     * @return  array|string
      */
     public static function get($key = null)
     {
@@ -33,6 +36,8 @@ class Config {
      * Carga la configuración del archivo
      *
      * @param   string $filepath
+     * 
+     * @throws \Exception
      * @return  void
      */
     private static function load($filepath)
@@ -40,7 +45,7 @@ class Config {
         $file = ROOT . 'config/' . $filepath . '.php';
         
         if (!file_exists($file)) {
-            throw new \Exception('No existe el archivo de configuración', 404);
+            throw new Exception('No existe el archivo de configuración', 404);
         }
         static::$items = require ROOT . 'config/' . $filepath . '.php';
     }

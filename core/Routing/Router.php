@@ -3,6 +3,7 @@
 namespace core\Routing;
 
 use Exception;
+use core\Routing\Route;
 
 class Router
 {
@@ -72,6 +73,7 @@ class Router
      * en la tabla de rutas y lleva a cabo el proceso de redireccionamiento al
      * controlador con su acción o hace la llamada a la función anónima establecida
      *
+     * @throws \Exception
      * @return object
      */
     public function run()

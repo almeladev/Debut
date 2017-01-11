@@ -1,5 +1,6 @@
 <?php
 
+use Exception;
 use core\View;
 use core\Hash;
 use core\Routing\Redirector;
@@ -11,14 +12,15 @@ if (! function_exists('config')) {
      * @param string $var
      * @param mixed  $default
      * 
-     * @return $config
+     * @throws Exception
+     * @return mixed
      */
     function config($var, $default = null)
     {
         $file = APP . 'config.php';
 
         if (!file_exists($file)) {
-            throw new \Exception('No existe el archivo de configuración', 404);
+            throw new Exception('No existe el archivo de configuración', 404);
         }
 
         $array = require $file;
