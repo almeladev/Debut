@@ -2,11 +2,11 @@
 
 namespace app\Controllers;
 
-use app\Models\User;
 use core\Auth;
-use core\Controller;
-use core\Http\Request;
 use core\Hash;
+use core\Controller;
+use app\Models\User;
+use core\Http\Request;
 
 class UserController extends Controller
 {
@@ -14,7 +14,7 @@ class UserController extends Controller
     /**
      * Muestra la lista de usuarios
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function index()
     {
@@ -34,8 +34,10 @@ class UserController extends Controller
     /**
      * Obtiene los datos de un formulario y crea el
      * usuario
-     *
-     * @return void
+     * 
+     * @param \core\Http\Request $request
+     * 
+     * @return \core\Routing\Redirector
      */
     public function store(Request $request)
     {        
@@ -67,9 +69,10 @@ class UserController extends Controller
      * Actualiza el usuario con los nuevos datos
      * pasados
      *
+     * @param \core\Http\Request $request
      * @param  int $id El identificador
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function update(Request $request, $id)
     {
@@ -109,7 +112,7 @@ class UserController extends Controller
      *
      * @param  int $id El identificador
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function destroy($id)
     {

@@ -13,7 +13,7 @@ class PostController extends Controller
     /**
      * Muestra la lista de posts
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function index()
     {
@@ -33,8 +33,10 @@ class PostController extends Controller
     /**
      * Obtiene los datos de un formulario y crea el
      * post
-     *
-     * @return void
+     * 
+     * @param \core\Http\Request $request
+     * 
+     * @return \core\Routing\Redirector
      */
     public function store(Request $request)
     { 
@@ -55,9 +57,10 @@ class PostController extends Controller
      * Actualiza el post con los nuevos datos
      * pasados
      *
+     * @param \core\Http\Request $request
      * @param  int $id El identificador
-     *
-     * @return void
+     * 
+     * @return \core\Routing\Redirector
      */
     public function update(Request $request, $id)
     {
@@ -79,7 +82,7 @@ class PostController extends Controller
      *
      * @param  int $id El identificador
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function destroy($id)
     {

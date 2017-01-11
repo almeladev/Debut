@@ -52,7 +52,7 @@ class DI {
      * 
      * @return void
      */
-    public function instanceAll()
+    protected function instanceAll()
     {
         foreach ($this->params as $key => $param) {
             $class = $param->getClass();
@@ -70,7 +70,7 @@ class DI {
      * 
      * @return object|bool
      */
-    public function getParameters($object, $method)
+    protected function getParameters($object, $method)
     {
         $reflection = new ReflectionClass($object);
         $method = $reflection->getMethod($method);
@@ -86,7 +86,7 @@ class DI {
      * 
      * @return bool
      */
-    public function hasObjects()
+    protected function hasObjects()
     {
         foreach ($this->params as $param) {
             if ($param->getClass()) {

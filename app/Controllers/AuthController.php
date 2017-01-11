@@ -13,7 +13,7 @@ class AuthController extends Controller
     /**
      * Accede a la vista de login
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function getLogin()
     {
@@ -26,8 +26,10 @@ class AuthController extends Controller
     /**
      * Comprueba si el usuario existe en la base de datos
      * e inicia sesión con los datos del usuario
-     *
-     * @return void
+     * 
+     * @param \core\Http\Request $request
+     * 
+     * @return \core\Routing\Redirector
      */
     public function postLogin(Request $request)
     { 
@@ -40,7 +42,7 @@ class AuthController extends Controller
     /**
      * Cierra la sesión del usuario
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function getLogout()
     {
@@ -48,11 +50,23 @@ class AuthController extends Controller
         return redirect('/');
     }
     
+    /**
+     * Accede a la vista de registro
+     * 
+     * @return void
+     */
     public function getRegister()
     {
         return view('auth/register.twig');
     }
     
+    /**
+     * Crea el usuario nuevo que se ha registrado
+     * 
+     * @param \core\Http\Request $request
+     * 
+     * @return \core\Routing\Redirector
+     */
     public function postRegister(Request $request)
     {   
         $user = User::create($request->all());

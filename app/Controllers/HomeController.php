@@ -2,8 +2,8 @@
 
 namespace app\Controllers;
 
-use core\Controller;
 use core\Auth;
+use core\Controller;
 
 class HomeController extends Controller
 {
@@ -27,9 +27,6 @@ class HomeController extends Controller
         if (Auth::check()) {
             return view('menu.twig', ['title' => 'Menú']);
         }
-        
-        // Acceso denegado (falta de permisos)
-        //return view('');
         
         return redirect('/');
     }

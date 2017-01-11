@@ -64,7 +64,7 @@ if (! function_exists('redirect')) {
      *
      * @param string $path La ruta
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     function redirect($path = null)
     {
@@ -77,6 +77,8 @@ if (! function_exists('flash_messages')) {
      * Agrega a la sesión mensajes temporales
      * 
      * @param mixed $message
+     * 
+     * @return void
      */
     function flash_messages($type, $message)
     {
@@ -93,6 +95,8 @@ if (! function_exists('flash_messages')) {
 if (! function_exists('clear_flash_messages')) {
     /**
      * Elimina todos los mensajes temporales de la sesión
+     * 
+     * @return void
      */
     function clear_flash_messages()
     {
