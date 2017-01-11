@@ -2,8 +2,10 @@
 
 namespace app\Models;
 
-use core\Model;
 use core\DB;
+use core\Model;
+use core\Paginator;
+use core\Collection;
 
 class Post extends Model
 {
@@ -31,7 +33,7 @@ class Post extends Model
      * Relacion con la tabla users. Obtiene
      * Todos los posts con su autor paginados
      * 
-     * @return array
+     * @return \core\Collection | bool
      */
     public static function withUsers()
     {
@@ -46,8 +48,8 @@ class Post extends Model
             
             // Obtenemos el nombre del modelo, instanciamos la clase de colecciones y la clase de paginación
             $classname = get_called_class();
-            $collection = new \core\Collection();
-            $pagination = new \core\Paginator($query);
+            $collection = new Collection();
+            $pagination = new Paginator($query);
 
             foreach ($pagination->getResults() as $attributes) {
                 // Instanciamos el item e indicamos que existe
@@ -65,5 +67,4 @@ class Post extends Model
         
         return false;
     }
-
 }
