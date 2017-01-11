@@ -49,7 +49,7 @@ class UserController extends Controller
         
         if ($user->save()) { 
             
-            if ($request->input('avatar')) {
+            if ($request->input('avatar')['name']) {
                 
                 $avatar_name = $user->id . '-' . date("Y-m-d") . '-' . $request->input('avatar')['name'];              
                 $user->avatar = $avatar_name;
@@ -88,7 +88,7 @@ class UserController extends Controller
         
             if ($user->update($newData)) { 
                 
-                if ($request->input('avatar')) {
+                if ($request->input('avatar')['name']) {
                 
                     $avatar_name = $user->id . '-' . date("Y-m-d") . '-' . $request->input('avatar')['name'];              
                     $user->avatar = $avatar_name;

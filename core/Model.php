@@ -196,13 +196,7 @@ abstract class Model
         
         // Usamos el método insert de DBAL y simplificamos
         $conn = DB::connection();
-        $insert = $conn->insert($model->table, $this->attributes);
-        
-        // Si no se ha llegado a insertar registramos el error
-        if (! $insert) {
-            $this->errors[] = 'El registro no se ha creado';
-            return false;
-        }
+        $conn->insert($model->table, $this->attributes);
         
         // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
         $this->{$model->primaryKey} = DB::connection()->lastInsertId();
@@ -227,7 +221,6 @@ abstract class Model
         }
         
         $model = new static();
-        $conn = DB::connection();
         $data = (!$attributes) ? $this->attributes : $attributes;
         
         // Validamos las Requests con las reglas del modelo, si las hubiera
@@ -243,14 +236,8 @@ abstract class Model
         }
         
         // Usamos el método update de DBAL y simplificamos
+        $conn = DB::connection();
         $update = $conn->update($model->table, $data, array($model->primaryKey => $this->{$model->primaryKey}));
-        
-        // Si no se ha llegado a actualizar registramos el error
-        if (! $update) {
-            $this->errors[] = 'El registro no se ha modificado';
-            return false;
-        }
-        
         return true;
     }
     
@@ -268,17 +255,10 @@ abstract class Model
         }
         
         $model = new static();
-        $conn = DB::connection();
         
         // Usamos el método delete de DBAL y simplificamos
-        $delete = $conn->delete($model->table, array($model->primaryKey => $this->{$model->primaryKey}));
-        
-        // Si no se ha llegado a borrar registramos el error
-        if (! $delete) {
-            $this->errors[] = 'El registro no se ha borrado';
-            return false;
-        }
-        
+        $conn = DB::connection();
+        $delete = $conn->delete($model->table, array($model->primaryKey => $this->{$model->primaryKey}));        
         return true;
     }
     
