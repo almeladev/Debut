@@ -42,6 +42,7 @@ $users->addColumn("id", "integer", array("autoincrement" => true));
 $users->addColumn("name", "string");
 $users->addColumn("email", "string");
 $users->addColumn("password", "string");
+$users->addColumn("avatar", "string", array("notnull" => false));
 $users->setPrimaryKey(array("id"));
 $users->addUniqueIndex(array("email"));
 
@@ -69,7 +70,8 @@ $faker = Factory::create();
 $conn->insert('users', [
     'name' => 'admin',
     'email' => 'admin@debut.app',
-    'password' => encrypt('secret')
+    'password' => encrypt('secret'),
+    'avatar' => 'avatar_admin' . '.png'
 ]);
 
 // Usuarios y posts aleatorios
@@ -78,7 +80,8 @@ for($i = 0;$i < $users_num;$i++) {
     $conn->insert('users', [
         'name'     => $faker->name,
         'email'    => $faker->unique()->email,
-        'password' => encrypt('secret')
+        'password' => encrypt('secret'),
+        'avatar' => 'avatar_example' . $faker->numberBetween($min = 1, $max = 20) . '.png'
     ]);
 }
 

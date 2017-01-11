@@ -18,6 +18,7 @@
 <table class="table table-striped table-bordered">
   <thead>
     <tr>
+      <th>Avatar</th>
       <th>Nombre</th>
       <th>Email</th>
       <th>Acciones</th>
@@ -26,6 +27,7 @@
   <tbody>     
   {% for user in users.items %}
     <tr>
+      <td class="center"><img class="avatar" src="/images/users/{{ user.avatar }}"></td>
       <td>{{ user.name }}</td>
       <td>{{ user.email }}</td>
       <td class="text-center">
@@ -35,6 +37,7 @@
                   data-whatever="Editar usuario"
                   data-name="{{ user.name }}"
                   data-email="{{ user.email }}"
+                  data-avatar="/images/users/{{user.avatar}}"
                   data-action="/users/update/{{ user.id }}"></button>
           <button title="Borrar usuario" type="submit" class="btn btn-danger glyphicon glyphicon-trash"></button>
         </form>
@@ -57,7 +60,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="ModalLabel">Mensaje</h4>
       </div>
-      <form action="" method="POST" class="form-horizontal">
+      <form action="" method="POST" class="form-horizontal" enctype="multipart/form-data">
           <div class="modal-body">
             <div class="form-group">
             <label class="col-lg-2 control-label">Nombre</label>
@@ -72,11 +75,17 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-lg-2 control-label">Nueva Contraseña</label>
+            <label class="col-lg-2 control-label">Contraseña</label>
             <div class="col-lg-10">
-                <input type="password" class="form-control" name="password">
+                <input type="password" class="form-control" name="password" placeholder="Escribe una contraseña...">
             </div>
-          </div>    
+          </div>
+          <div class="form-group">
+            <label class="col-lg-2 control-label">Avatar</label>
+            <div class="col-lg-10">
+                <input class="btn btn-default btn-file" type="file" class="form-control" name="avatar">
+            </div>
+          </div> 
           </div>
           <div class="modal-footer">
           <div class="form-group">
@@ -98,7 +107,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="ModalLabel">Mensaje</h4>
       </div>
-      <form action="" method="POST" class="form-horizontal">
+      <form action="" method="POST" class="form-horizontal" enctype="multipart/form-data">
           <div class="modal-body">
             <div class="form-group">
             <label class="col-lg-2 control-label">Nombre</label>
@@ -113,15 +122,21 @@
             </div>
           </div>
           <div class="form-group">
+            <label class="col-lg-2 control-label">Avatar</label>
+            <div class="col-lg-10">
+                <img src="" class="avatar" id="userAvatar"><input class="btn btn-default btn-file" type="file" class="form-control" name="avatar">
+            </div>
+          </div>
+          <div class="form-group">
             <label class="col-lg-2 control-label">Anterior Contraseña</label>
             <div class="col-lg-10">
-                <input type="password" class="form-control" name="oldpassword">
+                <input type="password" class="form-control" name="password" placeholder="Escribe tu anterior contraseña...">
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-2 control-label">Nueva Contraseña</label>
             <div class="col-lg-10">
-                <input type="password" class="form-control" name="newpassword">
+                <input type="password" class="form-control" name="newpassword" placeholder="Escribe la nueva contraseña...">
             </div>
           </div>    
           </div>
@@ -170,6 +185,7 @@
         var action = button.data('action');
         var name = button.data('name');
         var email = button.data('email');
+        var avatar = button.data('avatar');
         
         var modal = $(this)
         // Mensaje de la modal
@@ -178,6 +194,7 @@
         // Datos pasados por Twig
         modal.find("#userName").val(name);
         modal.find("#userEmail").val(email);
+        modal.find("#userAvatar").attr("src", avatar)
         modal.find("#response").html(recipient);
     }); 
 </script>

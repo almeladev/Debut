@@ -9,7 +9,7 @@ class Request
      * 
      * @var array 
      */
-    private $requests = [];
+    protected $requests = [];
     
     public function __construct()
     {
@@ -24,7 +24,7 @@ class Request
      * 
      * @return array fusionado
      */
-    private function mergeData(array $post, array $files)
+    protected function mergeData(array $post, array $files)
     {
         foreach($post as $key => $value) {
             if(is_string($value)) { 
@@ -41,11 +41,11 @@ class Request
      * 
      * @return mixed
      */
-    public function input($key)
+    public function input($name)
     {
-        return array_key_exists($key, $this->requests) ? $this->requests[$key] : null;
+        return array_key_exists($name, $this->requests) ? $this->requests[$name] : null;
     }
-    
+
     /**
      * Obtener todas las requests
      * 
