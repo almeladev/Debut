@@ -5,9 +5,9 @@
 # Archivo de configuración automática para la box 
 # Ubuntu 16.04 en Vagrant.
 #
-# Autor: Daniel Martínez <danmnez.me>
+# Autor: Daniel Martínez <danielmartinezalmela@gmail.com>
 # Creado: 14.09.2016
-# Actualizado: 20.11.2016
+# Actualizado: 11.12.2016
 # ======================================================= #
 
 # ======================================================= #

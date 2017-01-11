@@ -14,7 +14,12 @@ body {margin: 20px 0 20px 0;}
     font-family: 'Inconsolata', monospace;
 }
 .btn {margin-top: 3px;}
-        
+.center {text-align:center;}
+.avatar {max-width: 50px;}   
+input[type="file"] {
+    display: inline;
+    margin-left: 0.5em;
+}
 /*------------------------------------------------------------*\  
  * Formulario login
 \*------------------------------------------------------------*/

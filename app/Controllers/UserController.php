@@ -2,9 +2,11 @@
 
 namespace app\Controllers;
 
-use app\Models\User;
 use core\Auth;
+use core\Hash;
 use core\Controller;
+use app\Models\User;
+use core\Http\Request;
 
 class UserController extends Controller
 {
@@ -12,40 +14,54 @@ class UserController extends Controller
     /**
      * Muestra la lista de usuarios
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function index()
     {
         if (Auth::check()) {
-            $users = User::all();
-  
+            
+            // Todos los usuarios paginados (10 por página por defecto)
+            $users = User::paginate();
+            
             return view('users/index.twig', [
-                'users' => $users,
+                'users' => $users
             ]);
-        } else {
-            return redirect('/');
         }
+        
+        return redirect('/');
     }
 
     /**
      * Obtiene los datos de un formulario y crea el
      * usuario
-     *
-     * @return void
+     * 
+     * @param \core\Http\Request $request
+     * 
+     * @return \core\Routing\Redirector
      */
-    public function store()
-    {
-        // Recuerda validar
+    public function store(Request $request)
+    {        
         $user = new User([
-            'name'     => $this->request->input('name'),
-            'email'    => $this->request->input('email'),
-            'password' => md5($this->request->input('pass'))
+            'name'     => $request->input('name'),
+            'email'    => $request->input('email'),
+            'password' => encrypt($request->input('password'))
         ]);
         
-        if ($user->save()) {     
-            return redirect('/users');
+        if ($user->save()) { 
+            
+            if ($request->input('avatar')['name']) {
+                
+                $avatar_name = $user->id . '-' . date("Y-m-d") . '-' . $request->input('avatar')['name'];              
+                $user->avatar = $avatar_name;
+                $user->update();
+                
+                // Finalmente guardo el archivo con su nombre
+                move_uploaded_file($request->input('avatar')['tmp_name'], ROOT . 'public/images/users/' . $avatar_name);
+            }
+            
+            return redirect()->back();
         } else {
-            throw new \Exception('No se ha podido crear el usuario', 500);
+            return redirect()->back()->with('danger', $user->getErrors());
         }
     }
 
@@ -53,26 +69,42 @@ class UserController extends Controller
      * Actualiza el usuario con los nuevos datos
      * pasados
      *
+     * @param \core\Http\Request $request
      * @param  int $id El identificador
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
-    public function update($id)
+    public function update(Request $request, $id)
     {
         $user = User::find($id);
         
-        $newData = [
-            'name'     => $this->request->input('name'),
-            'email'    => $this->request->input('email'),
-            'password' => md5($this->request->input('pass'))
-        ];
+        if (Hash::check($request->input('password'), $user->password)) {
             
-        if ($user->update($newData)) {
-            return redirect('/users');
-        } else {
-            throw new \Exception('No se ha podido actualizar el usuario', 500);
-        }
+            $newData = [
+                'name'     => $request->input('name'),
+                'email'    => $request->input('email'),
+                'password' => encrypt($request->input('newpassword'))
+            ];
+        
+            if ($user->update($newData)) { 
+                
+                if ($request->input('avatar')['name']) {
+                
+                    $avatar_name = $user->id . '-' . date("Y-m-d") . '-' . $request->input('avatar')['name'];              
+                    $user->avatar = $avatar_name;
+                    $user->update();
 
+                    // Finalmente guardo el archivo con su nombre
+                    move_uploaded_file($request->input('avatar')['tmp_name'], ROOT . 'public/images/users/' . $avatar_name);
+                }
+            
+                return redirect('/users');
+            } else {
+                return redirect()->back()->with('danger', $user->getErrors());
+            }
+        }
+        
+        return redirect()->back()->with('danger', 'La anterior contraseña no coincide');
     }
 
     /**
@@ -80,16 +112,16 @@ class UserController extends Controller
      *
      * @param  int $id El identificador
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function destroy($id)
     {
         $user = User::find($id);
         
         if ($user->delete()) {
-            return redirect('/users');
+            return redirect()->back();
         } else {
-            throw new \Exception('No se ha podido borrar el usuario', 500);
+            return redirect()->back()->with('danger', $user->getErrors());
         }
     }
 }

@@ -3,47 +3,84 @@
 namespace app\Controllers;
 
 use core\Auth;
+use app\Models\User;
 use core\Controller;
+use core\Http\Request;
 
 class AuthController extends Controller
 {
+    
     /**
      * Accede a la vista de login
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function getLogin()
     {
         if (!Auth::check()) {
             return view('auth/login.twig');
-        } else {
-            return redirect('/menu');
         }
+        return redirect('/menu');
     }
 
     /**
      * Comprueba si el usuario existe en la base de datos
      * e inicia sesión con los datos del usuario
-     *
-     * @return void
+     * 
+     * @param \core\Http\Request $request
+     * 
+     * @return \core\Routing\Redirector
      */
-    public function postLogin()
+    public function postLogin(Request $request)
     { 
-        if (Auth::login($this->request->input('email'), $this->request->input('pass'))) {
+        if (Auth::login($request->input('email'), $request->input('password'))) {
             return redirect('/menu');
-        } else {
-            return redirect('/login');
         }
+        return redirect('/login');
     }
 
     /**
      * Cierra la sesión del usuario
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function getLogout()
     {
         Auth::logout();
         return redirect('/');
+    }
+    
+    /**
+     * Accede a la vista de registro
+     * 
+     * @return void
+     */
+    public function getRegister()
+    {
+        return view('auth/register.twig');
+    }
+    
+    /**
+     * Crea el usuario nuevo que se ha registrado
+     * 
+     * @param \core\Http\Request $request
+     * 
+     * @return \core\Routing\Redirector
+     */
+    public function postRegister(Request $request)
+    {   
+        $newUser = [
+            'name'     => $request->input('name'),
+            'email'    => $request->input('email'),
+            'password' => encrypt($request->input('password'))
+        ];
+        
+        $user = User::create($newUser);
+        
+        if(! $user->getErrors()){
+            return redirect('/login')->with('success', 'Ya se ha registrado en el sistema!');
+        }
+        
+        return redirect()->back()->with(['danger', 'post'], [$user->getErrors(), $request->all()]);
     }
 }

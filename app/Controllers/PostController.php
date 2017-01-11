@@ -2,11 +2,10 @@
 
 namespace app\Controllers;
 
-use app\Models\Post;
-use app\Models\User;
 use core\Auth;
 use core\Controller;
-
+use app\Models\Post;
+use core\Http\Request;
 
 class PostController extends Controller
 {
@@ -14,40 +13,43 @@ class PostController extends Controller
     /**
      * Muestra la lista de posts
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function index()
     {
         if (Auth::check()) {
-            // Todos los posts de los usuarios
-            $posts = User::posts();
+            
+            // Todos los posts con sus usuarios paginados (ver modelo de posts)
+            $posts = Post::withUsers();
             
             return view('posts/index.twig', [
                 'posts' => $posts,
             ]);
-        } else {
-            return redirect('/');
         }
+        
+        return redirect('/');
     }
 
     /**
      * Obtiene los datos de un formulario y crea el
      * post
-     *
-     * @return void
+     * 
+     * @param \core\Http\Request $request
+     * 
+     * @return \core\Routing\Redirector
      */
-    public function store()
+    public function store(Request $request)
     { 
         $post = new Post([
-            'title'   => $this->request->input('title'),
-            'content' => $this->request->input('content'),
+            'title'   => $request->input('title'),
+            'content' => $request->input('content'),
             'user_id' => Auth::user()->id
         ]);     
         
         if ($post->save()) {
-            return redirect('/posts');
+            return redirect()->back();
         } else {
-            throw new \Exception('No se ha podido crear el post', 500);
+            return redirect()->back()->with('danger', $post->getErrors());
         }
     }
 
@@ -55,24 +57,24 @@ class PostController extends Controller
      * Actualiza el post con los nuevos datos
      * pasados
      *
+     * @param \core\Http\Request $request
      * @param  int $id El identificador
-     *
-     * @return void
+     * 
+     * @return \core\Routing\Redirector
      */
-    public function update($id)
+    public function update(Request $request, $id)
     {
         $post = Post::find($id);
         
         // Recuerda validar
-        $post->title   = $this->request->input('title');
-        $post->content = $this->request->input('content');
+        $post->title   = $request->input('title');
+        $post->content = $request->input('content');
         
         if ($post->update()) {
-            return redirect('/posts');
+            return redirect()->back();
         } else {
-            throw new \Exception('No se ha podido actualizar el posts', 500);
+            return redirect()->back()->with('danger', $post->getErrors());
         }
-
     }
 
     /**
@@ -80,16 +82,16 @@ class PostController extends Controller
      *
      * @param  int $id El identificador
      *
-     * @return void
+     * @return \core\Routing\Redirector
      */
     public function destroy($id)
     {
         $post = Post::find($id);
         
         if ($post->delete()) {
-            return redirect('/posts');
+            return redirect()->back();
         } else {
-            throw new \Exception('No se ha podido borrar el post', 500);
+            return redirect()->back()->with('danger', $post->getErrors());
         }
     }
 }

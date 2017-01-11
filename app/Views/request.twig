@@ -1,0 +1,30 @@
+<!-- 
+/**
+ * Permite obtener un cuadro con los mensajes flash enviados.
+ * Accede al array de sesión y obtiene el tipo de mensaje 
+ * almacenado
+ */
+-->
+{% macro messages(type) %}
+{% if session.flash_messages %}
+    <div class="alert alert-{{type}}">
+        <ul>
+        {% for message in session.flash_messages[type] %}
+            <li>{{message}}</li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+{% endmacro %}
+
+<!-- 
+/**
+ * Permite obtener un cuadro con los mensajes flash enviados.
+ * Accede al array de sesión y obtiene los datos de tipo post
+ */
+-->
+{% macro post(name) %}
+{% if session.flash_messages %}
+    {{session.flash_messages.post[name]}}
+{% endif %}
+{% endmacro %}

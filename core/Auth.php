@@ -2,46 +2,50 @@
 
 namespace core;
 
+use core\DB;
+use core\Hash;
+
 class Auth
 {
     /**
      * Comprueba si se ha iniciado sesión.
      *
-     * @return boolean true si ha iniciado sesión. false si no.
+     * @return bool
      */
     public static function check()
     {
-        if (isset($_SESSION["user"])) {
-            return true;
-        }
-        return false;
+        return (isset($_SESSION["user"])) ? true : false;
     }
 
     /**
      * Inicia sesión con los datos pasados por parámetro
      *
-     * @param $identity El identificador
-     * @param $password Contraseña
+     * @param $identity
+     * @param $password
      *
-     * @return boolean true si ha iniciado sesión. false si no.
+     * @return bool
      */
     public static function login($identity, $password)
     {
-        $sql = "SELECT * FROM users WHERE email= :email AND password= :password";
+        $sql = 'SELECT * FROM users WHERE email= :email';
+        $params = ['email' => $identity];
+        
+        $user = DB::query($sql, $params);
 
-        $params = [
-            'email'    => $identity,
-            'password' => md5($password),
-        ];
-        $result = DB::query($sql, $params);
-
-        if ($result) {
-            $_SESSION["user"] = $identity;
-            return true;
+        if ($user) {
+            // Verifica que la contraseña sea correcta
+            if (Hash::check($password, $user['password'])) {
+                
+                // La password no será guardada en $_SESSION, por seguridad
+                unset($user['password']);
+                
+                $_SESSION["user"] = $user;
+                return true;
+            }
         }
         return false;
     }
-
+            
     /**
      * Elimina la sesión del usuario
      *
@@ -58,17 +62,8 @@ class Auth
      * @return object
      */
     public static function user()
-    {    
-        if (self::check()) {
-            $sql = "SELECT * FROM users WHERE email= :email";
-            $params = ['email' => $_SESSION["user"]];
-            
-            $result = DB::query($sql, $params);
-            
-            // Obtiene el array y lo convierte a objecto
-            return (object) $result;
-        }
-        return false;
+    {
+        return (self::check()) ? (object) $_SESSION['user'] : false;
     }
     
 }

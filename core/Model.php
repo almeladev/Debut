@@ -2,12 +2,13 @@
 
 namespace core;
 
-/**
- * El modelo base está pensado para facilitar las tareas comunes
- * de los modelos. Implementa la interface ArrayAccess para
- * tratar el array de los atributos
- */
-abstract class Model implements \ArrayAccess
+use core\DB;
+use core\Paginator;
+use core\Validator;
+use core\Collection;
+use core\Http\Request;
+
+abstract class Model
 {
     /**
      * La tabla de la base de datos
@@ -31,16 +32,38 @@ abstract class Model implements \ArrayAccess
     protected $attributes = array();
     
     /**
+     * Las reglas del modelo
+     * 
+     * @var array
+     */
+    protected $rules = array();
+    
+    /**
+     * Los errores del modelo
+     * 
+     * @var array
+     */
+    protected $errors = array();
+    
+    /**
      * Comprueba si existe o no el modelo
      * 
-     * @var boolean 
+     * @var bool 
      */
     public $exists = false;
+    
+    /**
+     * Reglas para los atributos del modelo, 
+     * método obligatorio
+     */
+    abstract protected function rules();
     
     /**
      * Constructor para los modelos
      * 
      * @param array $attributes
+     * 
+     * @return void
      */
     public function __construct(array $attributes = array()) 
     {
@@ -48,58 +71,107 @@ abstract class Model implements \ArrayAccess
     }
 
     /**
-     * Todos los registros de la base de
-     * datos
-     *
-     * @return array | boolean
+     * Devuelve todos los registros de la tabla
+     * como una colección de objetos
+     * 
+     * @return \Collection|bool
      */
     public static function all()
     {
         $model = new static();
 
-        $sql    = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
+        $sql = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
         $query = DB::query($sql);
 
-        return ($query) ? $query : false;
+        if ($query) {
+            // Obtenemos el nombre del modelo e instanciamos la clase de colecciones
+            $classname = get_called_class();
+            $collection = new Collection();
+            
+            foreach ($query as $attributes) {                
+                // Instanciamos el item e indicamos que existe
+                $item = new $classname($attributes);
+                $item->exists = true;
+                
+                // Agregamos a la colección
+                $collection->addItem($item);
+            }
+            return $collection;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Devuelve todos los registros de la tabla
+     * como una colección de objetos paginados
+     * 
+     * @param int $perPage
+     * 
+     * @return \Collection|bool
+     */
+    public static function paginate($perPage = null)
+    {
+        $model = new static();
+        
+        $sql = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
+        $query = DB::query($sql);
+        
+        if ($query) {
+            // Obtenemos el nombre del modelo, instanciamos la clase de colecciones y la clase de paginación
+            $classname = get_called_class();
+            $collection = new Collection();
+            $pagination = new Paginator($query, $perPage);
+
+            foreach ($pagination->getResults() as $attributes) {
+                // Instanciamos el item e indicamos que existe
+                $item = new $classname($attributes);
+                $item->exists = true;
+                
+                // Agregamos a la colección
+                $collection->addItem($item);
+            }
+            
+            // Los links para la paginación
+            $collection->links = $pagination->getLinks();
+            return $collection;
+        }
+        
+        return false;
     }
 
     /**
      * Obtiene el registro con el identificador elegido como
-     * un objeto para luego hacer uso de las acciones save, update y delete
-     * Si no existe el registro, lanza una excepción
+     * un objeto
      * 
-     * @param  int $id El identificador
-     * @return Object
+     * @param  int $id
+     * 
+     * @return \core\Model|bool
      */
     public static function find($id)
     {
         $model = new static();
         
         $sql = 'SELECT * FROM ' . $model->table . ' WHERE ' . $model->primaryKey . ' = :' . $model->primaryKey;
-        $params  = [$model->primaryKey => $id];
+        $params = [$model->primaryKey => $id];
         $query = DB::query($sql, $params);
         
         if ($query) {
-            // Obtenemos el nombre de las columnas
-            $columns = $model->getColumnsWithoutId();
-            // Generamos el objeto con sus atributos
-            foreach($columns as $field) {
-                $model->$field = $query[$field];
-            }
-            // Indicamos que existe el modelo, añadimos su identificador y lo retornamos
-            $model->{$model->primaryKey} = $query[$model->primaryKey];
+            // Añadimos los atributos al modelo
+            $model->attributes = $query;
+            // Indicamos que existe el modelo y lo retornamos
             $model->exists = true;
             return $model;
-        } else {
-            throw new \Exception('No existe el registro con identificador: ' . $id);
         }
+        
+        return false;
     }
     
     /**
      * Guarda los datos del modelo en la
      * base de datos
      *
-     * @return boolean
+     * @return bool
      */
     public function save()
     {
@@ -110,30 +182,27 @@ abstract class Model implements \ArrayAccess
         
         $model = new static();
         
-        // Obtenemos las columnas de la tabla
-        $columns = $this->getColumnsWithoutId();
-                
-        // Creamos la consulta
-        $fields = implode(', ', $columns);
-        $stmt = preg_replace('#([\w]+)#', ':${1}', $fields);
-        $sql = "INSERT INTO $model->table ($fields) VALUES ($stmt)";
-        
-        // Asignamos los valores de los campos
-        foreach ($columns as $field) {
-            $this->$field = (isset($this->$field)) ? $this->$field : null;
-            $params[] = $this->$field;
+        // Validamos las Requests con las reglas del modelo, si las hubiera
+        if ($this->rules()) {
+            $request = new Request();
+            $validation = Validator::make($request->all(), $this->rules());
+
+            // Si la validación ha obtenido errores los añadimos al modelo
+            if ($validation->fails()) {
+                $this->errors = $validation->errors();
+                return false;
+            }
         }
         
-        // Hacemos la consulta a la BBDD y comprobamos resultado
-        $query = DB::query($sql, $params, false);
+        // Usamos el método insert de DBAL y simplificamos
+        $conn = DB::connection();
+        $conn->insert($model->table, $this->attributes);
         
-        if ($query) {
-            // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
-            $this->{$model->primaryKey} = DB::connection()->lastInsertId();
-            $this->exists = true;
-            return true;
-        }
-        return false;
+        // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
+        $this->{$model->primaryKey} = DB::connection()->lastInsertId();
+        $this->exists = true;
+        
+        return true;
     }
     
     /**
@@ -141,7 +210,8 @@ abstract class Model implements \ArrayAccess
      * base de datos
      * 
      * @param array $attributes
-     * @return boolean
+     * 
+     * @return bool
      */
     public function update(array $attributes = [])
     {
@@ -151,43 +221,31 @@ abstract class Model implements \ArrayAccess
         }
         
         $model = new static();
+        $data = (!$attributes) ? $this->attributes : $attributes;
         
-        // Obtenemos las columnas de la tabla
-        $columns = $this->getColumnsWithoutId();
-        
-        // Creamos la consulta
-        $fields = implode(', ', $columns);
-        $stmt = preg_replace('#([\w]+)#', '${1}=:${1}', $fields);
-        $sql = 'UPDATE ' . $model->table . ' SET ' . $stmt . ' WHERE ' . $model->primaryKey . '=' . $this->{$model->primaryKey};
-        
-        // Asignamos los nuevos valores a los campos
-        // Exceptuando el identificador
-        if (!$attributes) {
-            foreach ($columns as $field) {
-                $this->$field = (! isset($this->$field)) ?: $this->$field;
-                if ($this->$field !== $model->primaryKey) {
-                    $params[] = $this->$field;
-                }
-            }
-        } else {
-            foreach ($columns as $field) {
-                $this->$field = (isset($attributes[$field])) ? $attributes[$field] : $this->$field;
-                if ($this->$field !== $model->primaryKey) {
-                    $params[] = $this->$field;
-                }
+        // Validamos las Requests con las reglas del modelo, si las hubiera
+        if ($this->rules()) {
+            $request = new Request();
+            $validation = Validator::make($request->all(), $this->rules());
+
+            // Si la validación ha obtenido errores los añadimos al modelo
+            if ($validation->fails()) {
+                $this->errors = $validation->errors();
+                return false;
             }
         }
         
-        // Hacemos la consulta a la BBDD y comprobamos resultado
-        $query = DB::query($sql, $params, false);
-        return ($query) ? true : false;
+        // Usamos el método update de DBAL y simplificamos
+        $conn = DB::connection();
+        $update = $conn->update($model->table, $data, array($model->primaryKey => $this->{$model->primaryKey}));
+        return true;
     }
     
     /**
      * Elimina los datos del modelo en la
      * base de datos
      *
-     * @return boolean
+     * @return bool
      */
     public function delete()
     { 
@@ -198,43 +256,24 @@ abstract class Model implements \ArrayAccess
         
         $model = new static();
         
-        // Creamos la consulta
-        $sql = 'DELETE FROM ' . $model->table . ' WHERE ' . $model->primaryKey . '=' . $this->{$model->primaryKey};
-        
-        // Hacemos la consulta a la BBDD y comprobamos resultado
-        $query = DB::query($sql, null, false);
-        return ($query) ? true : false;
-    }
-    
-    /**
-     * Obtiene las columnas que tendrá el modelo sin el identificador de los campos. 
-     * Esto permitirá crear consultas con declaraciones
-     * 
-     * @return array Las columnas de la tabla
-     */
-    private function getColumnsWithoutId()
-    {
-        $columns = DB::getNameColumns($this->table);
-        foreach($columns as $key => $column) {
-            if ($column === $this->primaryKey) {
-                unset($columns[$key]);
-                break; // Si remueve el identificador, termina el ciclo
-            }
-        }
-        return $columns;
+        // Usamos el método delete de DBAL y simplificamos
+        $conn = DB::connection();
+        $delete = $conn->delete($model->table, array($model->primaryKey => $this->{$model->primaryKey}));        
+        return true;
     }
     
     /**
      * Guarda un nuevo modelo y devuelve la instancia
      * 
      * @param array $attributes
-     * @return static
+     * 
+     * @return \core\Model
      */
     public static function create(array $attributes)
     {
-            $model = new static($attributes);
-            $model->save();
-            return $model;
+        $model = new static($attributes);
+        $model->save();
+        return $model;
     }
 
     /**
@@ -250,103 +289,50 @@ abstract class Model implements \ArrayAccess
         }
     }
     
-    // --------------------------------------------------------------
-    // Métodos para la interface ArrayAccess
-    // --------------------------------------------------------------
+    /**
+     * Obtiene los errores de validación del modelo
+     * 
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
     
     /**
-     * Get a data by key
+     * Obtiene los datos de los atributos
      *
-     * @param string The key data to retrieve
-     * @access public
+     * @param string
+     * 
+     * @return mixed|bool
      */
-    public function &__get($key) {
-        return $this->attributes[$key];
+    public function __get($key) {
+        if (array_key_exists($key, $this->attributes)) {
+            return $this->attributes[$key];
+        }
+        return false;
     }
 
     /**
-     * Assigns a value to the specified data
+     * Asigna datos a los atributos
      *
-     * @param string The data key to assign the value to
-     * @param mixed  The value to set
-     * @access public
+     * @param string
+     * @param mixed
+     * 
+     * @return void
      */
-    public function __set($key,$value) {
+    public function __set($key, $value) {
         $this->attributes[$key] = $value;
     }
 
     /**
-     * Whether or not an data exists by key
+     * Comprueba si existe el atributo
      *
-     * @param string An data key to check for
-     * @access public
-     * @return boolean
-     * @abstracting ArrayAccess
+     * @param string
+     * 
+     * @return bool
      */
-    public function __isset ($key) {
+    public function __isset($key) {
         return isset($this->attributes[$key]);
-    }
-
-    /**
-     * Unsets an data by key
-     *
-     * @param string The key to unset
-     * @access public
-     */
-    public function __unset($key) {
-        unset($this->attributes[$key]);
-    }
-
-    /**
-     * Assigns a value to the specified offset
-     *
-     * @param string The offset to assign the value to
-     * @param mixed  The value to set
-     * @access public
-     * @abstracting ArrayAccess
-     */
-    public function offsetSet($offset, $value) {
-        if (is_null($offset)) {
-            $this->attributes[] = $value;
-        } else {
-            $this->attributes[$offset] = $value;
-        }
-    }
-
-    /**
-     * Whether or not an offset exists
-     *
-     * @param string An offset to check for
-     * @access public
-     * @return boolean
-     * @abstracting ArrayAccess
-     */
-    public function offsetExists($offset) {
-        return isset($this->attributes[$offset]);
-    }
-
-    /**
-     * Unsets an offset
-     *
-     * @param string The offset to unset
-     * @access public
-     * @abstracting ArrayAccess
-     */
-    public function offsetUnset($offset) {
-        if ($this->offsetExists($offset)) {
-            unset($this->attributes[$offset]);
-        }
-    }
-
-    /**
-     * Returns the value at specified offset
-     *
-     * @param string The offset to retrieve
-     * @access public
-     * @return mixed
-     * @abstracting ArrayAccess
-     */
-    public function offsetGet($offset) {
-        return $this->offsetExists($offset) ? $this->attributes[$offset] : null;
     }
 }
