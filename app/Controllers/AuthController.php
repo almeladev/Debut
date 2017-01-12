@@ -36,7 +36,7 @@ class AuthController extends Controller
         if (Auth::login($request->input('email'), $request->input('password'))) {
             return redirect('/menu');
         }
-        return redirect('/login');
+        return redirect('/login')->with('danger', 'El usuario no existe');
     }
 
     /**
