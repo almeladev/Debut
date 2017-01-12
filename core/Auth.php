@@ -4,6 +4,7 @@ namespace core;
 
 use core\DB;
 use core\Hash;
+use core\Config;
 
 class Auth
 {
@@ -27,8 +28,12 @@ class Auth
      */
     public static function login($identity, $password)
     {
-        $sql = 'SELECT * FROM users WHERE email= :email';
-        $params = ['email' => $identity];
+        // Obtenemos la configuración de autenticación
+        $table = Config::get('auth.table');
+        $column_ident = Config::get('auth.identity');
+        
+        $sql = 'SELECT * FROM '.$table.' WHERE '.$column_ident.'= :'.$column_ident;
+        $params = [$column_ident => $identity];
         
         $user = DB::query($sql, $params);
 
