@@ -45,6 +45,7 @@ Si no usas Vagrant, puedes instalar Debut y su base de datos manualmente en tu s
 Una vez tengamos Debut corriendo en nuestro servidor, debemos establecer la configuración que tendrá nuestro framework. El archivo de configuración que usa Debut se encuentra en <b>app/config.php</b>, en él debemos establecer nuestra configuración propia.
 
 Es necesario dar permisos a la carpeta "storage" y a sus subcarpetas si vamos a trabajar en modo producción: <code>$ chmod 777 -R storage/</code>
+También es necesario asignar permisos de escritura en aquellos directorios donde vayamos a trabajar con subida de ficheros.
 
 ## Demo
 Para usar la demo de Debut debemos ejecutar el archivo <b>demo.php</b> que se encuentra en la carpeta <b>_example</b>. Este archivo se encargará de crear las tablas y los registros de ejemplo en la base de datos.
