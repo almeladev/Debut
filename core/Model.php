@@ -3,12 +3,12 @@
 namespace core;
 
 use core\DB;
+use core\ORM;
+use core\Config;
 use core\Paginator;
-use core\Validator;
 use core\Collection;
-use core\Http\Request;
 
-abstract class Model
+abstract class Model extends ORM
 {
     /**
      * La tabla de la base de datos
@@ -22,7 +22,7 @@ abstract class Model
      * 
      * @var string
      */
-    protected $primaryKey = 'id';
+    protected $primaryKey;
     
    /**
     * Los atributos del modelo
@@ -79,7 +79,8 @@ abstract class Model
     public static function all()
     {
         $model = new static();
-
+        $model->primaryKey = Config::get('database.primaryKey');
+        
         $sql = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
         $query = DB::query($sql);
 
@@ -113,6 +114,7 @@ abstract class Model
     public static function paginate($perPage = null)
     {
         $model = new static();
+        $model->primaryKey = Config::get('database.primaryKey');
         
         $sql = 'SELECT * FROM ' . $model->table . ' ORDER BY ' . $model->primaryKey;
         $query = DB::query($sql);
@@ -151,6 +153,7 @@ abstract class Model
     public static function find($id)
     {
         $model = new static();
+        $model->primaryKey = Config::get('database.primaryKey');
         
         $sql = 'SELECT * FROM ' . $model->table . ' WHERE ' . $model->primaryKey . ' = :' . $model->primaryKey;
         $params = [$model->primaryKey => $id];
@@ -165,101 +168,6 @@ abstract class Model
         }
         
         return false;
-    }
-    
-    /**
-     * Guarda los datos del modelo en la
-     * base de datos
-     *
-     * @return bool
-     */
-    public function save()
-    {
-        // Solo continuar si el modelo no existe
-        if ($this->exists) {
-            return false;
-        }
-        
-        $model = new static();
-        
-        // Validamos las Requests con las reglas del modelo, si las hubiera
-        if ($this->rules()) {
-            $request = new Request();
-            $validation = Validator::make($request->all(), $this->rules());
-
-            // Si la validación ha obtenido errores los añadimos al modelo
-            if ($validation->fails()) {
-                $this->errors = $validation->errors();
-                return false;
-            }
-        }
-        
-        // Usamos el método insert de DBAL y simplificamos
-        $conn = DB::connection();
-        $conn->insert($model->table, $this->attributes);
-        
-        // Obtenemos el identificador del último registro insertado e indicamos que existe el modelo
-        $this->{$model->primaryKey} = DB::connection()->lastInsertId();
-        $this->exists = true;
-        
-        return true;
-    }
-    
-    /**
-     * Modifica los datos del modelo en la
-     * base de datos
-     * 
-     * @param array $attributes
-     * 
-     * @return bool
-     */
-    public function update(array $attributes = [])
-    {
-        // Solo continuar si el modelo existe
-        if (! $this->exists) {
-            return false;
-        }
-        
-        $model = new static();
-        $data = (!$attributes) ? $this->attributes : $attributes;
-        
-        // Validamos las Requests con las reglas del modelo, si las hubiera
-        if ($this->rules()) {
-            $request = new Request();
-            $validation = Validator::make($request->all(), $this->rules());
-
-            // Si la validación ha obtenido errores los añadimos al modelo
-            if ($validation->fails()) {
-                $this->errors = $validation->errors();
-                return false;
-            }
-        }
-        
-        // Usamos el método update de DBAL y simplificamos
-        $conn = DB::connection();
-        $update = $conn->update($model->table, $data, array($model->primaryKey => $this->{$model->primaryKey}));
-        return true;
-    }
-    
-    /**
-     * Elimina los datos del modelo en la
-     * base de datos
-     *
-     * @return bool
-     */
-    public function delete()
-    { 
-        // Solo continuar si el modelo existe
-        if (! $this->exists) {
-            return false;
-        }
-        
-        $model = new static();
-        
-        // Usamos el método delete de DBAL y simplificamos
-        $conn = DB::connection();
-        $delete = $conn->delete($model->table, array($model->primaryKey => $this->{$model->primaryKey}));        
-        return true;
     }
     
     /**

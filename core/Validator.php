@@ -4,7 +4,6 @@ namespace core;
 
 use Exception;
 use Countable;
-use ReflectionClass;
 
 class Validator {
     
@@ -108,13 +107,15 @@ class Validator {
                 
                 if (is_callable(array($this, $method))) {
                     // Parámetros de los métodos de validación
-                    $value = isset($this->data[$key]) ? $this->data[$key] : null;
-                    $attribute = $key;
-                    
-                    // El método adecuado de validación
-                    // Si devuelve falso genera un mensaje de error con los datos precisos
-                    if (! $this->$method($attribute, $value, $param)) {
-                        $this->errors[] = str_replace([':attribute', ":$rule"], [$attribute, $param], $this->messages[$rule]);
+                    if (isset($this->data[$key])) {
+                        $value = $this->data[$key];
+                        $attribute = $key;
+                        
+                        // El método adecuado de validación
+                        // Si devuelve falso genera un mensaje de error con los datos precisos
+                        if (! $this->$method($attribute, $value, $param)) {
+                            $this->errors[] = str_replace([':attribute', ":$rule"], [$attribute, $param], $this->messages[$rule]);
+                        }
                     }
                 } else {
                     throw new Exception('El método ' . $method . ' no existe');
@@ -164,9 +165,8 @@ class Validator {
         $table = $partsParam[0];
         $id = $partsParam[1];
         
-        // Obtenemos la primary key del modelo (SOLO PARA DEBUT)
-        $reflectionClass = new ReflectionClass('core\Model');
-        $primaryKey = $reflectionClass->getDefaultProperties()['primaryKey'];
+        // Obtenemos la primary key del modelo
+        $primaryKey = Config::get('database.primaryKey');
         
         // Consulta para comprobar su existencia
         $sql   = "SELECT * FROM $table WHERE $attribute = '$value'";
