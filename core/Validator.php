@@ -206,7 +206,9 @@ class Validator {
      */
     protected function validateMin($attribute, $value, $param)
     { 
-        if (strlen($value) < (int) $param) {
+        // Se comprueba si el campo es requerido, sino lo es,
+        // el minimo puede ser 0 
+        if ((strlen($value) < (int) $param) && (strlen($value) > 0)) {
             return false;
         }
         
