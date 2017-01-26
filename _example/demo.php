@@ -85,7 +85,7 @@ for($i = 0;$i < $users_num;$i++) {
     ]);
 }
 
-$posts_num = 300;
+$posts_num = 80;
 for($i = 0;$i < $posts_num;$i++) {
     $conn->insert('posts', [
         'title'   => $faker->unique()->sentence($nbWords = 8, $variableNbWords = true),
