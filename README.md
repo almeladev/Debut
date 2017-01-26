@@ -18,6 +18,7 @@ Debut dispone de un <i>core</i> con las clases y métodos necesarios para empeza
 <li>Código claro y comentado</li>
 <li>Control de errores para modo desarrollo y modo producción</li>
 <li>Cache propio para las vistas</li>
+<li>Sencillo ORM para abstraer de la BBDD a los modelos</li>
 <li>Inyección de dependencias automático para los controladores</li>
 <li>y más!</li>
 </ul>
