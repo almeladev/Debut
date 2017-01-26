@@ -93,9 +93,3 @@ for($i = 0;$i < $posts_num;$i++) {
         'user_id' => $faker->numberBetween('1', '51')
     ]);
 }
-
-// --------------------------------------------------------------
-// Permisos a los directorios
-// --------------------------------------------------------------
-exec('find  ' . ROOT . 'public' . '-type d -exec chmod 0775 {} +');
-exec('find  ' . ROOT . 'storage' . '-type d -exec chmod 0775 {} +');
