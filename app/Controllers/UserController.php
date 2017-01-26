@@ -80,12 +80,21 @@ class UserController extends Controller
         
         if (Hash::check($request->input('password'), $user->password)) {
             
-            $newData = [
-                'name'     => $request->input('name'),
-                'email'    => $request->input('email'),
-                'password' => encrypt($request->input('newpassword'))
-            ];
-        
+            // Se comprueba si se ha introducido una nueva contraseña,
+            // si no se ha introducido no se modificará la password
+            if ($request->input('newpassword')) {
+                $newData = [
+                    'name'     => $request->input('name'),
+                    'email'    => $request->input('email'),
+                    'password' => encrypt($request->input('newpassword'))
+                ];
+            } else {
+                $newData = [
+                    'name'     => $request->input('name'),
+                    'email'    => $request->input('email'),
+                ];
+            }
+            
             if ($user->update($newData)) { 
                 
                 if ($request->input('avatar')['name']) {
